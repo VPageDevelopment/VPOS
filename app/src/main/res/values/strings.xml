@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">VPOS</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string-array name="moduleImage">
+        <item>@drawable/customers</item>
+        <item>@drawable/items</item>
+        <item>@drawable/item_kits</item>
+        <item>@drawable/suppliers</item>
+        <item>@drawable/reports</item>
+        <item>@drawable/receivings</item>
+        <item>@drawable/sales</item>
+        <item>@drawable/employees</item>
+        <item>@drawable/giftcards</item>
+        <item>@drawable/messages</item>
+        <item>@drawable/config</item>
+    </string-array>
+
+    <string-array name="moduleName">
+        <item>customers</item>
+        <item>items</item>
+        <item>item_kits</item>
+        <item>suppliers</item>
+        <item>reports</item>
+        <item>receivings</item>
+        <item>sales</item>
+        <item>employees</item>
+        <item>giftcards</item>
+        <item>messages</item>
+        <item>config</item>
+    </string-array>
+
+</resources>
