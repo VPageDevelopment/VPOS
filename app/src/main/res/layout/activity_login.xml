@@ -29,7 +29,7 @@
         android:layout_height="match_parent">
 
 
-        <com.vpage.vcars.view.PlayGifView
+        <com.vpage.vpos.tools.PlayGifView
             android:id="@+id/viewGif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                     android:padding="10dp"
                     android:inputType="text"
                     android:hint="UserName"
-                    android:imeOptions="actionGo"
+                    android:imeOptions="actionNext"
                     android:textColor="@color/Black"
                     android:gravity="left|center_vertical"
                     android:textSize="@dimen/loginPopup_userName_textSize"

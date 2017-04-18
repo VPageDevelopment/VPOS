@@ -1,5 +1,6 @@
 package com.vpage.vpos.activity;
 
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,13 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GridImageAdapter;
 import com.vpage.vpos.tools.VTools;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
     private static final String TAG = HomeActivity.class.getName();
 
@@ -87,6 +89,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }else {
             gridImageAdapter.setSelectedPosition(typedArrayImagePosition);
         }
+
+        gridView.setOnItemClickListener(this);
     }
 
     @Override
@@ -127,11 +131,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.nav_logout) {
+            gotoLoginView();
 
         } else if (id == R.id.nav_manage) {
 
@@ -145,4 +146,36 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        gridImageAdapter.notifyDataSetChanged();
+        gridImageAdapter.setSelectedPosition(position);
+
+        switch (position) {
+
+            case 0:
+               // TO DO
+                break;
+
+            case 1:
+                // TO DO
+                break;
+
+            case 2:
+                // TO DO
+                break;
+
+            case 3:
+                // TO DO
+                break;
+        }
+    }
+
+
+    void gotoLoginView(){
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+    }
+
 }

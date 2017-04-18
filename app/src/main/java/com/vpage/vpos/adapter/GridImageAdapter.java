@@ -73,8 +73,8 @@ public class GridImageAdapter extends BaseAdapter {
         RelativeLayout gridLayout  = (RelativeLayout) convertView.findViewById(R.id.gridLayout);
 
         Drawable drawable = typedArrayImage.getDrawable(position);
-      //  imageview.setImageDrawable(drawable);
-        Picasso.with(activity).load(drawable.toString()).into(moduleImage);
+        moduleImage.setImageDrawable(drawable);
+       // Picasso.with(activity).load(drawable.toString()).into(moduleImage);
 
         if(selectedPos == position){
             VTools.setLayoutBackgroud(gridLayout,R.drawable.roundedcorner);

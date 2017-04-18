@@ -13,9 +13,13 @@
     tools:context="com.vpage.vpos.activity.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
- <GridView
-     android:layout_width="match_parent"
-     android:layout_height="match_parent"
-     android:id="@+id/gridView">
- </GridView>
+  <GridView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:drawSelectorOnTop="true"
+      android:id="@+id/gridView"
+      android:numColumns="3"
+      android:verticalSpacing="8dp"
+      android:horizontalSpacing="8dp"/>
+
 </RelativeLayout>
