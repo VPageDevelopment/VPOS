@@ -3,6 +3,8 @@
     package="com.vpage.vpos">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -25,6 +27,14 @@
         <activity
             android:name=".activity.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.BTDeviceList"
             android:screenOrientation="portrait"
             />
         <receiver

@@ -119,6 +119,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            gotoSettingsView();
             return true;
         }
 
@@ -173,9 +174,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    void gotoLoginView(){
+    private void gotoLoginView(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
     }
 
+
+    private void gotoSettingsView(){
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
 }

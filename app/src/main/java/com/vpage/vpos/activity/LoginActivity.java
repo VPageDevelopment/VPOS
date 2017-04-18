@@ -72,13 +72,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateInput();
+                gotoSettingsView();
+             //   validateInput();
 
             }
         });
 
     }
 
+    private void gotoSettingsView(){
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
