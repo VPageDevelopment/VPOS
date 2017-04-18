@@ -21,17 +21,17 @@
     </string-array>
 
     <string-array name="moduleName">
-        <item>customers</item>
-        <item>items</item>
-        <item>item_kits</item>
-        <item>suppliers</item>
-        <item>reports</item>
-        <item>receivings</item>
-        <item>sales</item>
-        <item>employees</item>
-        <item>giftcards</item>
-        <item>messages</item>
-        <item>config</item>
+        <item>Customers</item>
+        <item>Items</item>
+        <item>Item Kits</item>
+        <item>Suppliers</item>
+        <item>Reports</item>
+        <item>Receivings</item>
+        <item>Sales</item>
+        <item>Employees</item>
+        <item>Gift Cards</item>
+        <item>Messages</item>
+        <item>Store Config</item>
     </string-array>
 
 </resources>

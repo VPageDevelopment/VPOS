@@ -7,7 +7,6 @@
     <ImageView android:id="@+id/moduleImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/employees"
         android:contentDescription="@string/app_name"
         android:layout_centerInParent="true"
         android:scaleType="fitXY"/>
@@ -16,7 +15,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/moduleName"
         android:layout_below="@+id/moduleImage"
-        android:text="bmnghjkjk"
+        android:singleLine="true"
         android:padding="5dp"
         android:gravity="center|center_vertical"
         android:textStyle="bold"
@@ -26,42 +25,3 @@
         android:layout_marginTop="15dp" />
 
 </RelativeLayout>
-
-
-
-
-
-<!--
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/White"
-                >
-    <RelativeLayout
-        android:layout_width="80dp"
-        android:layout_height="100dp">
-        <RelativeLayout
-            android:id="@+id/gridLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView android:id="@+id/moduleImage"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/app_name"
-                android:scaleType="fitXY"/>
-
-        </RelativeLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/moduleName"
-            android:layout_below="@+id/gridLayout"
-            android:padding="5dp"
-            android:gravity="center|center_vertical"
-            android:text="jkklkll"
-            android:textSize="12sp"
-            android:textColor="@color/green"/>
-    </RelativeLayout>
-</RelativeLayout>-->
