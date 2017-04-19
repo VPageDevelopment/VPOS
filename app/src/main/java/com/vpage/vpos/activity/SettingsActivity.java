@@ -13,8 +13,7 @@ import android.widget.EditText;
 
 import com.vpage.vpos.R;
 
-public class SettingsActivity extends Activity
-{
+public class SettingsActivity extends Activity {
     /** Called when the activity is first created. */
     EditText message;
     Button printbtn;
@@ -67,7 +66,7 @@ public class SettingsActivity extends Activity
 
             btoutputstream = btsocket.getOutputStream();
 
-            byte[] printformat = { 0x1B, 0X21, FONT_TYPE };
+            byte[] printformat = { 0x1B, 0x21, FONT_TYPE };
             btoutputstream.write(printformat);
             String msg = message.getText().toString();
             btoutputstream.write(msg.getBytes());

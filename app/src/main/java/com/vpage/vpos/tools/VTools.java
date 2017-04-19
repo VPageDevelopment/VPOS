@@ -2,10 +2,18 @@ package com.vpage.vpos.tools;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.vpage.vpos.R;
 
 public class VTools {
 
@@ -55,6 +63,30 @@ public class VTools {
         }catch (Exception e){
              Log.e(TAG, e.toString());
         }
+    }
+
+    public static void showAlertDialog(Activity activity, String message) {
+
+        TextView title = new TextView(activity);
+        // You Can Customise your Title here
+        title.setText(activity.getResources().getString(R.string.app_name));
+        title.setBackgroundColor(Color.BLACK);
+        title.setPadding(10, 15, 15, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(20);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+        alertDialog.setCustomTitle(title);
+        alertDialog.setMessage(message);
+
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alertDialog.show();
+
     }
 
 

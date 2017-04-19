@@ -20,9 +20,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 public class BTDeviceList extends ListActivity {
 
-    static public final int REQUEST_CONNECT_BT = 0X2300;
+    static public final int REQUEST_CONNECT_BT = 0x2300;
 
-    static private final int REQUEST_ENABLE_BT = 0X1000;
+    static private final int REQUEST_ENABLE_BT = 0x1000;
 
     static private BluetoothAdapter mBluetoothAdapter = null;
 
@@ -33,6 +33,7 @@ public class BTDeviceList extends ListActivity {
     private static final UUID SPP_UUID = UUID
             .fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 // UUID.fromString(“00001101-0000-1000-8000-00805F9B34FB”);
+
 
     static private BluetoothSocket mbtSocket = null;
 
@@ -215,12 +216,10 @@ public class BTDeviceList extends ListActivity {
             @Override
             public void run() {
                 try {
-                    boolean gotuuid = btDevices.getItem(position)
-                            .fetchUuidsWithSdp();
-                    UUID uuid = btDevices.getItem(position).getUuids()[0]
-                            .getUuid();
-                    mbtSocket = btDevices.getItem(position)
-                            .createRfcommSocketToServiceRecord(uuid);
+                 //   UUID uuid = btDevices.getItem(position).getUuids()[0].getUuid();
+
+                    UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+                    mbtSocket = btDevices.getItem(position).createRfcommSocketToServiceRecord(uuid);
 
                     mbtSocket.connect();
                 } catch (IOException ex) {
@@ -279,5 +278,12 @@ public class BTDeviceList extends ListActivity {
         }
 
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mBTReceiver);
+
+        super.onDestroy();
     }
 }

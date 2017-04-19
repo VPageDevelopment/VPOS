@@ -36,6 +36,33 @@ public class ValidationUtils {
         return validationStatus;
     }
 
+    static public ValidationStatus isValidNamePassword( String firstName, String lastName) {
+        ValidationStatus validationStatus = new ValidationStatus();
+        validationStatus.setStatus(true);
+        validationStatus.setMessage("");
+
+        if (null == firstName || null == lastName || firstName.length() == 0 || lastName.length() == 0) {
+            validationStatus.setStatus(false);
+            validationStatus.setMessage("Invalid firstName and lastName");
+            return validationStatus;
+        }
+
+
+        if (null == firstName || firstName.length() == 0) {
+            validationStatus.setStatus(false);
+            validationStatus.setMessage("Invalid firstName");
+            return validationStatus;
+        }
+
+        if (null == lastName || lastName.length() == 0) {
+            validationStatus.setStatus(false);
+            validationStatus.setMessage("Invalid lastName");
+            return validationStatus;
+        }
+
+        return validationStatus;
+    }
+
     static public ValidationStatus isValidUserPhoneNumber(String userPhoneNumber) {
         ValidationStatus validationStatus = new ValidationStatus();
         validationStatus.setStatus(true);

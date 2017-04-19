@@ -2,9 +2,6 @@ package com.vpage.vpos.activity;
 
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,30 +14,36 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.GridView;
-
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GridImageAdapter;
 import com.vpage.vpos.tools.VTools;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
+@EActivity(R.layout.activity_home)
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
     private static final String TAG = HomeActivity.class.getName();
 
+    @ViewById(R.id.toolbar)
+    Toolbar toolbar;
+
+
+    @ViewById(R.id.gridView)
     GridView gridView;
+
+
     int typedArrayImagePosition = -1;
     GridImageAdapter gridImageAdapter;
     TypedArray typedArrayImage;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+    @AfterViews
+    public void onInitHome() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("VPOS");
 
-        gridView = (GridView) findViewById(R.id.gridView);
         setGridView();
 
    /*     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -61,6 +64,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
 
 
     private void setGridView(){
@@ -156,7 +160,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         switch (position) {
 
             case 0:
-               // TO DO
+                gotoCustomerView();
                 break;
 
             case 1:
@@ -171,6 +175,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // TO DO
                 break;
         }
+    }
+
+
+    private void gotoCustomerView(){
+        Intent intent = new Intent(getApplicationContext(), CustomerActivity.class);
+        startActivity(intent);
     }
 
 
