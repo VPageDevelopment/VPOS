@@ -6,15 +6,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.vpage.vpos.R;
+import com.vpage.vpos.tools.utils.LogFlag;
 
 public class SettingsActivity extends Activity {
-    /** Called when the activity is first created. */
+
+    private static final String TAG = SettingsActivity.class.getName();
+
     EditText message;
     Button printbtn;
 
@@ -48,7 +52,7 @@ public class SettingsActivity extends Activity {
             try {
                 opstream = btsocket.getOutputStream();
             } catch (IOException e) {
-                e.printStackTrace();
+                if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
             }
             btoutputstream = opstream;
             print_bt();
@@ -61,7 +65,7 @@ public class SettingsActivity extends Activity {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
             }
 
             btoutputstream = btsocket.getOutputStream();
@@ -75,7 +79,7 @@ public class SettingsActivity extends Activity {
             btoutputstream.write(0x0D);
             btoutputstream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
         }
 
     }
@@ -90,7 +94,7 @@ public class SettingsActivity extends Activity {
                 btsocket = null;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
         }
     }
 
@@ -104,7 +108,7 @@ public class SettingsActivity extends Activity {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
         }
     }
 }

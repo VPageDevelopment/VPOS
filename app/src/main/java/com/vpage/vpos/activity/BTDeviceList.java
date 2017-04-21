@@ -12,13 +12,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.vpage.vpos.tools.utils.LogFlag;
+
 public class BTDeviceList extends ListActivity {
+
+    private static final String TAG = BTDeviceList.class.getName();
 
     static public final int REQUEST_CONNECT_BT = 0x2300;
 
@@ -49,7 +55,8 @@ public class BTDeviceList extends ListActivity {
                 return;
             }
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
             this.finish();
             return;
         }
@@ -88,8 +95,10 @@ public class BTDeviceList extends ListActivity {
 
             finalize();
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
         } catch (Throwable e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
         }
 
     }
@@ -117,7 +126,8 @@ public class BTDeviceList extends ListActivity {
                 BluetoothAdapter.ACTION_REQUEST_ENABLE);
         try {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
             return -2;
         }
 
@@ -153,7 +163,8 @@ public class BTDeviceList extends ListActivity {
                                 }
                             }
                         }
-                    } catch (Exception ex) {
+                    } catch (Exception e) {
+                        if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                     }
                 }
 
@@ -185,8 +196,8 @@ public class BTDeviceList extends ListActivity {
                                 + device.getAddress() +"\n" );
                         mArrayAdapter.notifyDataSetInvalidated();
                     }
-                } catch (Exception ex) {
-// ex.fillInStackTrace();
+                } catch (Exception e) {
+                    if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
             }
         }
@@ -227,7 +238,7 @@ public class BTDeviceList extends ListActivity {
                     try {
                         mbtSocket.close();
                     } catch (IOException e) {
-// e.printStackTrace();
+                        if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                     }
                     mbtSocket = null;
                     return;

@@ -25,6 +25,7 @@ import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_addcustomer)
@@ -86,7 +87,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
-    String firstNameInput = "", lastNameInput = "";
+    String firstNameInput = "", lastNameInput = "",genderSelected = "Male";
     ValidationStatus validationStatus;
 
     boolean isNetworkAvailable = false;
@@ -99,13 +100,13 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New Customer");
 
-
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
         lastName.setOnKeyListener(this);
         comments.setOnKeyListener(this);
+        radioButtonMale.setOnClickListener(this);
+        radioButtonFemale.setOnClickListener(this);
         submitButton.setOnClickListener(this);
-
 
         setView();
     }
@@ -135,9 +136,31 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
 
-        validateInput();
-        getInputs();
+        switch (v.getId()) {
 
+            case R.id.submitButton:
+
+                validateInput();
+                getInputs();
+
+                break;
+
+            case R.id.radioButtonMale:
+
+                radioButtonMale.setChecked(true);
+                radioButtonFemale.setChecked(false);
+                genderSelected = "Male";
+
+                break;
+
+            case R.id.radioButtonFemale:
+
+                radioButtonMale.setChecked(false);
+                radioButtonFemale.setChecked(true);
+                genderSelected = "Female";
+
+                break;
+        }
     }
 
     @Override
@@ -167,9 +190,26 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         return false;
     }
 
+    @FocusChange({R.id.firstName, R.id.lastName,R.id.email, R.id.phoneNumber,R.id.addressLine1, R.id.addressLine2,
+            R.id.city, R.id.state,R.id.zip, R.id.country})
+    public void focusChangedOnUser(View v, boolean hasFocus) {
+        if (hasFocus) {
+            textError.setVisibility(View.GONE);
+        }
+    }
+
     void getInputs(){
+
         email.getText().toString();
+        phoneNumber.getText().toString();
+        addressLine1.getText().toString();
+        addressLine2.getText().toString();
+        city.getText().toString();
+        state.getText().toString();
+        zip.getText().toString();
+        country.getText().toString();
         comments.getText().toString();
+
     }
 
     void validateInput(){
@@ -205,7 +245,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onChange(String status) {
-        Log.d(TAG, "Network Availability: "+status);
+        if (LogFlag.bLogOn)Log.d(TAG, "Network Availability: "+status);
         switch (status) {
             case "Connected to Internet with Mobile Data":
                 isNetworkAvailable = true;
@@ -217,8 +257,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 isNetworkAvailable = false;
                 break;
         }
-        Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
-
+        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
     }
 
 
@@ -235,13 +274,14 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 isNetworkAvailable = false;
                 break;
         }
-        Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
 
     }
 
     private void gotoCustomerView(){
-        Intent intent = new Intent(getApplicationContext(), CustomerActivity.class);
+        Intent intent = new Intent(getApplicationContext(), CustomerActivity_.class);
         startActivity(intent);
+        finish();
     }
 
 

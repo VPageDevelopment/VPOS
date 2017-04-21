@@ -14,10 +14,12 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_login)
@@ -98,6 +100,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
         return false;
     }
 
+    @FocusChange({R.id.userName, R.id.password})
+    public void focusChangedOnUser(View v, boolean hasFocus) {
+        if (hasFocus) {
+            textError.setVisibility(View.GONE);
+        } else {
+
+        }
+    }
+
+
 
     void validateInput(){
 
@@ -126,7 +138,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
     }
 
     void gotoHomeView(){
-        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        Intent intent = new Intent(getApplicationContext(), HomeActivity_.class);
         startActivity(intent);
     }
 
@@ -138,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
     @Override
     public void onChange(String status) {
-        Log.d(TAG, "Network Availability: "+status);
+        if (LogFlag.bLogOn)Log.d(TAG, "Network Availability: "+status);
         switch (status) {
             case "Connected to Internet with Mobile Data":
                 isNetworkAvailable = true;
@@ -150,7 +162,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
                 isNetworkAvailable = false;
                 break;
         }
-        Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
 
     }
 
@@ -168,7 +180,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
                 isNetworkAvailable = false;
                 break;
         }
-        Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
 
     }
 }

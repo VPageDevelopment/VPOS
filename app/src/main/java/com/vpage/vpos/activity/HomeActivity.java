@@ -17,6 +17,7 @@ import android.widget.GridView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GridImageAdapter;
 import com.vpage.vpos.tools.VTools;
+import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
@@ -78,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             for (int i = 0; i < typedArrayImage.length(); i++) {
 
-                Log.d(TAG, "typedArrayImage: " + typedArrayImage.getString(i).replace("res/drawable/", ""));
+                if (LogFlag.bLogOn)Log.d(TAG, "typedArrayImage: " + typedArrayImage.getString(i).replace("res/drawable/", ""));
                 if (typedArrayImage.getString(i).contains(VTools.getChosenModuleImage())) {
                     typedArrayImagePosition = i;
                 }
@@ -179,13 +180,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void gotoCustomerView(){
-        Intent intent = new Intent(getApplicationContext(), CustomerActivity.class);
+        Intent intent = new Intent(getApplicationContext(), CustomerActivity_.class);
         startActivity(intent);
     }
 
 
     private void gotoLoginView(){
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        Intent intent = new Intent(getApplicationContext(), LoginActivity_.class);
         startActivity(intent);
     }
 

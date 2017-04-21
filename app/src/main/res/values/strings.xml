@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
 
     <string-array name="moduleImage">
         <item>@drawable/customers</item>
@@ -32,6 +33,19 @@
         <item>Gift Cards</item>
         <item>Messages</item>
         <item>Store Config</item>
+    </string-array>
+
+    <string name="field_prompt">Filter BY</string>
+
+    <string name="format_prompt">Choose a format</string>
+
+    <string-array name="format_arrays">
+        <item>JSON</item>
+        <item>XML</item>
+        <item>CSV</item>
+        <item>TXT</item>
+        <item>SQL</item>
+        <item>MS-Excel</item>
     </string-array>
 
 </resources>
