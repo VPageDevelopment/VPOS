@@ -10,5 +10,9 @@
     <color name="green">#4ae8c4</color>
     <color name="DarkGray">#777777</color>
     <color name="LiteGray">#cccccc</color>
+    <color name="grey">#DDDDDD</color>
+
+    <color name="black_semi_transparent">#B2000000</color>
+
 
 </resources>

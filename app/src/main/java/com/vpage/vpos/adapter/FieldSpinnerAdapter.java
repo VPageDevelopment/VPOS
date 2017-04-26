@@ -27,18 +27,12 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
     List<String> list = new ArrayList<String>();
 
 
-    public FieldSpinnerAdapter(
-            Activity activitySpinner,
-            int textViewResourceId,
-            List<String> fieldArrayList
-    )
+    public FieldSpinnerAdapter(Activity activitySpinner, int textViewResourceId, List<String> fieldArrayList)
     {
         super(activitySpinner, textViewResourceId, fieldArrayList);
 
         activity = activitySpinner;
         this.fieldArrayList     = fieldArrayList;
-       // fieldSelectedArrayList = this.fieldArrayList;
-       // fieldSelectedArrayList.remove(fieldSelectedArrayList.get(0));
 
         list.add("Id");
         list.add("First Name");
@@ -77,7 +71,7 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
         if(position==0){
 
             mCheckBox.setVisibility(View.GONE);
-            fieldName.setText("Filter BY");
+            fieldName.setVisibility(View.GONE);
         }
         else
         {

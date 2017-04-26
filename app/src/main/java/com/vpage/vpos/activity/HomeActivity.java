@@ -128,6 +128,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
 
+        if (id == android.R.id.home) {
+            if (LogFlag.bLogOn) Log.d(TAG, "Back Pressed ");
+            onBackPressed();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

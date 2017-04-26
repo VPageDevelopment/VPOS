@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -94,11 +95,17 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     TextWatcher textComments;
 
+    String pageName = " ";
+
     @AfterViews
     public void onInitView() {
 
+        Intent callingIntent=getIntent();
+
+        pageName = callingIntent.getStringExtra("PageName");
+
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("New Customer");
+        getSupportActionBar().setTitle(pageName);
 
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
@@ -196,6 +203,19 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         if (hasFocus) {
             textError.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            if (LogFlag.bLogOn) Log.d(TAG, "Back Pressed ");
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     void getInputs(){
