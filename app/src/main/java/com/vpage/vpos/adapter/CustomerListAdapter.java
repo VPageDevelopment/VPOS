@@ -2,12 +2,13 @@ package com.vpage.vpos.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,37 +20,40 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
 import com.vpage.vpos.tools.callBack.CustomerEditCallBack;
-import com.vpage.vpos.tools.utils.LogFlag;
 
 public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapter.ViewHolder> {
 
     private static final String TAG = CustomerListAdapter.class.getName();
 
-    private List<String> mDataset;
+    private SparseBooleanArray mChecked = new SparseBooleanArray();
 
-    SparseBooleanArray mChecked = new SparseBooleanArray();
+    private CustomerEditCallBack customerEditCallBack;
 
-    CustomerEditCallBack customerEditCallBack;
-
-    CustomerCheckedCallBack customerCheckedCallBack;
+    private CustomerCheckedCallBack customerCheckedCallBack;
 
     Boolean checkBoxSelectStatus = false;
 
-    Activity activity;
+    private Activity activity;
 
     private static int count = 0;
 
-    CheckBox checkBox_header;
+    private CheckBox checkBox_header;
 
+    private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
-    public CustomerListAdapter(Activity activity,List<String> myDataset, Boolean checkBoxSelectStatus) {
-        mDataset = new ArrayList<>();
-        mDataset = myDataset;
+    private List<CustomerResponse> customerResponseList;
+    private List<CustomerResponse> responseList;
+
+    public CustomerListAdapter(Activity activity,List<CustomerResponse> customerResponseList, Boolean checkBoxSelectStatus) {
+        this.customerResponseList = customerResponseList;
         this.checkBoxSelectStatus = checkBoxSelectStatus;
         this.activity = activity;
-        count = myDataset.size();
+        responseList = new ArrayList<>();
+        responseList.addAll( this.customerResponseList );
+
 
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
@@ -74,14 +78,13 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = mDataset.get(position);
+        final String name = customerResponseList.get(position).getFirstName();
 
-
-        holder.IdText.setText("ID: " +position);
-        holder.firstText.setText("First Name: " + "Ram");
-        holder.lastText.setText("Last Name: " + "Kumar");
-        holder.emailText.setText("Email: " + "ramkumar@gmail.com");
-        holder.phoneNumberText.setText("Phone Number: " + "93587210537");
+        holder.IdText.setText("ID: " +customerResponseList.get(position).getId());
+        holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirstName());
+        holder.lastText.setText("Last Name: " + customerResponseList.get(position).getLastName());
+        holder.emailText.setText("Email: " + customerResponseList.get(position).getEmail());
+        holder.phoneNumberText.setText("Phone Number: " + customerResponseList.get(position).getPhoneNumber());
 
         holder.editButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -123,19 +126,28 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
         holder.itemCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkedPositionArrayList.clear();
                 if (isChecked) {
-
                     // Saving Checked Position
                     mChecked.put(position, isChecked);
                     holder.itemCheckBox.setButtonDrawable(R.drawable.check_box);
-                    customerCheckedCallBack.onSelectedStatus(true);
+
 
                     // Find if all the check boxes are true
                     if (isAllValuesChecked()) {
 
                         checkBox_header.setChecked(isChecked);
                         checkBox_header.setButtonDrawable(R.drawable.check_box);
+
+                    }else {
+                        if (isAnyValuesChecked()) {
+                            customerCheckedCallBack.onSelectedStatus(true);
+                        }else {
+                            customerCheckedCallBack.onSelectedStatus(false);
+                        }
+
                     }
+
                 } else {
                     // Removed UnChecked Position
                     mChecked.delete(position);
@@ -144,9 +156,22 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
                     // Remove Checked in Header
                     checkBox_header.setChecked(isChecked);
                     checkBox_header.setButtonDrawable(R.drawable.box);
+                    if (!isAllValuesChecked()) {
 
+                        if (!isAnyValuesChecked()) {
+                            customerCheckedCallBack.onSelectedStatus(false);
+                        }else {
+                            customerCheckedCallBack.onSelectedStatus(true );
+                        }
+                    }
                 }
+
+                    for (int i = 0; i < count; i++) {
+                        checkedPositionArrayList.add(mChecked.get(i));
+                    }
+                    customerCheckedCallBack.onSelectedStatusArray(checkedPositionArrayList);
             }
+
         });
 
         checkBox_header.setOnClickListener(new View.OnClickListener() {
@@ -154,27 +179,26 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
             @Override
             public void onClick(View v) {
 
-
                 for (int i = 0; i < count; i++) {
                     mChecked.put(i, checkBox_header.isChecked());
                 }
 
                 if(checkBox_header.isChecked()){
                     checkBox_header.setButtonDrawable(R.drawable.check_box);
+                    customerCheckedCallBack.onSelectedStatus(true);
                 }else {
+                    mChecked.delete(position);
                     checkBox_header.setButtonDrawable(R.drawable.box);
                     customerCheckedCallBack.onSelectedStatus(false);
                 }
-                notifyDataSetChanged();
 
+                notifyDataSetChanged();
             }
         });
 
 
         // Set CheckBox "TRUE" or "FALSE" if mChecked == true
         holder.itemCheckBox.setChecked((mChecked.get(position) == true ? true : false));
-
-        if (LogFlag.bLogOn) Log.d(TAG, "mCheckedArray: "+mChecked.toString());
 
     }
 
@@ -189,20 +213,35 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
         return true;
     }
 
-    @Override
-    public int getItemCount() {
-        return mDataset.size();
+
+    protected boolean isAnyValuesChecked() {
+
+        for (int i = 0; i < count; i++) {
+            if (mChecked.get(i)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
-    public void add(int position, String item) {
-        mDataset.add(position, item);
+
+    @Override
+    public int getItemCount() {
+        count = customerResponseList.size();
+        return count;
+    }
+
+
+    public void add(int position, CustomerResponse item) {
+        customerResponseList.add(position, item);
         notifyItemInserted(position);
     }
 
     void remove(String item) {
-        int position = mDataset.indexOf(item);
-        mDataset.remove(position);
+        int position = customerResponseList.indexOf(item);
+        customerResponseList.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -224,5 +263,26 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
             editButton = (ImageButton) v.findViewById(R.id.editButton);
             deleteButton = (ImageButton) v.findViewById(R.id.deleteButton);
         }
+    }
+
+
+    public void filter(String charText) {
+
+        charText = charText.toLowerCase(Locale.getDefault());
+
+        customerResponseList.clear();
+        if (charText.length() == 0) {
+            customerResponseList.addAll(responseList);
+
+        } else {
+            for (CustomerResponse customerResponse : responseList) {
+                if (charText.length() != 0 && customerResponse.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    customerResponseList.add(customerResponse);
+                } else if (charText.length() != 0 && customerResponse.getLastName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    customerResponseList.add(customerResponse);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

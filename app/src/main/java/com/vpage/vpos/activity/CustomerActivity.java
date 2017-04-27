@@ -28,6 +28,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.CustomerListAdapter;
 import com.vpage.vpos.adapter.FieldSpinnerAdapter;
+import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
 import com.vpage.vpos.tools.callBack.CustomerEditCallBack;
@@ -39,6 +40,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 
 @EActivity(R.layout.activity_customer)
 public class CustomerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, CustomerFilterCallBack, CustomerEditCallBack, CustomerCheckedCallBack {
@@ -86,9 +89,9 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     private Handler mUiHandler = new Handler();
 
-    List<String> list;
+    List<CustomerResponse> list;
 
-    List<Integer> checkedPositionArrayList = new ArrayList<>();
+
 
     @AfterViews
     public void onInitView() {
@@ -110,7 +113,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             addNewCustomerButton.setOnClickListener(this);
             addCustomerButton.setOnClickListener(this);
         }else {
-
             noCustomerContentLayout.setVisibility(View.GONE);
             customerContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
@@ -151,12 +153,25 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     private void addRecyclerView(){
 
-        list = new ArrayList<String>();
-        list.add("Id");
-        list.add("First Name");
-        list.add("Last Name");
-        list.add("Email");
-        list.add("Phone Number");
+        list = new ArrayList<>();
+        for(int i=0 ;i < 5;i++){
+            CustomerResponse customerResponse = new CustomerResponse();
+            customerResponse.setId(String.valueOf(i));
+            if((i/2) == 0){
+                customerResponse.setFirstName("Ram");
+                customerResponse.setLastName("Kumar");
+                customerResponse.setEmail("ramkumar@gmail.com");
+            }else {
+                customerResponse.setFirstName("Sree");
+                customerResponse.setLastName("Kala");
+                customerResponse.setEmail("sreekala@gmail.com");
+            }
+            customerResponse.setPhoneNumber("93587210537");
+
+            list.add(customerResponse);
+        }
+
+
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(CustomerActivity.this));
@@ -182,21 +197,9 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchCallBack() {
             @Override
             public void onClick(View view, int position) {
-                if (LogFlag.bLogOn)Log.d(TAG, "recyclerView onClick: " + position);
 
-                if(checkedStatus){
-                    checkedPositionArrayList.add(position);
-                }else {
-                     try {
-                        if(checkedPositionArrayList.contains(position)){
-                            checkedPositionArrayList.remove(position);
-                        }
-                    }catch (IndexOutOfBoundsException e){
-                        if (LogFlag.bLogOn) Log.e(TAG,e.getMessage());
-                    }
+                if (LogFlag.bLogOn)Log.d(TAG, "selected onClick: " + position);
 
-                }
-                if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList.toString());
             }
 
             @Override
@@ -204,7 +207,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
                 if (LogFlag.bLogOn)Log.d(TAG, "recyclerView onLongClick: " + position);
             }
         }));
-
     }
 
      private void addFabView(){
@@ -237,7 +239,14 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
              @Override
              public void onClick(View v) {
                  if (LogFlag.bLogOn)Log.d(TAG, "floatingActionMenu Clicked " );
-                 if (floatingActionMenu.isOpened()) {
+                 if (!floatingActionMenu.isOpened()) {
+                     if(checkedStatus){
+                         emailFAB.setVisibility(View.VISIBLE);
+                         deleteFAB.setVisibility(View.VISIBLE);
+                     }else {
+                         emailFAB.setVisibility(View.GONE);
+                         deleteFAB.setVisibility(View.GONE);
+                     }
                   // TO DO export function
                  }
                  floatingActionMenu.toggle(true);
@@ -274,7 +283,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
              }
          });
-
 
      }
 
@@ -370,6 +378,47 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_customer, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        //*** setOnQueryTextFocusChangeListener ***
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchQuery) {
+                customerListAdapter.filter(searchQuery.toString().trim());
+                recyclerView.invalidate();
+                return true;
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+
         return true;
     }
 
@@ -397,8 +446,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         gotoAddCustomerView("Update Customer");
-
-        // TO DO show view to eit customer details
     }
 
 
@@ -407,12 +454,11 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     public void onSelectedStatus(Boolean checkedStatus) {
         this.checkedStatus = checkedStatus;
         if (LogFlag.bLogOn)Log.d(TAG, "checkedStatus: " + this.checkedStatus);
-        if(checkedStatus){
-            emailFAB.setVisibility(View.VISIBLE);
-            deleteFAB.setVisibility(View.VISIBLE);
-        }else {
-            emailFAB.setVisibility(View.GONE);
-            deleteFAB.setVisibility(View.GONE);
-        }
+
+    }
+
+    @Override
+    public void onSelectedStatusArray(List<Boolean> checkedPositionArrayList) {
+        if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
     }
 }
