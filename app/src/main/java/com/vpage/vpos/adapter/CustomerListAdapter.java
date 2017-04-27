@@ -1,8 +1,10 @@
 package com.vpage.vpos.adapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,8 +36,6 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
     private CustomerCheckedCallBack customerCheckedCallBack;
 
-    Boolean checkBoxSelectStatus = false;
-
     private Activity activity;
 
     private static int count = 0;
@@ -43,14 +43,18 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     private CheckBox checkBox_header;
 
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
+    List<String> fieldSelectedArrayList = new ArrayList<>();
+
+
+    Map<Boolean, String> fieldSelectedMap = new HashMap<Boolean, String>();
 
     private List<CustomerResponse> customerResponseList;
     private List<CustomerResponse> responseList;
 
-    public CustomerListAdapter(Activity activity,List<CustomerResponse> customerResponseList, Boolean checkBoxSelectStatus) {
-        this.customerResponseList = customerResponseList;
-        this.checkBoxSelectStatus = checkBoxSelectStatus;
+    public CustomerListAdapter(Activity activity,List<CustomerResponse> customerResponseList,List<String> fieldSelectedArrayList) {
         this.activity = activity;
+        this.customerResponseList = customerResponseList;
+        this.fieldSelectedArrayList = fieldSelectedArrayList;
         responseList = new ArrayList<>();
         responseList.addAll( this.customerResponseList );
 
@@ -79,6 +83,37 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final String name = customerResponseList.get(position).getFirstName();
+
+        if(fieldSelectedArrayList.contains("Id")){
+            holder.IdText.setVisibility(View.VISIBLE);
+        }else {
+            holder.IdText.setVisibility(View.GONE);
+        }
+
+        if(fieldSelectedArrayList.contains("First Name")){
+            holder.firstText.setVisibility(View.VISIBLE);
+        }else {
+            holder.firstText.setVisibility(View.GONE);
+        }
+
+        if(fieldSelectedArrayList.contains("Last Name")){
+            holder.lastText.setVisibility(View.VISIBLE);
+        }else {
+            holder.lastText.setVisibility(View.GONE);
+        }
+
+
+        if(fieldSelectedArrayList.contains("Email")){
+            holder.emailText.setVisibility(View.VISIBLE);
+        }else {
+            holder.emailText.setVisibility(View.GONE);
+        }
+
+        if(fieldSelectedArrayList.contains("Phone Number")){
+            holder.phoneNumberText.setVisibility(View.VISIBLE);
+        }else {
+            holder.phoneNumberText.setVisibility(View.GONE);
+        }
 
         holder.IdText.setText("ID: " +customerResponseList.get(position).getId());
         holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirstName());
@@ -115,6 +150,7 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
                     alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
+                            // To Do delete the data from Customer response
                             remove(name);
                         }
                     });

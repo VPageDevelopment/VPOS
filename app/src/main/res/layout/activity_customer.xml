@@ -220,7 +220,7 @@
         fab:menu_labels_singleLine="true"
         fab:menu_icon="@drawable/ic_star"
         fab:menu_backgroundColor="@color/black_semi_transparent"
-        fab:menu_fab_label="Excel Import">
+        fab:menu_fab_label="Excel Export">
 
         <!--    <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fab1"

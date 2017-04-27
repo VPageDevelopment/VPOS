@@ -23,23 +23,20 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
     private Activity activity;
     List<String> fieldArrayList = new ArrayList<>();
     List<String> fieldSelectedArrayList = new ArrayList<>();
+    List<Boolean> fieldCheckedArrayList = new ArrayList<>();
+
     CustomerFilterCallBack customerFilterCallBack;
-    List<String> list = new ArrayList<String>();
+
+    Boolean onceSelected = false;
 
 
-    public FieldSpinnerAdapter(Activity activitySpinner, int textViewResourceId, List<String> fieldArrayList)
+    public FieldSpinnerAdapter(Activity activitySpinner, int textViewResourceId, List<String> fieldArrayList,List<String> fieldSelectedArrayList)
     {
         super(activitySpinner, textViewResourceId, fieldArrayList);
 
         activity = activitySpinner;
         this.fieldArrayList     = fieldArrayList;
-
-        list.add("Id");
-        list.add("First Name");
-        list.add("Last Name");
-        list.add("Email");
-        list.add("Phone Number");
-        fieldSelectedArrayList = list;
+        this.fieldSelectedArrayList     = fieldSelectedArrayList;
 
         if (LogFlag.bLogOn)Log.d(TAG, "fieldArrayList Size: " + fieldArrayList.size());
         if (LogFlag.bLogOn)Log.d(TAG, "fieldSelectedArrayList Size: " + fieldSelectedArrayList.size());
@@ -76,23 +73,36 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
         else
         {
             mCheckBox.setVisibility(View.VISIBLE);
-            mCheckBox.setChecked(true);
+            if(!onceSelected){
+                mCheckBox.setChecked(true);
+            }else {
+                try {
+                    if(fieldCheckedArrayList.get(position)){
+                        mCheckBox.setChecked(true);
+                    }else {
+                        mCheckBox.setChecked(false);
+                    }
+                }catch (IndexOutOfBoundsException e){
+                    if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
+                }
+
+            }
             fieldName.setText(fieldArrayList.get(position));
 
             // When check box clicked set selected field
             mCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    onceSelected = true;
                     if(mCheckBox.isChecked()){
 
                         // selected field while checked
-                        fieldSelectedArrayList.add(fieldArrayList.get(position));
+                        fieldSelectedArrayList.add(position,fieldArrayList.get(position));
 
                     }else {
                         // selected field while unchecked
                         if(fieldSelectedArrayList.contains(fieldArrayList.get(position))){   // removing unchecked fields from array
                             if(fieldSelectedArrayList.size()>1){ // remove unchecked fields only when selected array contains atleast one item
-
                                 fieldSelectedArrayList.remove(fieldArrayList.get(position));   // removing unchecked fields from selected array
                             }else {
                                 mCheckBox.setChecked(true);
@@ -101,10 +111,18 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
                         }
                     }
 
+                    if(fieldSelectedArrayList.contains(fieldArrayList.get(position))){
+                        fieldCheckedArrayList.add(true);
+                    }else {
+                        fieldCheckedArrayList.add(false);
+                    }
+
                     // called only when fieldArrayList and fieldSelectedArrayList varies
                     if(fieldSelectedArrayList.size() != fieldArrayList.size()-1){
                         customerFilterCallBack.onSelectedFilterFields(fieldSelectedArrayList); // call back to customer view
                     }
+
+
                 }
             });
         }

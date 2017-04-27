@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -38,8 +40,13 @@ import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 
@@ -82,16 +89,18 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
-    Boolean checkBoxSelectStatus = false;
-    Boolean checkedStatus = false;
 
     CustomerListAdapter customerListAdapter;
+    FieldSpinnerAdapter fieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
     List<CustomerResponse> list;
+    List<String> spinnerList;
 
-
+    Boolean checkedStatus = false;
+    private List<Boolean> checkedPositionArrayList = new ArrayList<>();
+    List<String> fieldSelectedArrayList = new ArrayList<>();
 
     @AfterViews
     public void onInitView() {
@@ -111,11 +120,11 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             customerContent.setVisibility(View.GONE);
             floatingActionMenu.setVisibility(View.GONE);
             addNewCustomerButton.setOnClickListener(this);
-            addCustomerButton.setOnClickListener(this);
         }else {
             noCustomerContentLayout.setVisibility(View.GONE);
             customerContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
+            addCustomerButton.setOnClickListener(this);
             addItemsOnSpinner();
             addFabView();
             addRecyclerView();
@@ -130,7 +139,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     private void addItemsOnSpinner() {
         try{
-            List<String> spinnerList = new ArrayList<String>();
+            spinnerList = new ArrayList<String>();
             spinnerList.add("Filter By");
             spinnerList.add("Id");
             spinnerList.add("First Name");
@@ -138,7 +147,13 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             spinnerList.add("Email");
             spinnerList.add("Phone Number");
 
-            FieldSpinnerAdapter fieldSpinnerAdapter = new FieldSpinnerAdapter(CustomerActivity.this, R.layout.item_spinner_field, spinnerList);
+            fieldSelectedArrayList.add("Id");
+            fieldSelectedArrayList.add("First Name");
+            fieldSelectedArrayList.add("Last Name");
+            fieldSelectedArrayList.add("Email");
+            fieldSelectedArrayList.add("Phone Number");
+
+            fieldSpinnerAdapter = new FieldSpinnerAdapter(CustomerActivity.this, R.layout.item_spinner_field, spinnerList,fieldSelectedArrayList);
             fieldSpinnerAdapter.setCustomerFilterCallBack(this);
             spinnerField.setAdapter(fieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
@@ -154,6 +169,8 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     private void addRecyclerView(){
 
         list = new ArrayList<>();
+
+        // To be replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
             CustomerResponse customerResponse = new CustomerResponse();
             customerResponse.setId(String.valueOf(i));
@@ -171,12 +188,10 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             list.add(customerResponse);
         }
 
-
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(CustomerActivity.this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        customerListAdapter = new CustomerListAdapter(CustomerActivity.this,list,checkBoxSelectStatus);
+        customerListAdapter = new CustomerListAdapter(CustomerActivity.this,list,fieldSelectedArrayList);
         customerListAdapter.setCustomerEditCallBack(this);
         customerListAdapter.setCustomerCheckedCallBack(this);
         recyclerView.setAdapter(customerListAdapter);
@@ -247,7 +262,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
                          emailFAB.setVisibility(View.GONE);
                          deleteFAB.setVisibility(View.GONE);
                      }
-                  // TO DO export function
+                     // To Do Export function after getting url to Export
                  }
                  floatingActionMenu.toggle(true);
              }
@@ -305,7 +320,17 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                customerCountCheck(0);
+
+
+
+                for(int i = 0;i <checkedPositionArrayList.size();i++){
+                    if(checkedPositionArrayList.get(i)){
+                        list.remove(i);
+                    }
+                }
+                customerListAdapter.notifyDataSetChanged();
+                recyclerView.invalidate();
+
             }
         });
         alertDialog.show();
@@ -330,7 +355,12 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                customerCountCheck(0);
+                for(int i = 0;i <=checkedPositionArrayList.size();i++){
+                    // get the content of selected customers and then email
+                    if(checkedPositionArrayList.get(i)){
+                        callEmailIntent();
+                    }
+                }
             }
         });
         alertDialog.show();
@@ -359,6 +389,8 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             case R.id.spinnerFormat:
                 spinnerFormatData = spinnerFormat.getSelectedItem().toString();
                 if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " +spinnerFormatData);
+
+                // To Do Import function after getting url to import
                 break;
         }
     }
@@ -369,9 +401,14 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onSelectedFilterFields(List<String> fieldSelectedArrayList) {
+    public void onSelectedFilterFields(List<String> fieldCheckedArrayList) {
         // call back from spinner  field adapter for filtering list data
-        if (LogFlag.bLogOn)Log.d(TAG, "fieldSelectedArrayList: " + fieldSelectedArrayList.toString());
+        if (LogFlag.bLogOn)Log.d(TAG, "fieldCheckedArrayList: " + fieldCheckedArrayList.toString());
+        this.fieldSelectedArrayList = fieldCheckedArrayList;
+        customerListAdapter = new CustomerListAdapter(CustomerActivity.this,list,this.fieldSelectedArrayList);
+        customerListAdapter.setCustomerEditCallBack(this);
+        customerListAdapter.setCustomerCheckedCallBack(this);
+        recyclerView.setAdapter(customerListAdapter);
     }
 
     @Override
@@ -460,5 +497,26 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSelectedStatusArray(List<Boolean> checkedPositionArrayList) {
         if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
+        this.checkedPositionArrayList = checkedPositionArrayList;
+
+    }
+
+    void callEmailIntent(){
+
+        // To Do get the contents of customer to email
+
+        String filename=" ";  // to be updated
+        File filelocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), filename);
+        Uri path = Uri.fromFile(filelocation);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+       // set the type to 'email'
+        emailIntent .setType("vnd.android.cursor.dir/email");
+        String to[] = {"vpagedevelopment@gmail.com"};
+        emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
+        // the attachment
+        emailIntent .putExtra(Intent.EXTRA_STREAM, path);
+        // the mail subject
+        emailIntent .putExtra(Intent.EXTRA_SUBJECT, "Customer Details");
+        startActivity(Intent.createChooser(emailIntent , "Send email..."));
     }
 }
