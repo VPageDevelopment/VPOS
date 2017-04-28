@@ -104,8 +104,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
         pageName = callingIntent.getStringExtra("PageName");
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(pageName);
+        setActionBarSupport();
 
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
@@ -117,6 +116,16 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
         setView();
     }
+
+    private void setActionBarSupport() {
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle(pageName);
+
+    }
+
 
     private void setView(){
 

@@ -42,8 +42,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @AfterViews
     public void onInitHome() {
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("VPOS");
+        setActionBarSupport();
 
         setGridView();
 
@@ -67,6 +66,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    private void setActionBarSupport() {
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("VPOS");
+
+    }
 
     private void setGridView(){
 

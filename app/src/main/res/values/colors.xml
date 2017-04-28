@@ -14,5 +14,9 @@
 
     <color name="black_semi_transparent">#B2000000</color>
 
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="common_button_color">@color/colorPrimary</color>
+
+
 
 </resources>

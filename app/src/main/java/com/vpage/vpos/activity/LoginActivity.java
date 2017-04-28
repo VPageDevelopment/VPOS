@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
         }else {
 
             playGifView.setVisibility(View.GONE);
-            setErrorMessage("Check Network Connection");
+            setErrorMessage(getResources().getString(R.string.connection_check));
         }
     }
 

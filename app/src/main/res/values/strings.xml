@@ -48,4 +48,7 @@
         <item>MS-Excel</item>
     </string-array>
 
+    <string name="connection_check">Check Network Connection</string>
+    <string name="empty_check">Fill all information</string>
+
 </resources>

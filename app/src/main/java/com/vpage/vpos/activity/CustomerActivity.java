@@ -105,13 +105,22 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @AfterViews
     public void onInitView() {
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Customers");
+        setActionBarSupport();
 
         int customerCount = 1; // to test placed static data replaced by server response count
         customerCountCheck(customerCount);
 
     }
+
+    private void setActionBarSupport() {
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Customers");
+
+    }
+
 
     void customerCountCheck(int customerCount){
 
