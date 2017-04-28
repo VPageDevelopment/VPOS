@@ -118,30 +118,8 @@
             android:textStyle="bold"
             android:textAllCaps="false"
             android:textColor="@color/button_text_color"
-            android:background="@color/common_button_color"
+            android:background="@android:color/transparent"
             android:textSize="@dimen/common_textSize">
-
-
-            <info.hoang8f.widget.FButton
-                android:id="@+id/submitButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                fbutton:buttonColor="@color/common_button_color"
-                fbutton:shadowColor="@color/LiteGray"
-                fbutton:shadowEnabled="true"
-                fbutton:shadowHeight="8dp"
-                android:padding="10dp"
-                android:text="Submit"
-                android:textStyle="bold"
-                android:textAllCaps="false"
-                android:textColor="@color/button_text_color"
-                android:background="@android:color/transparent"
-                android:textSize="20sp">
-            </info.hoang8f.widget.FButton>
-
         </info.hoang8f.widget.FButton>
 
 

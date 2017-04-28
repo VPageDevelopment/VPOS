@@ -40,13 +40,9 @@ import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 
@@ -121,7 +117,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-
     void customerCountCheck(int customerCount){
 
         if(customerCount == 0){
@@ -139,7 +134,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             addRecyclerView();
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -310,7 +304,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
      }
 
-
     void showDeleteAlertDialog() {
 
         TextView title = new TextView(CustomerActivity.this);
@@ -359,7 +352,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
         AlertDialog alertDialog = new AlertDialog.Builder(CustomerActivity.this).create();
         alertDialog.setCustomTitle(title);
-        alertDialog.setMessage("Are you Sure to Delete Customer Records");
+        alertDialog.setMessage("Are you Ready to Email");
 
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -367,7 +360,8 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
                 for(int i = 0;i <=checkedPositionArrayList.size();i++){
                     // get the content of selected customers and then email
                     if(checkedPositionArrayList.get(i)){
-                        callEmailIntent();
+                        // To do server response of customer data contains email id
+                        gotoEmailView();
                     }
                 }
             }
@@ -382,12 +376,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         floatingActionMenu.addMenuButton(deleteFAB);
         emailFAB.setVisibility(View.GONE);
         deleteFAB.setVisibility(View.GONE);
-    }
-
-    private void gotoAddCustomerView(String pageName){
-        Intent intent = new Intent(getApplicationContext(), AddCustomerActivity_.class);
-        intent.putExtra("PageName",pageName);
-        startActivity(intent);
     }
 
     @Override
@@ -486,15 +474,12 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onEditSelected(int position) {
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         gotoAddCustomerView("Update Customer");
     }
-
-
 
     @Override
     public void onSelectedStatus(Boolean checkedStatus) {
@@ -510,22 +495,14 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    void callEmailIntent(){
+    private void gotoAddCustomerView(String pageName){
+        Intent intent = new Intent(getApplicationContext(), AddCustomerActivity_.class);
+        intent.putExtra("PageName",pageName);
+        startActivity(intent);
+    }
 
-        // To Do get the contents of customer to email
-
-        String filename=" ";  // to be updated
-        File filelocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), filename);
-        Uri path = Uri.fromFile(filelocation);
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-       // set the type to 'email'
-        emailIntent .setType("vnd.android.cursor.dir/email");
-        String to[] = {"vpagedevelopment@gmail.com"};
-        emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
-        // the attachment
-        emailIntent .putExtra(Intent.EXTRA_STREAM, path);
-        // the mail subject
-        emailIntent .putExtra(Intent.EXTRA_SUBJECT, "Customer Details");
-        startActivity(Intent.createChooser(emailIntent , "Send email..."));
+    private void gotoEmailView(){
+        Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
+        startActivity(intent);
     }
 }

@@ -388,7 +388,7 @@
                     android:textStyle="bold"
                     android:textAllCaps="false"
                     android:textColor="@color/button_text_color"
-                    android:background="@color/common_button_color"
+                    android:background="@android:color/transparent"
                     android:textSize="@dimen/common_textSize">
                 </info.hoang8f.widget.FButton>
 
