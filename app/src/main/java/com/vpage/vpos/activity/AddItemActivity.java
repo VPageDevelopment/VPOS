@@ -1,5 +1,6 @@
 package com.vpage.vpos.activity;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -30,10 +31,10 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
 
-@EActivity(R.layout.activity_addcustomer)
-public class AddCustomerActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener {
+@EActivity(R.layout.activity_additem)
+public class AddItemActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener {
 
-    private static final String TAG = AddCustomerActivity.class.getName();
+    private static final String TAG = AddItemActivity.class.getName();
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
@@ -103,7 +104,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @AfterViews
     public void onInitView() {
 
-        activity = AddCustomerActivity.this;
+        activity = AddItemActivity.this;
 
         Intent callingIntent=getIntent();
 
@@ -262,7 +263,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                gotoCustomerView();
+                gotoItemView();
             }
 
         }else {
@@ -312,8 +313,8 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private void gotoCustomerView(){
-        Intent intent = new Intent(getApplicationContext(), CustomerActivity_.class);
+    private void gotoItemView(){
+        Intent intent = new Intent(getApplicationContext(), ItemActivity_.class);
         startActivity(intent);
         finish();
     }

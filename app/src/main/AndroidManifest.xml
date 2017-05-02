@@ -35,6 +35,15 @@
             android:name=".activity.AddCustomerActivity_"
             android:screenOrientation="portrait"
             />
+
+        <activity
+            android:name=".activity.ItemActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.AddItemActivity_"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".activity.EmailActivity_"
             android:screenOrientation="portrait"

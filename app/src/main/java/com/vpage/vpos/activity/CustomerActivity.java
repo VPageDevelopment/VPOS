@@ -1,6 +1,7 @@
 package com.vpage.vpos.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -75,9 +76,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
-    @ViewById(R.id.checkBox)
-    CheckBox checkBox;
-
     FloatingActionButton deleteFAB,emailFAB;
 
     String spinnerFormatData = "";
@@ -94,8 +92,12 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     Boolean checkedStatus = false;
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
+    Activity activity;
+
     @AfterViews
     public void onInitView() {
+
+        activity = CustomerActivity.this;
 
         setActionBarSupport();
 
@@ -146,7 +148,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             spinnerList.add("Email");
             spinnerList.add("Phone Number");
 
-            fieldSpinnerAdapter = new FieldSpinnerAdapter(CustomerActivity.this, R.layout.item_spinner_field, spinnerList);
+            fieldSpinnerAdapter = new FieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
             fieldSpinnerAdapter.setCustomerFilterCallBack(this);
             spinnerField.setAdapter(fieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
@@ -182,9 +184,9 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         }
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(CustomerActivity.this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        customerListAdapter = new CustomerListAdapter(CustomerActivity.this,list);
+        customerListAdapter = new CustomerListAdapter(activity,list);
         customerListAdapter.setCustomerEditCallBack(this);
         customerListAdapter.setCustomerCheckedCallBack(this);
         recyclerView.setAdapter(customerListAdapter);
@@ -219,13 +221,13 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
      private void addFabView(){
 
-         emailFAB = new FloatingActionButton(CustomerActivity.this);
+         emailFAB = new FloatingActionButton(activity);
          emailFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
          emailFAB.setLabelText("Email");
          emailFAB.setImageResource(android.R.drawable.ic_dialog_email);
 
 
-         deleteFAB = new FloatingActionButton(CustomerActivity.this);
+         deleteFAB = new FloatingActionButton(activity);
          deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
          deleteFAB.setLabelText("Delete");
          deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
@@ -267,10 +269,10 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
          deleteFAB.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
-                 deleteFAB.setLabelColors(ContextCompat.getColor(CustomerActivity.this, R.color.LiteGray),
-                         ContextCompat.getColor(CustomerActivity.this, R.color.LiteGray),
-                         ContextCompat.getColor(CustomerActivity.this, R.color.White));
-                 deleteFAB.setLabelTextColor(ContextCompat.getColor(CustomerActivity.this, R.color.Black));
+                 deleteFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
+                         ContextCompat.getColor(activity, R.color.LiteGray),
+                         ContextCompat.getColor(activity, R.color.White));
+                 deleteFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                  floatingActionMenu.toggle(true);
                  showDeleteAlertDialog();
@@ -281,10 +283,10 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
              @Override
              public void onClick(View v) {
 
-                 emailFAB.setLabelColors(ContextCompat.getColor(CustomerActivity.this, R.color.LiteGray),
-                         ContextCompat.getColor(CustomerActivity.this, R.color.LiteGray),
-                         ContextCompat.getColor(CustomerActivity.this, R.color.White));
-                 emailFAB.setLabelTextColor(ContextCompat.getColor(CustomerActivity.this, R.color.Black));
+                 emailFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
+                         ContextCompat.getColor(activity, R.color.LiteGray),
+                         ContextCompat.getColor(activity, R.color.White));
+                 emailFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                  floatingActionMenu.toggle(true);
                  showEmailAlertDialog();
@@ -296,7 +298,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     void showDeleteAlertDialog() {
 
-        TextView title = new TextView(CustomerActivity.this);
+        TextView title = new TextView(activity);
         // You Can Customise your Title here
         title.setText(getResources().getString(R.string.app_name));
         title.setBackgroundColor(Color.BLACK);
@@ -305,7 +307,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         title.setTextColor(Color.WHITE);
         title.setTextSize(20);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(CustomerActivity.this).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setCustomTitle(title);
         alertDialog.setMessage("Are you Sure to Delete Customer Records");
 
@@ -338,7 +340,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     void showEmailAlertDialog() {
 
-        TextView title = new TextView(CustomerActivity.this);
+        TextView title = new TextView(activity);
         // You Can Customise your Title here
         title.setText(getResources().getString(R.string.app_name));
         title.setBackgroundColor(Color.BLACK);
@@ -347,7 +349,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         title.setTextColor(Color.WHITE);
         title.setTextSize(20);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(CustomerActivity.this).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setCustomTitle(title);
         alertDialog.setMessage("Are you Ready to Email");
 
@@ -399,7 +401,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            customerListAdapter = new CustomerListAdapter(CustomerActivity.this,list);
+            customerListAdapter = new CustomerListAdapter(activity,list);
             customerListAdapter.setCustomerEditCallBack(this);
             customerListAdapter.setCustomerCheckedCallBack(this);
             recyclerView.setAdapter(customerListAdapter);

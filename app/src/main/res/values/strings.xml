@@ -5,6 +5,25 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="connection_check">Check Network Connection</string>
+    <string name="empty_check">Fill all information</string>
+
+
+    <string name="format_prompt">Choose a format</string>
+
+    <string-array name="format_arrays">
+        <item>JSON</item>
+        <item>XML</item>
+        <item>CSV</item>
+        <item>TXT</item>
+        <item>SQL</item>
+        <item>MS-Excel</item>
+    </string-array>
+
+
+    <!-- customer -->
+
     <string name="action_search">Search</string>
 
     <string-array name="moduleImage">
@@ -35,20 +54,15 @@
         <item>Store Config</item>
     </string-array>
 
-    <string name="field_prompt">Filter BY</string>
 
-    <string name="format_prompt">Choose a format</string>
+    <!-- item -->
 
-    <string-array name="format_arrays">
-        <item>JSON</item>
-        <item>XML</item>
-        <item>CSV</item>
-        <item>TXT</item>
-        <item>SQL</item>
-        <item>MS-Excel</item>
+    <string name="supplier_prompt">Choose a Supplier</string>
+
+    <string-array name="supplier_arrays">
+        <item>Water</item>
+        <item>Vpage</item>
     </string-array>
 
-    <string name="connection_check">Check Network Connection</string>
-    <string name="empty_check">Fill all information</string>
 
 </resources>

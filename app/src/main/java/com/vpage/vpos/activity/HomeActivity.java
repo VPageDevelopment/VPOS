@@ -1,5 +1,6 @@
 package com.vpage.vpos.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.util.Log;
@@ -40,8 +41,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     GridImageAdapter gridImageAdapter;
     TypedArray typedArrayImage;
 
+    Activity activity;
+
     @AfterViews
     public void onInitHome() {
+
+        activity = HomeActivity.this;
 
         setActionBarSupport();
 
@@ -95,7 +100,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        gridImageAdapter = new GridImageAdapter(HomeActivity.this, typedArrayImage);
+        gridImageAdapter = new GridImageAdapter(activity, typedArrayImage);
         gridView.setAdapter(gridImageAdapter);
         if (typedArrayImagePosition == -1) {
             gridImageAdapter.setSelectedPosition(0);
@@ -179,7 +184,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case 1:
-                // TO DO
+                gotoItemView();
                 break;
 
             case 2:
@@ -195,6 +200,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void gotoCustomerView(){
         Intent intent = new Intent(getApplicationContext(), CustomerActivity_.class);
+        startActivity(intent);
+    }
+
+
+    private void gotoItemView(){
+        Intent intent = new Intent(getApplicationContext(), ItemActivity_.class);
         startActivity(intent);
     }
 
