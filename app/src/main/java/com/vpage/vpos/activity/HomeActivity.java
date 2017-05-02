@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GridImageAdapter;
+import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
@@ -150,6 +151,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_logout) {
+            VPOSPreferences.clearAll();
             gotoLoginView();
 
         } else if (id == R.id.nav_manage) {

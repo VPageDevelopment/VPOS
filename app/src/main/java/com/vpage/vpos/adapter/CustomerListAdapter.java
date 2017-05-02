@@ -1,16 +1,14 @@
 package com.vpage.vpos.adapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,8 +21,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.CustomerResponse;
+import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
 import com.vpage.vpos.tools.callBack.CustomerEditCallBack;
+import com.vpage.vpos.tools.utils.AppConstant;
+import com.vpage.vpos.tools.utils.LogFlag;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapter.ViewHolder> {
 
@@ -43,22 +48,17 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     private CheckBox checkBox_header;
 
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
-    List<String> fieldSelectedArrayList = new ArrayList<>();
-
-
-    Map<Boolean, String> fieldSelectedMap = new HashMap<Boolean, String>();
+    Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
+    String jsonObjectData = null;
 
     private List<CustomerResponse> customerResponseList;
     private List<CustomerResponse> responseList;
 
-    public CustomerListAdapter(Activity activity,List<CustomerResponse> customerResponseList,List<String> fieldSelectedArrayList) {
+    public CustomerListAdapter(Activity activity,List<CustomerResponse> customerResponseList) {
         this.activity = activity;
         this.customerResponseList = customerResponseList;
-        this.fieldSelectedArrayList = fieldSelectedArrayList;
         responseList = new ArrayList<>();
         responseList.addAll( this.customerResponseList );
-
-
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
 
@@ -84,36 +84,18 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final String name = customerResponseList.get(position).getFirstName();
 
-        if(fieldSelectedArrayList.contains("Id")){
+        jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+        if (null != jsonObjectData) {
+            if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
+            getJSONData(jsonObjectData,holder);
+        }else {
             holder.IdText.setVisibility(View.VISIBLE);
-        }else {
-            holder.IdText.setVisibility(View.GONE);
-        }
-
-        if(fieldSelectedArrayList.contains("First Name")){
             holder.firstText.setVisibility(View.VISIBLE);
-        }else {
-            holder.firstText.setVisibility(View.GONE);
-        }
-
-        if(fieldSelectedArrayList.contains("Last Name")){
             holder.lastText.setVisibility(View.VISIBLE);
-        }else {
-            holder.lastText.setVisibility(View.GONE);
-        }
-
-
-        if(fieldSelectedArrayList.contains("Email")){
             holder.emailText.setVisibility(View.VISIBLE);
-        }else {
-            holder.emailText.setVisibility(View.GONE);
+            holder.phoneNumberText.setVisibility(View.VISIBLE);
         }
 
-        if(fieldSelectedArrayList.contains("Phone Number")){
-            holder.phoneNumberText.setVisibility(View.VISIBLE);
-        }else {
-            holder.phoneNumberText.setVisibility(View.GONE);
-        }
 
         holder.IdText.setText("ID: " +customerResponseList.get(position).getId());
         holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirstName());
@@ -320,5 +302,57 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
             }
         }
         notifyDataSetChanged();
+    }
+
+
+    private void getJSONData(String setting,ViewHolder holder) {
+
+        try {
+
+            JSONArray jsonArrayData = new JSONArray(setting);
+            for (int i = 0; i < jsonArrayData.length(); i++) {
+                JSONObject jsonObject = jsonArrayData.getJSONObject(i);
+                ID = jsonObject.getBoolean(AppConstant.TAG_ID);
+                FName = jsonObject.getBoolean(AppConstant.TAG_FName);
+                LName = jsonObject.getBoolean(AppConstant.TAG_LName);
+                Email = jsonObject.getBoolean(AppConstant.TAG_Email);
+                PhoneNumber = jsonObject.getBoolean(AppConstant.TAG_PhoneNumber);
+
+            }
+
+        } catch (JSONException e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
+        }
+
+        if(ID){
+            holder.IdText.setVisibility(View.VISIBLE);
+        }else {
+            holder.IdText.setVisibility(View.GONE);
+        }
+
+        if(FName){
+            holder.firstText.setVisibility(View.VISIBLE);
+        }else {
+            holder.firstText.setVisibility(View.GONE);
+        }
+
+        if(LName){
+            holder.lastText.setVisibility(View.VISIBLE);
+        }else {
+            holder.lastText.setVisibility(View.GONE);
+        }
+
+        if(Email){
+            holder.emailText.setVisibility(View.VISIBLE);
+        }else {
+            holder.emailText.setVisibility(View.GONE);
+        }
+
+        if(PhoneNumber){
+            holder.phoneNumberText.setVisibility(View.VISIBLE);
+        }else {
+            holder.phoneNumberText.setVisibility(View.GONE);
+        }
+
     }
 }
