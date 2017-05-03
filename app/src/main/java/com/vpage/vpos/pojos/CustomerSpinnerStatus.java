@@ -1,7 +1,7 @@
 package com.vpage.vpos.pojos;
 
 
-public class SpinnerStatus {
+public class CustomerSpinnerStatus {
 
     private boolean idStatus;
     private boolean fNameStatus;
@@ -51,7 +51,7 @@ public class SpinnerStatus {
 
     @Override
     public String toString() {
-        return "SpinnerStatus{" +
+        return "CustomerSpinnerStatus{" +
                 "idStatus=" + idStatus +
                 ", fNameStatus=" + fNameStatus +
                 ", lNameStatus=" + lNameStatus +

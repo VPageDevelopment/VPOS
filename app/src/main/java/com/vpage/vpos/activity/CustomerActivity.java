@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,7 +27,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.CustomerListAdapter;
-import com.vpage.vpos.adapter.FieldSpinnerAdapter;
+import com.vpage.vpos.adapter.CustomerFieldSpinnerAdapter;
 import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
@@ -82,7 +81,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     private int mScrollOffset = 4;
 
     CustomerListAdapter customerListAdapter;
-    FieldSpinnerAdapter fieldSpinnerAdapter;
+    CustomerFieldSpinnerAdapter customerFieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
@@ -148,9 +147,9 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             spinnerList.add("Email");
             spinnerList.add("Phone Number");
 
-            fieldSpinnerAdapter = new FieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            fieldSpinnerAdapter.setCustomerFilterCallBack(this);
-            spinnerField.setAdapter(fieldSpinnerAdapter);
+            customerFieldSpinnerAdapter = new CustomerFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
+            customerFieldSpinnerAdapter.setCustomerFilterCallBack(this);
+            spinnerField.setAdapter(customerFieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
             if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
 

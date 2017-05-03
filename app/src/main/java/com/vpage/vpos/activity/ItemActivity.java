@@ -29,7 +29,8 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.CustomerListAdapter;
-import com.vpage.vpos.adapter.FieldSpinnerAdapter;
+import com.vpage.vpos.adapter.CustomerFieldSpinnerAdapter;
+import com.vpage.vpos.adapter.ItemFieldSpinnerAdapter;
 import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
@@ -81,7 +82,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     private int mScrollOffset = 4;
 
     CustomerListAdapter customerListAdapter;
-    FieldSpinnerAdapter fieldSpinnerAdapter;
+    ItemFieldSpinnerAdapter itemFieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
@@ -144,14 +145,19 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
             spinnerList = new ArrayList<>();
             spinnerList.add("Filter By");
             spinnerList.add("Id");
-            spinnerList.add("First Name");
-            spinnerList.add("Last Name");
-            spinnerList.add("Email");
-            spinnerList.add("Phone Number");
+            spinnerList.add("UPC/EAN/ISBN");
+            spinnerList.add("Item Name");
+            spinnerList.add(" Category");
+            spinnerList.add("Company Number");
+            spinnerList.add("Cost Price");
+            spinnerList.add("Retail Price");
+            spinnerList.add("Quantity");
+            spinnerList.add("Tax Percent(s)");
+            spinnerList.add("Avatar");
 
-            fieldSpinnerAdapter = new FieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            fieldSpinnerAdapter.setCustomerFilterCallBack(this);
-            spinnerField.setAdapter(fieldSpinnerAdapter);
+            itemFieldSpinnerAdapter = new ItemFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
+            itemFieldSpinnerAdapter.setCustomerFilterCallBack(this);
+            spinnerField.setAdapter(itemFieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
             if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
 

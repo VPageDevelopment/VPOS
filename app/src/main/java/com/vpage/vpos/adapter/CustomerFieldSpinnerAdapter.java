@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.SpinnerStatus;
+import com.vpage.vpos.pojos.CustomerSpinnerStatus;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CustomerFilterCallBack;
 import com.vpage.vpos.tools.utils.AppConstant;
@@ -20,20 +20,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FieldSpinnerAdapter extends ArrayAdapter<String> {
+public class CustomerFieldSpinnerAdapter extends ArrayAdapter<String> {
 
-    private static final String TAG = FieldSpinnerAdapter.class.getName();
+    private static final String TAG = CustomerFieldSpinnerAdapter.class.getName();
 
     private Activity activity;
     List<String> fieldArrayList = new ArrayList<>();
 
     CustomerFilterCallBack customerFilterCallBack;
     JSONArray jsonArray = null;
-    SpinnerStatus  spinnerStatus = new SpinnerStatus();
+    CustomerSpinnerStatus customerSpinnerStatus = new CustomerSpinnerStatus();
     Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    public FieldSpinnerAdapter(Activity activitySpinner, int textViewResourceId, List<String> fieldArrayList)
+    public CustomerFieldSpinnerAdapter(Activity activitySpinner, int textViewResourceId, List<String> fieldArrayList)
     {
         super(activitySpinner, textViewResourceId, fieldArrayList);
 
@@ -78,7 +78,7 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
             } else {
                 if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
                 getJSONData(jsonObjectData, position, mCheckBox);
-                jsonArray = makJsonArray(spinnerStatus);
+                jsonArray = makJsonArray(customerSpinnerStatus);
                 VPOSPreferences.save(AppConstant.cFilterPreference,jsonArray.toString());
             }
             fieldName.setText(fieldArrayList.get(position));
@@ -92,7 +92,7 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
 
                     setSpinnerStatus(position,mCheckBox.isChecked(),mCheckBox);
 
-                    jsonArray = makJsonArray(spinnerStatus);
+                    jsonArray = makJsonArray(customerSpinnerStatus);
                     VPOSPreferences.save(AppConstant.cFilterPreference,jsonArray.toString());
 
                     customerFilterCallBack.onFilterStatus(true);
@@ -107,45 +107,45 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
 
 
         if(spinnerPosition == 1){
-            if(!spinnerStatus.isfNameStatus()&&!spinnerStatus.islNameStatus()&&!spinnerStatus.isEmailStatus()&&!spinnerStatus.isPhoneNoStatus()){
-                spinnerStatus.setIdStatus(true);
+            if(!customerSpinnerStatus.isfNameStatus()&&!customerSpinnerStatus.islNameStatus()&&!customerSpinnerStatus.isEmailStatus()&&!customerSpinnerStatus.isPhoneNoStatus()){
+                customerSpinnerStatus.setIdStatus(true);
                 mCheckBox.setChecked(true);
             }else {
-                spinnerStatus.setIdStatus(status);
+                customerSpinnerStatus.setIdStatus(status);
                 mCheckBox.setChecked(status);
             }
         }else if(spinnerPosition == 2){
-            if(!spinnerStatus.isIdStatus()&&!spinnerStatus.islNameStatus()&&!spinnerStatus.isEmailStatus()&&!spinnerStatus.isPhoneNoStatus()){
-                spinnerStatus.setfNameStatus(true);
+            if(!customerSpinnerStatus.isIdStatus()&&!customerSpinnerStatus.islNameStatus()&&!customerSpinnerStatus.isEmailStatus()&&!customerSpinnerStatus.isPhoneNoStatus()){
+                customerSpinnerStatus.setfNameStatus(true);
                 mCheckBox.setChecked(true);
             }else {
-                spinnerStatus.setfNameStatus(status);
+                customerSpinnerStatus.setfNameStatus(status);
                 mCheckBox.setChecked(status);
             }
 
         }else if(spinnerPosition == 3){
-            if(!spinnerStatus.isIdStatus()&&!spinnerStatus.isfNameStatus()&&!spinnerStatus.isEmailStatus()&&!spinnerStatus.isPhoneNoStatus()){
-                spinnerStatus.setlNameStatus(true);
+            if(!customerSpinnerStatus.isIdStatus()&&!customerSpinnerStatus.isfNameStatus()&&!customerSpinnerStatus.isEmailStatus()&&!customerSpinnerStatus.isPhoneNoStatus()){
+                customerSpinnerStatus.setlNameStatus(true);
                 mCheckBox.setChecked(true);
             }else {
-                spinnerStatus.setlNameStatus(status);
+                customerSpinnerStatus.setlNameStatus(status);
                 mCheckBox.setChecked(status);
             }
         }else if(spinnerPosition == 4){
-            if(!spinnerStatus.isIdStatus()&&!spinnerStatus.isfNameStatus()&&!spinnerStatus.islNameStatus()&&!spinnerStatus.isPhoneNoStatus()){
-                spinnerStatus.setEmailStatus(true);
+            if(!customerSpinnerStatus.isIdStatus()&&!customerSpinnerStatus.isfNameStatus()&&!customerSpinnerStatus.islNameStatus()&&!customerSpinnerStatus.isPhoneNoStatus()){
+                customerSpinnerStatus.setEmailStatus(true);
                 mCheckBox.setChecked(true);
             }else {
-                spinnerStatus.setEmailStatus(status);
+                customerSpinnerStatus.setEmailStatus(status);
                 mCheckBox.setChecked(status);
             }
 
         }else if(spinnerPosition == 5){
-            if(!spinnerStatus.isIdStatus()&&!spinnerStatus.isfNameStatus()&&!spinnerStatus.islNameStatus()&&!spinnerStatus.isEmailStatus()){
-                spinnerStatus.setPhoneNoStatus(true);
+            if(!customerSpinnerStatus.isIdStatus()&&!customerSpinnerStatus.isfNameStatus()&&!customerSpinnerStatus.islNameStatus()&&!customerSpinnerStatus.isEmailStatus()){
+                customerSpinnerStatus.setPhoneNoStatus(true);
                 mCheckBox.setChecked(true);
             }else {
-                spinnerStatus.setPhoneNoStatus(status);
+                customerSpinnerStatus.setPhoneNoStatus(status);
                 mCheckBox.setChecked(status);
             }
         }
@@ -153,17 +153,17 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
     }
 
 
-     private JSONArray makJsonArray(SpinnerStatus spinnerStatusValue) {
+     private JSONArray makJsonArray(CustomerSpinnerStatus customerSpinnerStatusValue) {
          jsonArray = new JSONArray();
 
         JSONObject obj = new JSONObject();
         try {
 
-            obj.put(AppConstant.TAG_ID, spinnerStatusValue.isIdStatus());
-            obj.put(AppConstant.TAG_FName, spinnerStatusValue.isfNameStatus());
-            obj.put(AppConstant.TAG_LName, spinnerStatusValue.islNameStatus());
-            obj.put(AppConstant.TAG_Email, spinnerStatusValue.isEmailStatus());
-            obj.put(AppConstant.TAG_PhoneNumber, spinnerStatusValue.isPhoneNoStatus());
+            obj.put(AppConstant.TAG_ID, customerSpinnerStatusValue.isIdStatus());
+            obj.put(AppConstant.TAG_FName, customerSpinnerStatusValue.isfNameStatus());
+            obj.put(AppConstant.TAG_LName, customerSpinnerStatusValue.islNameStatus());
+            obj.put(AppConstant.TAG_Email, customerSpinnerStatusValue.isEmailStatus());
+            obj.put(AppConstant.TAG_PhoneNumber, customerSpinnerStatusValue.isPhoneNoStatus());
 
             jsonArray.put(obj);
 
@@ -195,19 +195,19 @@ public class FieldSpinnerAdapter extends ArrayAdapter<String> {
         }
 
         if(spinnerPosition == 1){
-            spinnerStatus.setIdStatus(ID);
+            customerSpinnerStatus.setIdStatus(ID);
             checkBox.setChecked(ID);
         }else if(spinnerPosition == 2){
-            spinnerStatus.setfNameStatus(FName);
+            customerSpinnerStatus.setfNameStatus(FName);
             checkBox.setChecked(FName);
         }else if(spinnerPosition == 3){
-            spinnerStatus.setlNameStatus(LName);
+            customerSpinnerStatus.setlNameStatus(LName);
             checkBox.setChecked(LName);
         }else if(spinnerPosition == 4){
-            spinnerStatus.setEmailStatus(Email);
+            customerSpinnerStatus.setEmailStatus(Email);
             checkBox.setChecked(Email);
         }else if(spinnerPosition == 5){
-            spinnerStatus.setPhoneNoStatus(PhoneNumber);
+            customerSpinnerStatus.setPhoneNoStatus(PhoneNumber);
             checkBox.setChecked(PhoneNumber);
         }
     }
