@@ -356,14 +356,18 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+                String [] emailArray = null;
                 for(int i = 0;i<checkedPositionArrayList.size();i++){
                     // get the content of selected customers and then email
                     if(checkedPositionArrayList.get(i)){
                         // To do server response of customer data contains email id
-                        if(null != list.get(i).getEmail()){
-                            gotoEmailView();
-                        }
+                        emailArray = new String[]{list.get(i).getEmail()};
                     }
+                }
+
+                if(null != emailArray){
+
+                    gotoEmailView(emailArray);
                 }
             }
         });
@@ -502,8 +506,9 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         startActivity(intent);
     }
 
-    private void gotoEmailView(){
+    private void gotoEmailView(String [] emailArray){
         Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
+        intent.putExtra("EmailId",emailArray);
         startActivity(intent);
     }
 }

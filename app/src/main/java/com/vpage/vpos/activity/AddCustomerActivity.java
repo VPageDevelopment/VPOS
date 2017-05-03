@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,7 +33,7 @@ import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_addcustomer)
-public class AddCustomerActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener {
+public class AddCustomerActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = AddCustomerActivity.class.getName();
 
@@ -83,6 +85,21 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.comments)
     EditText comments;
 
+    @ViewById(R.id.company)
+    EditText company;
+
+    @ViewById(R.id.account)
+    EditText account;
+
+    @ViewById(R.id.total)
+    EditText total;
+
+    @ViewById(R.id.discount)
+    EditText discount;
+
+    @ViewById(R.id.taxableCheckBox)
+    CheckBox taxableCheckBox;
+
     @ViewById(R.id.submitButton)
     Button submitButton;
 
@@ -114,7 +131,10 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
         lastName.setOnKeyListener(this);
-        comments.setOnKeyListener(this);
+
+        taxableCheckBox.setChecked(false);
+
+        taxableCheckBox.setOnCheckedChangeListener(this);
         radioButtonMale.setOnClickListener(this);
         radioButtonFemale.setOnClickListener(this);
         submitButton.setOnClickListener(this);
@@ -160,10 +180,8 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
 
             case R.id.submitButton:
-
-                validateInput();
                 getInputs();
-
+                validateInput();
                 break;
 
             case R.id.radioButtonMale:
@@ -199,12 +217,6 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
                     break;
 
-                case R.id.comments:
-
-                    validateInput();
-                    getInputs();
-
-                    break;
             }
 
         }
@@ -243,6 +255,10 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         zip.getText().toString();
         country.getText().toString();
         comments.getText().toString();
+        company.getText().toString();
+        account.getText().toString();
+        total.getText().toString();
+        discount.getText().toString();
 
     }
 
@@ -262,6 +278,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
+                // To Do service call
                 gotoCustomerView();
             }
 
@@ -319,4 +336,12 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     }
 
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked){
+            taxableCheckBox.setChecked(true);
+        }else {
+            taxableCheckBox.setChecked(false);
+        }
+    }
 }

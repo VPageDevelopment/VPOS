@@ -45,10 +45,15 @@ public class EmailActivity extends AppCompatActivity implements View.OnClickList
     Button submitButton;
 
     boolean isNetworkAvailable = false;
+    String [] emailArray;
 
 
     @AfterViews
     public void init() {
+
+        Intent callingIntent=getIntent();
+
+        emailArray = callingIntent.getStringArrayExtra("EmailId");
 
         setActionBarSupport();
         new ActionEditText(this);
@@ -133,7 +138,8 @@ public class EmailActivity extends AppCompatActivity implements View.OnClickList
     void sentMail(){
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("text/plain");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"email@example.com"});
+        //emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"email@example.com"});
+        emailIntent.putExtra(Intent.EXTRA_EMAIL,   emailArray);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject here");
         emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(comments.getText().toString()));
         emailIntent.putExtra(Intent.EXTRA_STREAM, " "); // To do content provided by service url

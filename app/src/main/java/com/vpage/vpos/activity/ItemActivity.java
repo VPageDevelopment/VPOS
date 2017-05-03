@@ -54,13 +54,13 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @ViewById(R.id.noItemContent)
     LinearLayout noItemContentLayout;
 
-    @ViewById(R.id.customerContent)
+    @ViewById(R.id.ItemContent)
     LinearLayout ItemContent;
 
-    @ViewById(R.id.addNewCustomerButton)
+    @ViewById(R.id.addNewItemButton)
     Button addNewItemButton;
 
-    @ViewById(R.id.addCustomerButton)
+    @ViewById(R.id.addItemButton)
     Button addItemButton;
 
     @ViewById(R.id.spinnerField)
@@ -75,7 +75,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
-    FloatingActionButton deleteFAB,emailFAB;
+    FloatingActionButton deleteFAB,bulkEditFAB,generateBarcodeFAB;
 
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
@@ -222,11 +222,15 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addFabView(){
 
-        emailFAB = new FloatingActionButton(activity);
-        emailFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
-        emailFAB.setLabelText("Email");
-        emailFAB.setImageResource(android.R.drawable.ic_dialog_email);
+        bulkEditFAB = new FloatingActionButton(activity);
+        bulkEditFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        bulkEditFAB.setLabelText("BulkEdit");
+        bulkEditFAB.setImageResource(R.drawable.edit);
 
+        generateBarcodeFAB = new FloatingActionButton(activity);
+        generateBarcodeFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        generateBarcodeFAB.setLabelText("GenerateBarcode");
+        generateBarcodeFAB.setImageResource(R.drawable.barcode);
 
         deleteFAB = new FloatingActionButton(activity);
         deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
@@ -252,10 +256,12 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 if (LogFlag.bLogOn)Log.d(TAG, "floatingActionMenu Clicked " );
                 if (!floatingActionMenu.isOpened()) {
                     if(checkedStatus){
-                        emailFAB.setVisibility(View.VISIBLE);
+                        bulkEditFAB.setVisibility(View.VISIBLE);
+                        generateBarcodeFAB.setVisibility(View.VISIBLE);
                         deleteFAB.setVisibility(View.VISIBLE);
                     }else {
-                        emailFAB.setVisibility(View.GONE);
+                        bulkEditFAB.setVisibility(View.GONE);
+                        generateBarcodeFAB.setVisibility(View.GONE);
                         deleteFAB.setVisibility(View.GONE);
                     }
                     // To Do Export function after getting url to Export
@@ -280,17 +286,32 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        emailFAB.setOnClickListener(new View.OnClickListener() {
+        bulkEditFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                emailFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
+                bulkEditFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
                         ContextCompat.getColor(activity, R.color.LiteGray),
                         ContextCompat.getColor(activity, R.color.White));
-                emailFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
+                bulkEditFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                 floatingActionMenu.toggle(true);
-                showEmailAlertDialog();
+                // To Do
+
+            }
+        });
+
+        generateBarcodeFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                generateBarcodeFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
+                        ContextCompat.getColor(activity, R.color.LiteGray),
+                        ContextCompat.getColor(activity, R.color.White));
+                generateBarcodeFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
+
+                floatingActionMenu.toggle(true);
+                // To Do
 
             }
         });
@@ -339,44 +360,15 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    void showEmailAlertDialog() {
 
-        TextView title = new TextView(activity);
-        // You Can Customise your Title here
-        title.setText(getResources().getString(R.string.app_name));
-        title.setBackgroundColor(Color.BLACK);
-        title.setPadding(10, 15, 15, 10);
-        title.setGravity(Gravity.CENTER);
-        title.setTextColor(Color.WHITE);
-        title.setTextSize(20);
-
-        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-        alertDialog.setCustomTitle(title);
-        alertDialog.setMessage("Are you Ready to Email");
-
-        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                for(int i = 0;i<checkedPositionArrayList.size();i++){
-                    // get the content of selected customers and then email
-                    if(checkedPositionArrayList.get(i)){
-                        // To do server response of customer data contains email id
-                        if(null != list.get(i).getEmail()){
-                            gotoEmailView();
-                        }
-                    }
-                }
-            }
-        });
-        alertDialog.show();
-
-    }
 
     private void addFabButton(){
 
-        floatingActionMenu.addMenuButton(emailFAB);
+        floatingActionMenu.addMenuButton(bulkEditFAB);
+        floatingActionMenu.addMenuButton(generateBarcodeFAB);
         floatingActionMenu.addMenuButton(deleteFAB);
-        emailFAB.setVisibility(View.GONE);
+        bulkEditFAB.setVisibility(View.GONE);
+        generateBarcodeFAB.setVisibility(View.GONE);
         deleteFAB.setVisibility(View.GONE);
     }
 
@@ -503,8 +495,5 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void gotoEmailView(){
-        Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
-        startActivity(intent);
-    }
+
 }

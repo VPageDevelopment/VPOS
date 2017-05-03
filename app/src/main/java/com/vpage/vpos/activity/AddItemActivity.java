@@ -3,6 +3,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -12,77 +13,104 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.VTools;
+import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_additem)
-public class AddItemActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener {
+public class AddItemActivity extends AppCompatActivity implements View.OnClickListener, OnNetworkChangeListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = AddItemActivity.class.getName();
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
 
-    @ViewById(R.id.firstName)
-    EditText firstName;
+    @ViewById(R.id.UPC)
+    EditText UPC;
 
-    @ViewById(R.id.lastName)
-    EditText lastName;
+    @ViewById(R.id.itemName)
+    EditText itemName;
 
     @ViewById(R.id.textError)
     TextView textError;
 
-    @ViewById(R.id.radioGroupGender)
-    RadioGroup radioGroupGender;
+    @ViewById(R.id.category)
+    EditText category;
 
-    @ViewById(R.id.radioButtonMale)
-    RadioButton radioButtonMale;
+    @ViewById(R.id.spinnerSupplier)
+    Spinner spinnerSupplier;
 
-    @ViewById(R.id.radioButtonFemale)
-    RadioButton radioButtonFemale;
+    @ViewById(R.id.costPrice)
+    EditText costPrice;
 
-    @ViewById(R.id.email)
-    EditText email;
+    @ViewById(R.id.retailPrice)
+    EditText retailPrice;
 
-    @ViewById(R.id.phoneNumber)
-    EditText phoneNumber;
+    @ViewById(R.id.tax1)
+    EditText tax1;
 
-    @ViewById(R.id.addressLine1)
-    EditText addressLine1;
+    @ViewById(R.id.tax1Percent)
+    EditText tax1Percent;
 
-    @ViewById(R.id.addressLine2)
-    EditText addressLine2;
+    @ViewById(R.id.tax2)
+    EditText tax2;
 
-    @ViewById(R.id.city)
-    EditText city;
+    @ViewById(R.id.tax2Percent)
+    EditText tax2Percent;
 
-    @ViewById(R.id.state)
-    EditText state;
+    @ViewById(R.id.quantityStock)
+    EditText quantityStock;
 
-    @ViewById(R.id.zip)
-    EditText zip;
+    @ViewById(R.id.receivingQuantity)
+    EditText receivingQuantity;
 
-    @ViewById(R.id.country)
-    EditText country;
+    @ViewById(R.id.reorderLevel)
+    EditText reorderLevel;
 
-    @ViewById(R.id.comments)
-    EditText comments;
+    @ViewById(R.id.description)
+    EditText description;
+
+    @ViewById(R.id.avatarImageView)
+    ImageView avatarImageView;
+
+    @ViewById(R.id.selectButton)
+    Button selectButton;
+
+    @ViewById(R.id.altCheckBox)
+    CheckBox altCheckBox;
+
+    @ViewById(R.id.serialCheckBox)
+    CheckBox serialCheckBox;
+
+    @ViewById(R.id.deletedCheckBox)
+    CheckBox deletedCheckBox;
+
+    @ViewById(R.id.newButton)
+    Button newButton;
 
     @ViewById(R.id.submitButton)
     Button submitButton;
@@ -90,14 +118,14 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
-    String firstNameInput = "", lastNameInput = "",genderSelected = "Male";
-    ValidationStatus validationStatus;
+    String itemNameInput = "", categoryInput = "",costPriceInput = "",retailPriceInput = "",spinnerSupplierData="",
+            quantityStockInput = "",receivingQuantityInput = "",reorderLevelInput = "",imagePath = "";
 
     boolean isNetworkAvailable = false;
 
-    TextWatcher textComments;
+    TextWatcher textDescription;
 
-    String pageName = " ";
+    String pageName = "";
 
     Activity activity;
 
@@ -114,11 +142,19 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
-        lastName.setOnKeyListener(this);
-        comments.setOnKeyListener(this);
-        radioButtonMale.setOnClickListener(this);
-        radioButtonFemale.setOnClickListener(this);
         submitButton.setOnClickListener(this);
+        selectButton.setOnClickListener(this);
+        newButton.setOnClickListener(this);
+
+        altCheckBox.setChecked(false);
+        serialCheckBox.setChecked(false);
+        deletedCheckBox.setChecked(false);
+
+        altCheckBox.setOnCheckedChangeListener(this);
+        serialCheckBox.setOnCheckedChangeListener(this);
+        deletedCheckBox.setOnCheckedChangeListener(this);
+
+        spinnerSupplier.setOnItemSelectedListener(this);
 
         setView();
     }
@@ -135,7 +171,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setView(){
 
-        textComments = new TextWatcher() {
+        textDescription = new TextWatcher() {
             public void afterTextChanged(Editable editable) {
             }
 
@@ -151,7 +187,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         };
 
         new ActionEditText(this);
-        comments.addTextChangedListener(textComments);
+        description.addTextChangedListener(textDescription);
     }
 
 
@@ -161,59 +197,26 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
 
             case R.id.submitButton:
-
-                validateInput();
                 getInputs();
+                validateInput();
 
                 break;
 
-            case R.id.radioButtonMale:
-
-                radioButtonMale.setChecked(true);
-                radioButtonFemale.setChecked(false);
-                genderSelected = "Male";
-
+            case R.id.newButton:
+                getInputs();
+                validateInputAndAddNew();
                 break;
 
-            case R.id.radioButtonFemale:
-
-                radioButtonMale.setChecked(false);
-                radioButtonFemale.setChecked(true);
-                genderSelected = "Female";
-
+            case R.id.selectButton:
+                showFileChooser();
                 break;
         }
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (keyCode == EditorInfo.IME_ACTION_GO ||
-                keyCode == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
 
-            switch (v.getId()) {
-
-                case R.id.lastName:
-
-                    validateInput();
-
-                    break;
-
-                case R.id.comments:
-
-                    validateInput();
-                    getInputs();
-
-                    break;
-            }
-
-        }
-        return false;
-    }
-
-    @FocusChange({R.id.firstName, R.id.lastName,R.id.email, R.id.phoneNumber,R.id.addressLine1, R.id.addressLine2,
-            R.id.city, R.id.state,R.id.zip, R.id.country})
+    @FocusChange({R.id.UPC, R.id.itemName,R.id.category, R.id.costPrice,R.id.retailPrice, R.id.tax1,
+            R.id.tax1Percent, R.id.tax2,R.id.tax2Percent, R.id.quantityStock,R.id.receivingQuantity,
+            R.id.reorderLevel})
     public void focusChangedOnUser(View v, boolean hasFocus) {
         if (hasFocus) {
             textError.setVisibility(View.GONE);
@@ -235,15 +238,34 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     void getInputs(){
 
-        email.getText().toString();
-        phoneNumber.getText().toString();
-        addressLine1.getText().toString();
-        addressLine2.getText().toString();
-        city.getText().toString();
-        state.getText().toString();
-        zip.getText().toString();
-        country.getText().toString();
-        comments.getText().toString();
+        UPC.getText().toString();
+        tax1.getText().toString();
+        tax1Percent.getText().toString();
+        tax2.getText().toString();
+        tax2Percent.getText().toString();
+        description.getText().toString();
+        spinnerSupplierData = spinnerSupplier.getSelectedItem().toString();
+
+    }
+
+    void clearAllInputs(){
+
+        UPC.setText("");
+        tax1.setText("");
+        tax1Percent.setText("");
+        tax2.setText("");
+        tax2Percent.setText("");
+        description.setText("");
+        itemName.setText("");
+        category.setText("");
+        costPrice.setText("");
+        retailPrice.setText("");
+        quantityStock.setText("");
+        receivingQuantity.setText("");
+        reorderLevel.setText("");
+        altCheckBox.setChecked(false);
+        serialCheckBox.setChecked(false);
+        deletedCheckBox.setChecked(false);
 
     }
 
@@ -251,19 +273,65 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
         if(isNetworkAvailable){
 
-            firstNameInput = firstName.getText().toString();
-            lastNameInput = lastName.getText().toString();
+            itemNameInput = itemName.getText().toString();
+            categoryInput = category.getText().toString();
+            costPriceInput = costPrice.getText().toString();
+            retailPriceInput = retailPrice.getText().toString();
+            quantityStockInput = quantityStock.getText().toString();
+            receivingQuantityInput = receivingQuantity.getText().toString();
+            reorderLevelInput = reorderLevel.getText().toString();
 
-            validationStatus = ValidationUtils.isValidNamePassword(firstNameInput,lastNameInput);
 
-            if (validationStatus.isStatus() == false) {
-                playGifView.setVisibility(View.GONE);
-                setErrorMessage(validationStatus.getMessage());
-            } else {
+            if (!itemNameInput.isEmpty()&& !categoryInput.isEmpty() &&!costPriceInput.isEmpty() &&
+                    !retailPriceInput.isEmpty()&&!quantityStockInput.isEmpty()&&
+                    !receivingQuantityInput.isEmpty() &&!reorderLevelInput.isEmpty()) {
+
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
+                // To Do service call
+
                 gotoItemView();
+
+            } else {
+
+                playGifView.setVisibility(View.GONE);
+                setErrorMessage("Fill all Required Input");
+            }
+
+        }else {
+
+            playGifView.setVisibility(View.GONE);
+            setErrorMessage("Check Network Connection");
+        }
+    }
+
+    void validateInputAndAddNew(){
+
+        if(isNetworkAvailable){
+
+            itemNameInput = itemName.getText().toString();
+            categoryInput = category.getText().toString();
+            costPriceInput = costPrice.getText().toString();
+            retailPriceInput = retailPrice.getText().toString();
+            quantityStockInput = quantityStock.getText().toString();
+            receivingQuantityInput = receivingQuantity.getText().toString();
+            reorderLevelInput = reorderLevel.getText().toString();
+
+
+            if (!itemNameInput.isEmpty()&& !categoryInput.isEmpty() &&!costPriceInput.isEmpty() &&
+                    !retailPriceInput.isEmpty()&&!quantityStockInput.isEmpty()&&
+                    !receivingQuantityInput.isEmpty() &&!reorderLevelInput.isEmpty()) {
+
+
+                playGifView.setVisibility(View.VISIBLE);
+                textError.setVisibility(View.GONE);
+
+                clearAllInputs();
+
+            } else {
+                playGifView.setVisibility(View.GONE);
+                setErrorMessage("Fill all Required Input");
             }
 
         }else {
@@ -313,6 +381,34 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    @UiThread
+    public void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), AppConstant.PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AppConstant.PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri filePath = data.getData();
+            //Getting the Bitmap from Gallery
+            // bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+
+            if(null != filePath){
+                if (LogFlag.bLogOn) Log.d(TAG,"FilePath: "+filePath);
+                imagePath = filePath.getPath();
+                if (LogFlag.bLogOn) Log.d(TAG,"ImageTaken: "+imagePath);
+                Picasso.with(this).load(imagePath).into(avatarImageView);
+
+            }
+        }
+    }
+
+
     private void gotoItemView(){
         Intent intent = new Intent(getApplicationContext(), ItemActivity_.class);
         startActivity(intent);
@@ -320,4 +416,45 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+
+            case R.id.altCheckBox:
+                if(isChecked){
+                    altCheckBox.setChecked(true);
+                }else {
+                    altCheckBox.setChecked(false);
+                }
+                break;
+
+            case R.id.serialCheckBox:
+                if(isChecked){
+                    serialCheckBox.setChecked(true);
+                }else {
+                    serialCheckBox.setChecked(false);
+                }
+
+                break;
+
+            case R.id.deletedCheckBox:
+                if(isChecked){
+                    deletedCheckBox.setChecked(true);
+                }else {
+                    deletedCheckBox.setChecked(false);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        spinnerSupplierData = spinnerSupplier.getSelectedItem().toString();
+        if (LogFlag.bLogOn)Log.d(TAG, "spinnerSupplierData: " + spinnerSupplierData);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

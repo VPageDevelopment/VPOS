@@ -155,25 +155,11 @@
                             android:prompt="@string/supplier_prompt"
                             android:id="@+id/spinnerSupplier"
                             android:gravity="center|center_vertical"
-                            android:spinnerMode="dropdown"
-                            />
+                            android:spinnerMode="dropdown" />
 
                     </RelativeLayout>
 
-
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="10dp"
-                    android:visibility="gone"
-                    android:id="@+id/textError"
-                    android:textColor="@color/Red"
-                    android:gravity="left|center_vertical"
-                    android:textSize="@dimen/common_textSize"/>
-
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -250,12 +236,14 @@
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:textColorHint="@color/DarkGray">
                         <EditText
                             android:id="@+id/tax1Percent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="10dp"
+                            android:hint="Tax 1 Percent"
                             android:drawableRight="@drawable/percentage"
                             android:drawablePadding="10dp"
                             android:inputType="number"
@@ -299,12 +287,14 @@
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:textColorHint="@color/DarkGray">
                         <EditText
                             android:id="@+id/tax2Percent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="10dp"
+                            android:hint="Tax 2 Percent"
                             android:drawableRight="@drawable/percentage"
                             android:drawablePadding="10dp"
                             android:inputType="number"
@@ -422,6 +412,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
+                        android:id="@+id/avatarImageView"
                         android:background="@drawable/square_gray_corners">
 
                     </ImageView>
@@ -525,6 +516,17 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:id="@+id/textError"
+                    android:textColor="@color/Red"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -575,15 +577,11 @@
                         android:textSize="@dimen/common_textSize">
                     </info.hoang8f.widget.FButton>
 
-
                 </LinearLayout>
-
-
 
             </LinearLayout>
 
         </ScrollView>
-
 
     </RelativeLayout>
 
