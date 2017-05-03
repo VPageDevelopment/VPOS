@@ -11,8 +11,7 @@
         >
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_below="@+id/checkBox"
+            android:layout_height="380dp"
             android:background="@drawable/square_gray_corners">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -36,8 +35,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center"
                     android:padding="10dp"
-                    android:id="@+id/firstText"
-                    android:text="FirstName:"
+                    android:id="@+id/barcodeText"
+                    android:text="UPC/EAN/ISBN:"
                     android:textColor="@color/Black"
                     android:gravity="center|center_horizontal"
                     android:textSize="@dimen/common_textSize"
@@ -49,8 +48,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center"
                     android:padding="10dp"
-                    android:id="@+id/lastText"
-                    android:text="LastName:"
+                    android:id="@+id/itemNameText"
+                    android:text="Item Name:"
                     android:textColor="@color/Black"
                     android:gravity="center|center_horizontal"
                     android:textSize="@dimen/common_textSize"
@@ -60,8 +59,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center"
                     android:padding="10dp"
-                    android:id="@+id/emailText"
-                    android:text="Email:"
+                    android:id="@+id/categoryText"
+                    android:text="Category:"
                     android:textColor="@color/Black"
                     android:gravity="center|center_horizontal"
                     android:textSize="@dimen/common_textSize"
@@ -72,11 +71,69 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center"
                     android:padding="10dp"
-                    android:id="@+id/phoneNumberText"
-                    android:text="PhoneNumber:"
+                    android:id="@+id/companyNameText"
+                    android:text="Company Name:"
                     android:textColor="@color/Black"
                     android:gravity="center|center_horizontal"
                     android:textSize="@dimen/common_textSize"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/costPriceText"
+                    android:text="Cost Price:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/retailPriceText"
+                    android:text="Retail Price:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/quantityText"
+                    android:text="Quantity:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/taxPercentText"
+                    android:text="Tax Percent(s):"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:src="@drawable/employees"
+                    android:id="@+id/avatarImage"
+                    android:gravity="center|center_horizontal"
                     />
 
             </LinearLayout>
@@ -108,10 +165,32 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
-                    android:id="@+id/editButton"
+                    android:id="@+id/updateInventoryButton"
                     android:gravity="center_vertical|center"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/itemCheckBox"
+                    android:src="@drawable/push_pin"
+                    android:background="@android:color/transparent" />
+
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/countDetailsButton"
+                    android:gravity="center_vertical|center"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/updateInventoryButton"
+                    android:src="@drawable/count_details"
+                    android:background="@android:color/transparent" />
+
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/editButton"
+                    android:gravity="center_vertical|center"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/countDetailsButton"
                     android:src="@drawable/edit"
                     android:background="@android:color/transparent" />
 

@@ -84,7 +84,6 @@ public class GridImageAdapter extends BaseAdapter {
         return convertView;
     }
 
-
 }
 
 

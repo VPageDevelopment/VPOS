@@ -1,6 +1,6 @@
 package com.vpage.vpos.tools.callBack;
 
 
-public interface CustomerFilterCallBack {
+public interface FilterCallBack {
     void onFilterStatus(Boolean filterStatus);
 }

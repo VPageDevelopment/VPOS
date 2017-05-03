@@ -1,7 +1,6 @@
 package com.vpage.vpos.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,9 +29,9 @@ import com.vpage.vpos.adapter.CustomerListAdapter;
 import com.vpage.vpos.adapter.CustomerFieldSpinnerAdapter;
 import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
-import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
+import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.CustomerEditCallBack;
-import com.vpage.vpos.tools.callBack.CustomerFilterCallBack;
+import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
@@ -44,7 +43,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 
 @EActivity(R.layout.activity_customer)
-public class CustomerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, CustomerFilterCallBack, CustomerEditCallBack, CustomerCheckedCallBack {
+public class CustomerActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, CustomerEditCallBack, CheckedCallBack {
 
     private static final String TAG = CustomerActivity.class.getName();
 
@@ -91,7 +90,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     Boolean checkedStatus = false;
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
-    Activity activity;
+    android.app.Activity activity;
 
     @AfterViews
     public void onInitView() {
@@ -148,7 +147,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             spinnerList.add("Phone Number");
 
             customerFieldSpinnerAdapter = new CustomerFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            customerFieldSpinnerAdapter.setCustomerFilterCallBack(this);
+            customerFieldSpinnerAdapter.setFilterCallBack(this);
             spinnerField.setAdapter(customerFieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
             if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
@@ -187,7 +186,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         customerListAdapter = new CustomerListAdapter(activity,list);
         customerListAdapter.setCustomerEditCallBack(this);
-        customerListAdapter.setCustomerCheckedCallBack(this);
+        customerListAdapter.setCheckedCallBack(this);
         recyclerView.setAdapter(customerListAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -406,7 +405,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         if(filterStatus){
             customerListAdapter = new CustomerListAdapter(activity,list);
             customerListAdapter.setCustomerEditCallBack(this);
-            customerListAdapter.setCustomerCheckedCallBack(this);
+            customerListAdapter.setCheckedCallBack(this);
             recyclerView.setAdapter(customerListAdapter);
         }
     }
@@ -482,6 +481,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     public void onEditSelected(int position) {
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
+        // To Do service response data to pass
         gotoAddCustomerView("Update Customer");
     }
 

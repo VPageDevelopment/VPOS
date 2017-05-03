@@ -45,6 +45,14 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name=".activity.gotoUpdateInventoryView_"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.InventoryCountActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".activity.EmailActivity_"
             android:screenOrientation="portrait"
             />

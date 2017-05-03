@@ -64,5 +64,10 @@
         <item>Vpage</item>
     </string-array>
 
+    <string name="stock_prompt">Choose a Stock</string>
+
+    <string-array name="stock_arrays">
+        <item>Stock</item>
+    </string-array>
 
 </resources>

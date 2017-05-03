@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.ItemSpinnerStatus;
 import com.vpage.vpos.tools.VPOSPreferences;
-import com.vpage.vpos.tools.callBack.CustomerFilterCallBack;
+import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.json.JSONArray;
@@ -27,7 +27,7 @@ public class ItemFieldSpinnerAdapter extends ArrayAdapter<String> {
     private Activity activity;
     List<String> fieldArrayList = new ArrayList<>();
 
-    CustomerFilterCallBack customerFilterCallBack;
+    FilterCallBack filterCallBack;
     JSONArray jsonArray = null;
     ItemSpinnerStatus itemSpinnerStatus = new ItemSpinnerStatus();
     Boolean id = false,barCode = false,IName = false,category = false,cName = false,cPrice = false,rPrice = false,
@@ -44,8 +44,8 @@ public class ItemFieldSpinnerAdapter extends ArrayAdapter<String> {
     }
 
 
-    public void setCustomerFilterCallBack(CustomerFilterCallBack customerFilterCallBack) {
-        this.customerFilterCallBack = customerFilterCallBack;
+    public void setFilterCallBack(FilterCallBack filterCallBack) {
+        this.filterCallBack = filterCallBack;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ItemFieldSpinnerAdapter extends ArrayAdapter<String> {
                 jsonArray = makJsonArray(itemSpinnerStatus);
                 VPOSPreferences.save(AppConstant.iFilterPreference,jsonArray.toString());
 
-                customerFilterCallBack.onFilterStatus(true);
+                filterCallBack.onFilterStatus(true);
 
             }
         });

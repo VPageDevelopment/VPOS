@@ -28,14 +28,13 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
-import com.vpage.vpos.adapter.CustomerListAdapter;
-import com.vpage.vpos.adapter.CustomerFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ItemFieldSpinnerAdapter;
-import com.vpage.vpos.pojos.CustomerResponse;
+import com.vpage.vpos.adapter.ItemListAdapter;
+import com.vpage.vpos.pojos.ItemResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
-import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
-import com.vpage.vpos.tools.callBack.CustomerEditCallBack;
-import com.vpage.vpos.tools.callBack.CustomerFilterCallBack;
+import com.vpage.vpos.tools.callBack.CheckedCallBack;
+import com.vpage.vpos.tools.callBack.FilterCallBack;
+import com.vpage.vpos.tools.callBack.ItemCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
@@ -45,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EActivity(R.layout.activity_item)
-public class ItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, CustomerFilterCallBack, CustomerEditCallBack, CustomerCheckedCallBack {
+public class ItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, CheckedCallBack, ItemCallBack {
 
     private static final String TAG = ItemActivity.class.getName();
 
@@ -81,12 +80,12 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
 
-    CustomerListAdapter customerListAdapter;
+    ItemListAdapter itemListAdapter;
     ItemFieldSpinnerAdapter itemFieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
-    List<CustomerResponse> list;
+    List<ItemResponse> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -156,7 +155,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
             spinnerList.add("Avatar");
 
             itemFieldSpinnerAdapter = new ItemFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            itemFieldSpinnerAdapter.setCustomerFilterCallBack(this);
+            itemFieldSpinnerAdapter.setFilterCallBack(this);
             spinnerField.setAdapter(itemFieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
             if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
@@ -172,31 +171,43 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
         list = new ArrayList<>();
 
+
         // To be replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            CustomerResponse customerResponse = new CustomerResponse();
-            customerResponse.setId(String.valueOf(i));
+            ItemResponse itemResponse = new ItemResponse();
+            itemResponse.setId(String.valueOf(i));
             if((i/2) == 0){
-                customerResponse.setFirstName("Ram");
-                customerResponse.setLastName("Kumar");
-                customerResponse.setEmail("ramkumar@gmail.com");
+                itemResponse.setBarcode("JHJKK4656");
+                itemResponse.setItemName("Soap");
+                itemResponse.setCategory("Cosmetic");
+                itemResponse.setCompanyName("Vpage");
+                itemResponse.setCostPrice("30");
+                itemResponse.setRetailPrice("25");
+                itemResponse.setQuantity("10");
+                itemResponse.setTaxPercent("5");
+                itemResponse.setAvatarUrl("");
             }else {
-                customerResponse.setFirstName("Sree");
-                customerResponse.setLastName("Kala");
-                customerResponse.setEmail("sreekala@gmail.com");
+                itemResponse.setBarcode("1226VGJHS");
+                itemResponse.setItemName("Bag");
+                itemResponse.setCategory("Accessories");
+                itemResponse.setCompanyName("Vpage");
+                itemResponse.setCostPrice("40");
+                itemResponse.setRetailPrice("25");
+                itemResponse.setQuantity("15");
+                itemResponse.setTaxPercent("10");
+                itemResponse.setAvatarUrl("");
             }
-            customerResponse.setPhoneNumber("93587210537");
 
-            list.add(customerResponse);
+            list.add(itemResponse);
         }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        customerListAdapter = new CustomerListAdapter(activity,list);
-        customerListAdapter.setCustomerEditCallBack(this);
-        customerListAdapter.setCustomerCheckedCallBack(this);
-        recyclerView.setAdapter(customerListAdapter);
+        itemListAdapter = new ItemListAdapter(activity,list);
+        itemListAdapter.setItemCallBack(this);
+        itemListAdapter.setCheckedCallBack(this);
+        recyclerView.setAdapter(itemListAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -357,7 +368,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
 */
-                customerListAdapter.notifyDataSetChanged();
+                itemListAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
             }
@@ -400,10 +411,10 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            customerListAdapter = new CustomerListAdapter(activity,list);
-            customerListAdapter.setCustomerEditCallBack(this);
-            customerListAdapter.setCustomerCheckedCallBack(this);
-            recyclerView.setAdapter(customerListAdapter);
+            itemListAdapter = new ItemListAdapter(activity,list);
+            itemListAdapter.setItemCallBack(this);
+            itemListAdapter.setCheckedCallBack(this);
+            recyclerView.setAdapter(itemListAdapter);
         }
     }
 
@@ -433,7 +444,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public boolean onQueryTextChange(String searchQuery) {
-                customerListAdapter.filter(searchQuery.toString().trim());
+                itemListAdapter.filter(searchQuery.toString().trim());
                 recyclerView.invalidate();
                 return true;
             }
@@ -474,12 +485,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onEditSelected(int position) {
-        // call back from recycler  adapter for edit customer details
-        if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
-        gotoAddItemView("Update Item");
-    }
 
     @Override
     public void onSelectedStatus(Boolean checkedStatus) {
@@ -495,11 +500,44 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    public void onEditSelected(int position) {
+        if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
+        // To Do service response data to pass
+        gotoAddItemView("Update Item");
+    }
+
+    @Override
+    public void onUpdateInventory(int position) {
+        if (LogFlag.bLogOn)Log.d(TAG, "onUpdateInventory: " + position);
+        // To Do service response data to pass
+         gotoUpdateInventoryView();
+    }
+
+    @Override
+    public void onCountInventory(int position) {
+        if (LogFlag.bLogOn)Log.d(TAG, "onCountInventory: " + position);
+        // To Do service response data to pass
+        gotoInventoryCountView();
+
+    }
+
     private void gotoAddItemView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);
         intent.putExtra("PageName",pageName);
         startActivity(intent);
     }
 
+
+    private void gotoUpdateInventoryView(){
+        Intent intent = new Intent(getApplicationContext(), UpdateInventoryActivity_.class);
+        startActivity(intent);
+    }
+
+
+    private void gotoInventoryCountView(){
+        Intent intent = new Intent(getApplicationContext(), InventoryCountActivity_.class);
+        startActivity(intent);
+    }
 
 }

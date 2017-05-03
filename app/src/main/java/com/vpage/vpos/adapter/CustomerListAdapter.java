@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
-import com.vpage.vpos.tools.callBack.CustomerCheckedCallBack;
+import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.CustomerEditCallBack;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
@@ -39,7 +39,7 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
     private CustomerEditCallBack customerEditCallBack;
 
-    private CustomerCheckedCallBack customerCheckedCallBack;
+    private CheckedCallBack checkedCallBack;
 
     private Activity activity;
 
@@ -66,8 +66,8 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
         this.customerEditCallBack = customerEditCallBack;
     }
 
-    public void setCustomerCheckedCallBack(CustomerCheckedCallBack customerCheckedCallBack) {
-        this.customerCheckedCallBack = customerCheckedCallBack;
+    public void setCheckedCallBack(CheckedCallBack checkedCallBack) {
+        this.checkedCallBack = checkedCallBack;
     }
 
 
@@ -159,9 +159,9 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
                     }else {
                         if (isAnyValuesChecked()) {
-                            customerCheckedCallBack.onSelectedStatus(true);
+                            checkedCallBack.onSelectedStatus(true);
                         }else {
-                            customerCheckedCallBack.onSelectedStatus(false);
+                            checkedCallBack.onSelectedStatus(false);
                         }
 
                     }
@@ -177,9 +177,9 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
                     if (!isAllValuesChecked()) {
 
                         if (!isAnyValuesChecked()) {
-                            customerCheckedCallBack.onSelectedStatus(false);
+                            checkedCallBack.onSelectedStatus(false);
                         }else {
-                            customerCheckedCallBack.onSelectedStatus(true );
+                            checkedCallBack.onSelectedStatus(true );
                         }
                     }
                 }
@@ -187,7 +187,7 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
                     for (int i = 0; i < count; i++) {
                         checkedPositionArrayList.add(mChecked.get(i));
                     }
-                    customerCheckedCallBack.onSelectedStatusArray(checkedPositionArrayList);
+                    checkedCallBack.onSelectedStatusArray(checkedPositionArrayList);
             }
 
         });
@@ -203,11 +203,11 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
                 if(checkBox_header.isChecked()){
                     checkBox_header.setButtonDrawable(R.drawable.check_box);
-                    customerCheckedCallBack.onSelectedStatus(true);
+                    checkedCallBack.onSelectedStatus(true);
                 }else {
                     mChecked.delete(position);
                     checkBox_header.setButtonDrawable(R.drawable.box);
-                    customerCheckedCallBack.onSelectedStatus(false);
+                    checkedCallBack.onSelectedStatus(false);
                 }
 
                 notifyDataSetChanged();

@@ -12,7 +12,6 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:layout_below="@+id/checkBox"
             android:background="@drawable/square_gray_corners">
         <LinearLayout
             android:layout_width="wrap_content"
