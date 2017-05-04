@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -15,14 +16,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
@@ -32,6 +41,7 @@ import com.vpage.vpos.adapter.ItemFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ItemListAdapter;
 import com.vpage.vpos.pojos.ItemResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.callBack.ItemCallBack;
@@ -41,10 +51,11 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @EActivity(R.layout.activity_item)
-public class ItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, CheckedCallBack, ItemCallBack {
+public class ItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, CheckedCallBack, ItemCallBack, AdapterView.OnItemClickListener {
 
     private static final String TAG = ItemActivity.class.getName();
 
@@ -56,6 +67,9 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     @ViewById(R.id.ItemContent)
     LinearLayout ItemContent;
+
+    @ViewById(R.id.datePickerButton)
+    Button datePickerButton;
 
     @ViewById(R.id.addNewItemButton)
     Button addNewItemButton;
@@ -75,9 +89,12 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
+    EditText fromDate,toDate;
+
     FloatingActionButton deleteFAB,bulkEditFAB,generateBarcodeFAB;
 
-    String spinnerFormatData = "";
+    String spinnerFormatData = "",fromDateString="",toDateString="",todayDate="",thisMonthOnLastYearDate="",
+            lastYearDate="";
     private int mScrollOffset = 4;
 
     ItemListAdapter itemListAdapter;
@@ -91,6 +108,10 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     Boolean checkedStatus = false;
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
+    PopupWindow PopUp;
+
+    TextWatcher textWatcherFromDate,textWatcherToDate;
+
     Activity activity;
 
     @AfterViews
@@ -100,7 +121,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
         setActionBarSupport();
 
-        int itemCount = 1; // to test placed static data replaced by server response count
+        int itemCount = 1; // TODO test placed static data replaced by server response count
         itemCountCheck(itemCount);
 
     }
@@ -127,16 +148,46 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
             ItemContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addItemButton.setOnClickListener(this);
+            datePickerButton.setOnClickListener(this);
+
+            todayDate = VTools.getCurrentDate();
+            if(!fromDateString.isEmpty() && !toDateString.isEmpty()){
+                datePickerButton.setText(fromDateString +" - "+toDateString);
+            }else {
+                datePickerButton.setText(todayDate +" - "+todayDate);
+            }
+
+            textWatcherFromDate = new TextWatcher() {
+                public void afterTextChanged(Editable editable) {
+                }
+
+                public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                    // you can check for enter key here
+                }
+
+                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                    datePickerButton.setText(charSequence.toString() +" - "+toDateString);
+                }
+            };
+
+
+            textWatcherToDate = new TextWatcher() {
+                public void afterTextChanged(Editable editable) {
+                }
+
+                public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                    // you can check for enter key here
+                }
+
+                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                    datePickerButton.setText(fromDateString +" - "+charSequence.toString());
+                }
+            };
+
             addItemsOnSpinner();
             addFabView();
             addRecyclerView();
         }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        gotoAddItemView("New Item");
     }
 
     private void addItemsOnSpinner() {
@@ -172,7 +223,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         list = new ArrayList<>();
 
 
-        // To be replaced by server data after service call Response
+        // TODO replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
             ItemResponse itemResponse = new ItemResponse();
             itemResponse.setId(String.valueOf(i));
@@ -281,7 +332,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                         generateBarcodeFAB.setVisibility(View.GONE);
                         deleteFAB.setVisibility(View.GONE);
                     }
-                    // To Do Export function after getting url to Export
+                    // TODO Export function after getting url to Export
                 }
                 floatingActionMenu.toggle(true);
             }
@@ -313,7 +364,14 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 bulkEditFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                 floatingActionMenu.toggle(true);
-                // To Do
+                // TODO carry out checked position response list
+              /*  for(int i = 0;i <checkedPositionArrayList.size();i++){
+                    if(checkedPositionArrayList.get(i)){
+
+                    }
+                }*/
+
+                gotoEditMultipleItemView();
 
             }
         });
@@ -328,7 +386,12 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 generateBarcodeFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                 floatingActionMenu.toggle(true);
-                // To Do
+                // TODO carry out checked position response list
+              /*  for(int i = 0;i <checkedPositionArrayList.size();i++){
+                    if(checkedPositionArrayList.get(i)){
+
+                    }
+                }*/
 
             }
         });
@@ -356,14 +419,14 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
                 itemCountCheck(0);
 
-                // To Do after Server Response update
+                // TODO after Server Response update
               /*  try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
                             list.remove(i);
                         }
                     }
-                    customerCountCheck(0);
+                     itemCountCheck(0);
                 }catch (IndexOutOfBoundsException e){
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
@@ -398,7 +461,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 spinnerFormatData = spinnerFormat.getSelectedItem().toString();
                 if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " +spinnerFormatData);
 
-                // To Do Import function after getting url to import
+                // TODO Import function after getting url to import
                 break;
         }
     }
@@ -503,24 +566,247 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onEditSelected(int position) {
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
-        // To Do service response data to pass
+        // TODO service response data to pass
         gotoAddItemView("Update Item");
     }
 
     @Override
     public void onUpdateInventory(int position) {
         if (LogFlag.bLogOn)Log.d(TAG, "onUpdateInventory: " + position);
-        // To Do service response data to pass
+        // TODO service response data to pass
          gotoUpdateInventoryView();
     }
 
     @Override
     public void onCountInventory(int position) {
         if (LogFlag.bLogOn)Log.d(TAG, "onCountInventory: " + position);
-        // To Do service response data to pass
+        // TODO service response data to pass
         gotoInventoryCountView();
 
     }
+
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+
+            case R.id.addItemButton:
+                gotoAddItemView("New Item");
+                break;
+
+            case R.id.addNewItemButton:
+                gotoAddItemView("New Item");
+                break;
+
+            case R.id.datePickerButton:
+                setDateFilterPopupView();
+                break;
+
+            case R.id.btnClose:
+                fromDateString = fromDate.getText().toString();
+                toDateString = toDate.getText().toString();
+                datePickerButton.setText(fromDateString +" - "+toDateString);
+                PopUp.dismiss();
+                break;
+
+            case R.id.applyButton:
+                fromDateString = fromDate.getText().toString();
+                toDateString = toDate.getText().toString();
+                datePickerButton.setText(fromDateString +" - "+toDateString);
+                PopUp.dismiss();
+                break;
+
+            case R.id.cancelButton:
+                fromDateString = fromDate.getText().toString();
+                toDateString = toDate.getText().toString();
+                datePickerButton.setText(fromDateString +" - "+toDateString);
+                PopUp.dismiss();
+                break;
+        }
+
+    }
+
+    void setDateFilterPopupView() {
+
+        View popUpView = getLayoutInflater().inflate(R.layout.popupview, null); // inflating popup layout
+        PopUp = VTools.createPopUp(popUpView);
+
+
+        PopUp.setBackgroundDrawable(new BitmapDrawable());
+        PopUp.setOutsideTouchable(true);
+
+        TextView popUpTitle = (TextView) popUpView.findViewById(R.id.popUpTitle);
+        ListView listView = (ListView) popUpView.findViewById(R.id.listView);
+        ImageButton btnClose = (ImageButton) popUpView.findViewById(R.id.btnClose);
+        CalendarView calendarView  = (CalendarView) popUpView.findViewById(R.id.calendarView);
+        fromDate =(EditText)popUpView.findViewById(R.id.fromDate);
+        toDate =(EditText)popUpView.findViewById(R.id.toDate);
+        Button applyButton =(Button)popUpView.findViewById(R.id.applyButton);
+        Button cancelButton =(Button)popUpView.findViewById(R.id.cancelButton);
+
+
+        popUpTitle.setText("Choose Date ");
+
+
+        String[] items = { "Today", "Today Last Year", "Yesterday", "Last 7 Days", "Last 30 Days",
+                "This Month","Same Moth To Same Day Last Year","Same Moth Last Year","Last Month","This Year","Last Year",
+                "All Time","Custom"};
+        long millisecondsMax = 0,millisecondsMin = 0;
+
+        if(!fromDateString.isEmpty() && !toDateString.isEmpty()){
+            fromDate.setText(fromDateString);
+            toDate.setText(toDateString);
+            millisecondsMax = VTools.convertStringDateToLong(fromDateString);
+            millisecondsMin = VTools.convertStringDateToLong(toDateString);
+        }else {
+            millisecondsMax = VTools.convertStringDateToLong(todayDate);
+            millisecondsMin = VTools.convertStringDateToLong(todayDate);
+            fromDate.setText(todayDate);
+            toDate.setText(todayDate);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.popuplist, items);
+
+        listView.setAdapter(adapter);
+
+        if (LogFlag.bLogOn)Log.d(TAG, "Today Date: " + Calendar.getInstance().getTimeInMillis());
+        calendarView.setMaxDate(millisecondsMax);
+        calendarView.setMinDate(millisecondsMin);
+
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+
+                fromDate.setText(month+"/"+dayOfMonth+"/"+year);
+                toDate.setText(month+"/"+dayOfMonth+"/"+year);
+            }
+        });
+
+        listView.setOnItemClickListener(this);
+        btnClose.setOnClickListener(this);
+        applyButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        fromDate.addTextChangedListener(textWatcherFromDate);
+        toDate.addTextChangedListener(textWatcherToDate);
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                // Today
+                if (LogFlag.bLogOn) Log.d(TAG, "ItemSelected 1: " + position);
+                fromDate.setText(todayDate);
+                toDate.setText(todayDate);
+                datePickerButton.setText(todayDate +" - "+todayDate);
+                break;
+            case 1:
+                // Today Last Year
+                if (LogFlag.bLogOn) Log.d(TAG, "ItemSelected 2: " + position);
+                lastYearDate =VTools.getLastYearDate();
+                fromDate.setText(lastYearDate);
+                toDate.setText(lastYearDate);
+                datePickerButton.setText( lastYearDate +" - "+ lastYearDate);
+                break;
+
+            case 2:
+                // Yesterday
+
+                String yesterday = VTools.getYesterdayDate();
+                fromDate.setText(yesterday);
+                toDate.setText(yesterday);
+                datePickerButton.setText( yesterday +" - "+yesterday);
+                break;
+
+            case 3:
+                // Last 7 Days
+
+                String lastWeekDate =  VTools.getLastWeekDate();
+                fromDate.setText(lastWeekDate);
+                toDate.setText(todayDate);
+                datePickerButton.setText(lastWeekDate +" - "+todayDate);
+                break;
+            case 4:
+                // Last Month
+
+                String lastMonthDate =  VTools.getLastMonthDate();
+                fromDate.setText(lastMonthDate);
+                toDate.setText(todayDate);
+                datePickerButton.setText(lastMonthDate +" - "+todayDate);
+                break;
+            case 5:
+                // This Month
+
+                String thisMonthDate =  VTools.getThisMonthDate();
+                fromDate.setText(thisMonthDate);
+                toDate.setText(todayDate);
+                datePickerButton.setText(thisMonthDate +" - "+todayDate);
+                break;
+
+            case 6:
+                // This Month same day Of Last Year
+
+                thisMonthOnLastYearDate =  VTools.getThisMonthOnLastYearDate(); // This Month First day of Last Year
+                lastYearDate =VTools.getLastYearDate();
+                fromDate.setText(thisMonthOnLastYearDate);
+                toDate.setText(lastYearDate);
+                datePickerButton.setText(thisMonthOnLastYearDate +" - "+lastYearDate);
+                break;
+
+            case 7:
+                // This Month Full Last Year
+
+                thisMonthOnLastYearDate =  VTools.getThisMonthOnLastYearDate(); // This Month First day of Last Year
+                String thisMonthLastYearDate = VTools.getThisMonthLastYearDate();  // This Month Last day of Last Year
+                fromDate.setText(thisMonthOnLastYearDate);
+                toDate.setText(thisMonthLastYearDate);
+                datePickerButton.setText(thisMonthOnLastYearDate +" - "+thisMonthLastYearDate);
+                break;
+
+            case 8:
+                // Last Month
+                if (LogFlag.bLogOn) Log.d(TAG, "ItemSelected 2: " + position);
+                String getLastMonthFirstDay =  VTools.getLastMonthFirstDay(); // Last Month First day of Last Year
+                String getLastMonthLastDay = VTools.getLastMonthLastDay();  // Last Month Last day of Last Year
+                fromDate.setText(getLastMonthFirstDay);
+                toDate.setText(getLastMonthLastDay);
+                datePickerButton.setText(getLastMonthFirstDay +" - "+getLastMonthLastDay);
+                break;
+
+            case 9:
+                // This Year
+                String getThisYearFirstDate =  VTools.getThisYearFirstDate(); // This Year First day
+                fromDate.setText(getThisYearFirstDate);
+                toDate.setText(todayDate);
+                datePickerButton.setText(getThisYearFirstDate +" - "+todayDate);
+                break;
+
+            case 10:
+                // Last Year
+
+                String getLastYearFirstDay =  VTools.getLastYearFirstDay(); // This Last Year First day
+                String getLastYearLastDay = VTools.getLastYearLastDay();  // This Last Year Last day
+                fromDate.setText(getLastYearFirstDay);
+                toDate.setText(getLastYearLastDay);
+                datePickerButton.setText(getLastYearFirstDay +" - "+getLastYearLastDay);
+                break;
+
+            case 11:
+                // All Time
+
+                String getDefaultDate =  VTools.getDefaultDate(); // This Default to 7 years back
+                fromDate.setText(getDefaultDate);
+                toDate.setText(todayDate);
+                datePickerButton.setText(getDefaultDate +" - "+todayDate);
+                break;
+
+        }
+        PopUp.dismiss();
+    }
+
 
     private void gotoAddItemView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);
@@ -537,6 +823,12 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     private void gotoInventoryCountView(){
         Intent intent = new Intent(getApplicationContext(), InventoryCountActivity_.class);
+        startActivity(intent);
+    }
+
+    private void gotoEditMultipleItemView(){
+
+        Intent intent = new Intent(getApplicationContext(), EditMultipleItemActivity_.class);
         startActivity(intent);
     }
 

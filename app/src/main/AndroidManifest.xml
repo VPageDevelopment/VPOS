@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name="com.vpage.vpos.tools.VPOSApplication"
@@ -36,7 +41,7 @@
             android:screenOrientation="portrait"
             />
 
-        <activity
+         <activity
             android:name=".activity.ItemActivity_"
             android:screenOrientation="portrait"
             />
@@ -50,6 +55,10 @@
             />
         <activity
             android:name=".activity.InventoryCountActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.EditMultipleItemActivity_"
             android:screenOrientation="portrait"
             />
         <activity

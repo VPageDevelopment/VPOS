@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:id="@+id/noItemText"
-                    android:text="Field in Red are Required"
+                    android:text="Edit the fields you want to edit for ALL selected items"
                     android:textColor="@color/Black"
                     android:gravity="center|center_horizontal"
                     android:textSize="@dimen/common_textSize"
@@ -61,28 +61,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/DarkGray"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:id="@+id/UPC"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:inputType="textPostalAddress"
-                        android:drawableLeft="@drawable/barcode"
-                        android:drawablePadding="10dp"
-                        android:hint="UPC/EAN/ISBN"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/Black"
-                        android:gravity="left|center_vertical"
-                        android:textSize="@dimen/common_textSize"
-                        android:singleLine="true"
-                        android:maxLines="1"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/Red"
                     android:layout_marginTop="10dp">
                     <EditText
                         android:id="@+id/itemName"
@@ -102,7 +80,7 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/Red"
+                    android:textColorHint="@color/DarkGray"
                     android:layout_marginTop="10dp">
                     <EditText
                         android:id="@+id/category"
@@ -113,7 +91,6 @@
                         android:drawableLeft="@drawable/tag"
                         android:drawablePadding="10dp"
                         android:hint="Category"
-                        android:textColorHint="@color/Red"
                         android:imeOptions="actionNext"
                         android:textColor="@color/Black"
                         android:gravity="left|center_vertical"
@@ -162,7 +139,7 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/Red"
+                    android:textColorHint="@color/DarkGray"
                     android:layout_marginTop="10dp">
                     <EditText
                         android:id="@+id/costPrice"
@@ -185,7 +162,7 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/Red"
+                    android:textColorHint="@color/DarkGray"
                     android:layout_marginTop="10dp">
                     <EditText
                         android:id="@+id/retailPrice"
@@ -307,49 +284,11 @@
 
                 </LinearLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/Red"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:id="@+id/quantityStock"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:inputType="number"
-                        android:hint="Quantity stock"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/Black"
-                        android:gravity="left|center_vertical"
-                        android:textSize="@dimen/common_textSize"
-                        android:singleLine="true"
-                        android:maxLines="1"/>
-                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/Red"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:id="@+id/receivingQuantity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:inputType="number"
-                        android:hint="Receiving quantity"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/Black"
-                        android:gravity="left|center_vertical"
-                        android:textSize="@dimen/common_textSize"
-                        android:singleLine="true"
-                        android:maxLines="1"/>
-                </android.support.design.widget.TextInputLayout>
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/Red"
+                    android:textColorHint="@color/DarkGray"
                     android:layout_marginTop="10dp">
                     <EditText
                         android:id="@+id/reorderLevel"
@@ -387,11 +326,10 @@
                         android:inputType="textAutoCorrect|textCapSentences|textMultiLine" />
                 </android.support.design.widget.TextInputLayout>
 
-                <LinearLayout
 
-                    android:id="@+id/avatarLayout"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical">
 
@@ -404,41 +342,27 @@
                         android:textSize="@dimen/common_textSize"
                         android:textStyle="bold"
                         android:gravity="left"
-                        android:text="Avatar" />
+                        android:text="Allow Alt Description"  />
 
-                    <ImageView
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:id="@+id/avatarImageView"
                         android:background="@drawable/square_gray_corners">
 
-                    </ImageView>
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/allow_alt_arrays"
+                            android:prompt="@string/allow_alt_prompt"
+                            android:id="@+id/spinnerAllowAlt"
+                            android:gravity="center|center_vertical"
+                            android:spinnerMode="dropdown" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
-                <info.hoang8f.widget.FButton
-                    android:id="@+id/selectButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
-                    android:gravity="center|center_horizontal"
-                    android:layout_gravity="center_horizontal"
-                    fbutton:buttonColor="@color/common_button_color"
-                    fbutton:shadowColor="@color/LiteGray"
-                    fbutton:shadowEnabled="true"
-                    fbutton:shadowHeight="3dp"
-                    android:text="Select Image"
-                    android:textStyle="bold"
-                    android:textAllCaps="false"
-                    android:textColor="@color/button_text_color"
-                    android:background="@android:color/transparent"
-                    android:textSize="@dimen/common_textSize">
-                </info.hoang8f.widget.FButton>
                 <LinearLayout
-                    android:id="@+id/altLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -453,67 +377,27 @@
                         android:textSize="@dimen/common_textSize"
                         android:textStyle="bold"
                         android:gravity="left"
-                        android:text="Allow Alt Description" />
+                        android:text="Item has Serial Number"  />
 
-                    <CheckBox
-                        android:id="@+id/altCheckBox"
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:background="@drawable/square_gray_corners">
+
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/serial_no_arrays"
+                            android:prompt="@string/allow_alt_prompt"
+                            android:id="@+id/spinnerSerialNo"
+                            android:gravity="center|center_vertical"
+                            android:spinnerMode="dropdown" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/serialLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:padding="10dp"
-                        android:textColor="@color/Black"
-                        android:textSize="@dimen/common_textSize"
-                        android:textStyle="bold"
-                        android:gravity="left"
-                        android:text="Item has Serial Number" />
-
-                    <CheckBox
-                        android:id="@+id/serialCheckBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/deletedLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:padding="10dp"
-                        android:textColor="@color/Black"
-                        android:textSize="@dimen/common_textSize"
-                        android:textStyle="bold"
-                        android:gravity="left"
-                        android:text="Deleted" />
-
-                    <CheckBox
-                        android:id="@+id/deletedCheckBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
-
-                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -526,57 +410,26 @@
                     android:gravity="left|center_vertical"
                     android:textSize="@dimen/common_textSize"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/submitButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:gravity="center_horizontal">
-
-                    <info.hoang8f.widget.FButton
-                        android:id="@+id/newButton"
-                        android:layout_width="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:layout_height="match_parent"
-                        android:paddingRight="10dp"
-                        android:paddingLeft="10dp"
-                        android:gravity="center|center_horizontal"
-                        android:layout_gravity="center_horizontal"
-                        fbutton:buttonColor="@color/common_button_color"
-                        fbutton:shadowColor="@color/LiteGray"
-                        fbutton:shadowEnabled="true"
-                        fbutton:shadowHeight="3dp"
-                        android:text="New"
-                        android:textStyle="bold"
-                        android:textAllCaps="false"
-                        android:textColor="@color/button_text_color"
-                        android:background="@android:color/transparent"
-                        android:textSize="@dimen/common_textSize">
-                    </info.hoang8f.widget.FButton>
-
-
-                    <info.hoang8f.widget.FButton
-                        android:id="@+id/submitButton"
-                        android:layout_width="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_height="match_parent"
-                        android:paddingRight="10dp"
-                        android:paddingLeft="10dp"
-                        android:gravity="center|center_horizontal"
-                        android:layout_gravity="center_horizontal"
-                        fbutton:buttonColor="@color/common_button_color"
-                        fbutton:shadowColor="@color/LiteGray"
-                        fbutton:shadowEnabled="true"
-                        fbutton:shadowHeight="3dp"
-                        android:text="Submit"
-                        android:textStyle="bold"
-                        android:textAllCaps="false"
-                        android:textColor="@color/button_text_color"
-                        android:background="@android:color/transparent"
-                        android:textSize="@dimen/common_textSize">
-                    </info.hoang8f.widget.FButton>
-
-                </LinearLayout>
+                    android:padding="10dp"
+                    android:gravity="center|center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    fbutton:buttonColor="@color/common_button_color"
+                    fbutton:shadowColor="@color/LiteGray"
+                    fbutton:shadowEnabled="true"
+                    fbutton:shadowHeight="8dp"
+                    android:text="Submit"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:textColor="@color/button_text_color"
+                    android:background="@android:color/transparent"
+                    android:textSize="@dimen/common_textSize">
+                </info.hoang8f.widget.FButton>
 
             </LinearLayout>
 

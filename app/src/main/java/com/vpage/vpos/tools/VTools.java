@@ -10,10 +10,19 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.vpage.vpos.R;
+import com.vpage.vpos.tools.utils.LogFlag;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class VTools {
 
@@ -88,6 +97,161 @@ public class VTools {
         alertDialog.show();
 
     }
+
+    public static PopupWindow createPopUp(View popUpView) {
+        PopupWindow mpopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true); //Creation of popup
+        try {
+            mpopup.setAnimationStyle(android.R.style.Animation_Dialog);
+            mpopup.showAtLocation(popUpView, Gravity.CENTER_VERTICAL, 0, 0);    // Displaying popup
+
+        } catch (Exception e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.toString());
+        }
+        return mpopup;
+    }
+
+    public static  String getCurrentDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static  String getYesterdayDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.DATE, -1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getLastWeekDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getThisMonthDate(){
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getLastMonthDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static  String getLastYearDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.YEAR, -1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getThisMonthOnLastYearDate(){
+       // This Month First day of Last Year
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.YEAR, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+
+    public static String getThisMonthLastYearDate(){
+        // This Month Last day of Last Year
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.YEAR, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getLastMonthFirstDay(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+
+    public static String getLastMonthLastDay(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+
+    public static  String getThisYearFirstDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.set(Calendar.DAY_OF_YEAR, 1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getLastYearFirstDay(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.YEAR, -1);
+        calendar.set(Calendar.DAY_OF_YEAR, 1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+
+    public static String getLastYearLastDay(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.YEAR, -1);
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getDefaultDate(){
+
+        // To all time set as any Default day
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        calendar.add(Calendar.YEAR, -7);
+        calendar.set(Calendar.DAY_OF_YEAR, 1);
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static long convertStringDateToLong(String dateToConvert){
+        long milliseconds = 0;
+
+        SimpleDateFormat f = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            Date date = f.parse(dateToConvert);
+            ;milliseconds = date.getTime();
+        } catch (ParseException e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.toString());
+        }
+        return milliseconds;
+    }
+
 
 
 }

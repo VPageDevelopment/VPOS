@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent">
+
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/White">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout"
+        android:background="@color/colorPrimaryDark">
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/btnClose"
+            android:layout_gravity="center_horizontal|right"
+            android:background="@android:color/transparent"
+            android:src="@drawable/close"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_below="@+id/btnClose"
+            android:gravity="center_vertical|center"
+            android:textStyle="bold"
+            android:textColor="@color/button_text_color"
+            android:id="@+id/popUpTitle"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/btnClose"
+            android:layout_toStartOf="@+id/btnClose"
+            android:layout_alignBottom="@+id/btnClose"
+            android:layout_marginLeft="30dp"/>
+
+    </RelativeLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_above="@+id/linearLayout"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="20dp"
+    android:layout_below="@+id/relativeLayout"
+    android:orientation="horizontal">
+
+    <ListView android:id="@+id/listView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@color/LiteGray"
+        android:dividerHeight="1dp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/contentLayout">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/DarkGray">
+                <EditText
+                    android:id="@+id/fromDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:inputType="textPostalAddress"
+                    android:drawableLeft="@drawable/calendar"
+                    android:drawablePadding="10dp"
+                    android:hint="From Date"
+                    android:imeOptions="actionNext"
+                    android:textColor="@color/Black"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/DarkGray"
+                android:layout_marginTop="10dp">
+                <EditText
+                    android:id="@+id/toDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:inputType="textPostalAddress"
+                    android:drawableLeft="@drawable/calendar"
+                    android:drawablePadding="10dp"
+                    android:hint="To Date"
+                    android:imeOptions="actionNext"
+                    android:textColor="@color/Black"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+            <CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/linearLayout">
+
+        <info.hoang8f.widget.FButton
+            android:id="@+id/applyButton"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_height="match_parent"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:gravity="center|center_horizontal"
+            android:layout_gravity="center_horizontal"
+            fbutton:buttonColor="@color/common_button_color"
+            fbutton:shadowColor="@color/LiteGray"
+            fbutton:shadowEnabled="true"
+            fbutton:shadowHeight="3dp"
+            android:text="Apply"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
+            android:background="@android:color/transparent"
+            android:textSize="@dimen/common_textSize">
+        </info.hoang8f.widget.FButton>
+
+
+        <info.hoang8f.widget.FButton
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_height="match_parent"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:gravity="center|center_horizontal"
+            android:layout_gravity="center_horizontal"
+            fbutton:buttonColor="@color/common_button_color"
+            fbutton:shadowColor="@color/LiteGray"
+            fbutton:shadowEnabled="true"
+            fbutton:shadowHeight="3dp"
+            android:text="Cancel"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
+            android:background="@android:color/transparent"
+            android:textSize="@dimen/common_textSize">
+        </info.hoang8f.widget.FButton>
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+</RelativeLayout>

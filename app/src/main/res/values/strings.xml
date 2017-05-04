@@ -70,4 +70,17 @@
         <item>Stock</item>
     </string-array>
 
+
+    <string name="allow_alt_prompt">Do Nothing</string>
+
+    <string-array name="allow_alt_arrays">
+        <item>Allow Alt Desc for All</item>
+        <item> Not Allow Alt Desc for All</item>
+    </string-array>
+
+    <string-array name="serial_no_arrays">
+        <item>Change All To Serialized</item>
+        <item>Change All To zunSerialized</item>
+    </string-array>
+
 </resources>

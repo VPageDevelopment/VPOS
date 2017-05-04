@@ -85,7 +85,9 @@
             android:layout_height="match_parent"
             tools:ignore="RtlHardcoded"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/contentLayout"
+            android:layout_toEndOf="@+id/contentLayout">
             <CheckBox
                 android:id="@+id/itemCheckBox"
                 android:layout_width="wrap_content"

@@ -50,12 +50,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:padding="10dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
                 android:layout_gravity="center_horizontal"
                 fbutton:buttonColor="@color/common_button_color"
                 fbutton:shadowColor="@color/LiteGray"
                 fbutton:shadowEnabled="true"
-                fbutton:shadowHeight="8dp"
+                fbutton:shadowHeight="3dp"
                 android:gravity="center|center_horizontal"
                 android:text="Add New Item"
                 android:id="@+id/addNewItemButton"
@@ -129,12 +130,13 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
-                    android:padding="5dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
                     android:layout_gravity="center_horizontal"
                     fbutton:buttonColor="@color/common_button_color"
                     fbutton:shadowColor="@color/LiteGray"
                     fbutton:shadowEnabled="true"
-                    fbutton:shadowHeight="8dp"
+                    fbutton:shadowHeight="3dp"
                     android:gravity="center|center_horizontal"
                     android:text="Add Item"
                     android:id="@+id/addItemButton"
@@ -185,15 +187,28 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="50dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_vertical">
                 />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/datePickerButton"
+                    android:background="@drawable/square_gray_corners"
+                    android:text="Date Filter"
+                    android:textColor="@color/Black"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/selectText" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:id="@+id/selectText"
                     android:text="Select/UnSelect"
                     android:textColor="@color/Black"
                     android:layout_marginRight="10dp"
@@ -209,6 +224,7 @@
                     android:button="@drawable/box"
                     />
             </RelativeLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/itemRecycleView"
                 android:scrollbars="vertical"
