@@ -1,5 +1,6 @@
 package com.vpage.vpos.activity;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -12,30 +13,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
-import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
 
-@EActivity(R.layout.activity_addcustomer)
-public class AddCustomerActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener, CompoundButton.OnCheckedChangeListener {
+@EActivity(R.layout.activity_addsupplier)
+public class AddSupplierActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener{
 
-    private static final String TAG = AddCustomerActivity.class.getName();
+    private static final String TAG = AddSupplierActivity.class.getName();
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
@@ -85,20 +82,14 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.comments)
     EditText comments;
 
-    @ViewById(R.id.company)
+    @ViewById(R.id.companyName)
     EditText company;
 
     @ViewById(R.id.account)
     EditText account;
 
-    @ViewById(R.id.total)
-    EditText total;
-
-    @ViewById(R.id.discount)
-    EditText discount;
-
-    @ViewById(R.id.taxableCheckBox)
-    CheckBox taxableCheckBox;
+    @ViewById(R.id.agencyName)
+    EditText agencyName;
 
     @ViewById(R.id.submitButton)
     Button submitButton;
@@ -106,8 +97,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
-    String firstNameInput = "", lastNameInput = "",genderSelected = "Male";
-    ValidationStatus validationStatus;
+    String firstNameInput = "", lastNameInput = "",companyNameInput="",genderSelected = "Male";
 
     boolean isNetworkAvailable = false;
 
@@ -120,7 +110,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @AfterViews
     public void onInitView() {
 
-        activity = AddCustomerActivity.this;
+        activity = AddSupplierActivity.this;
 
         Intent callingIntent=getIntent();
 
@@ -131,10 +121,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
         lastName.setOnKeyListener(this);
-
-        taxableCheckBox.setChecked(false);
-
-        taxableCheckBox.setOnCheckedChangeListener(this);
+        account.setOnKeyListener(this);
         radioButtonMale.setOnClickListener(this);
         radioButtonFemale.setOnClickListener(this);
         submitButton.setOnClickListener(this);
@@ -217,6 +204,12 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
                     break;
 
+                case R.id.account:
+
+                    validateInput();
+
+                    break;
+
             }
 
         }
@@ -224,7 +217,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     }
 
     @FocusChange({R.id.firstName, R.id.lastName,R.id.email, R.id.phoneNumber,R.id.addressLine1, R.id.addressLine2,
-            R.id.city, R.id.state,R.id.zip, R.id.country,R.id.comments,R.id.account,R.id.total,R.id.company,R.id.discount})
+            R.id.city, R.id.state,R.id.zip, R.id.country,R.id.comments,R.id.account,R.id.agencyName,R.id.company})
     public void focusChangedOnUser(View v, boolean hasFocus) {
         if (hasFocus) {
             textError.setVisibility(View.GONE);
@@ -255,10 +248,8 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         zip.getText().toString();
         country.getText().toString();
         comments.getText().toString();
-        company.getText().toString();
         account.getText().toString();
-        total.getText().toString();
-        discount.getText().toString();
+        agencyName.getText().toString();
 
     }
 
@@ -268,18 +259,22 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
             firstNameInput = firstName.getText().toString();
             lastNameInput = lastName.getText().toString();
+            companyNameInput = company.getText().toString();
 
-            validationStatus = ValidationUtils.isValidNamePassword(firstNameInput,lastNameInput);
 
-            if (validationStatus.isStatus() == false) {
+            if (companyNameInput.isEmpty()&&firstNameInput.isEmpty() &&lastNameInput.isEmpty()) {
+
                 playGifView.setVisibility(View.GONE);
-                setErrorMessage(validationStatus.getMessage());
+                setErrorMessage("Fill all Required Input");
+
             } else {
+
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
                 // To Do service call
-                gotoCustomerView();
+                gotoSupplierView();
+
             }
 
         }else {
@@ -329,19 +324,10 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private void gotoCustomerView(){
-        Intent intent = new Intent(getApplicationContext(), CustomerActivity_.class);
+    private void gotoSupplierView(){
+        Intent intent = new Intent(getApplicationContext(), SupplierActivity_.class);
         startActivity(intent);
         finish();
     }
 
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(isChecked){
-            taxableCheckBox.setChecked(true);
-        }else {
-            taxableCheckBox.setChecked(false);
-        }
-    }
 }

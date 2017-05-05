@@ -70,16 +70,16 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
 
 
     @Override
-    public ItemKitListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_itemkit, parent, false);
-        ItemKitListAdapter.ViewHolder viewHolder = new ItemKitListAdapter.ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(final ItemKitListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final String name = itemKitResponseList.get(position).getItemKitName();
 
         jsonObjectData = VPOSPreferences.get(AppConstant.iKFilterPreference);
@@ -302,18 +302,18 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
     }
 
 
-    private void getJSONData(String setting,ItemKitListAdapter.ViewHolder holder) {
+    private void getJSONData(String setting,ViewHolder holder) {
 
         try {
 
             JSONArray jsonArrayData = new JSONArray(setting);
             for (int i = 0; i < jsonArrayData.length(); i++) {
                 JSONObject jsonObject = jsonArrayData.getJSONObject(i);
-                ID = jsonObject.getBoolean(AppConstant.TAG_ID_KItem);
+                ID = jsonObject.getBoolean(AppConstant.TAG_ID);
                 IKName = jsonObject.getBoolean(AppConstant.TAG_IKName);
                 IKDes = jsonObject.getBoolean(AppConstant.TAG_IKDes);
-                IKCPrice = jsonObject.getBoolean(AppConstant.TAG_IKCPrice);
-                IKRPrice = jsonObject.getBoolean(AppConstant.TAG_IKRPrice);
+                IKCPrice = jsonObject.getBoolean(AppConstant.TAG_CPrice);
+                IKRPrice = jsonObject.getBoolean(AppConstant.TAG_RPrice);
 
             }
 

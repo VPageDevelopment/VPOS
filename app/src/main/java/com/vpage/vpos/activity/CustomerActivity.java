@@ -1,6 +1,7 @@
 package com.vpage.vpos.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -90,7 +91,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     Boolean checkedStatus = false;
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
-    android.app.Activity activity;
+    Activity activity;
 
     @AfterViews
     public void onInitView() {

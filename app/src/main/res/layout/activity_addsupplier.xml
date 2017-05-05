@@ -50,12 +50,53 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:id="@+id/noCustomerText"
+                    android:id="@+id/noSupplierText"
                     android:text="Field in Red are Required"
                     android:textColor="@color/Black"
                     android:gravity="center|center_horizontal"
                     android:textSize="@dimen/common_textSize"
                     />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/companyName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:inputType="text"
+                        android:hint="Company Name"
+                        android:textColorHint="@color/Red"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/DarkGray"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/agencyName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:inputType="textPassword"
+                        android:hint="Agency Name"
+                        android:imeOptions="actionGo"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -96,7 +137,6 @@
                         android:singleLine="true"
                         android:maxLines="1"/>
                 </android.support.design.widget.TextInputLayout>
-
                 <LinearLayout
 
                     android:id="@+id/genderLayout"
@@ -330,106 +370,15 @@
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:maxLines="10"
-                        android:id="@+id/company"
-                        android:isScrollContainer="true"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/Black"
-                        android:gravity="left|center_vertical"
-                        android:textSize="@dimen/common_textSize"
-                        android:hint="Company"
-                        android:inputType="textCapWords" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/DarkGray"
-                    android:layout_marginTop="10dp">
-
-                    <com.vpage.vpos.tools.ActionEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:maxLines="10"
                         android:id="@+id/account"
                         android:isScrollContainer="true"
-                        android:imeOptions="actionNext"
+                        android:imeOptions="actionGo"
                         android:textColor="@color/Black"
                         android:gravity="left|center_vertical"
                         android:textSize="@dimen/common_textSize"
                         android:hint="Account#"
                         android:inputType="number" />
                 </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/DarkGray"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:id="@+id/total"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:inputType="numberDecimal"
-                        android:drawableLeft="@drawable/dollar_symbol"
-                        android:drawablePadding="10dp"
-                        android:hint="Total"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/Black"
-                        android:gravity="left|center_vertical"
-                        android:textSize="@dimen/common_textSize"
-                        android:singleLine="true"
-                        android:maxLines="1"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/DarkGray"
-                    android:layout_marginTop="10dp">
-                    <EditText
-                        android:id="@+id/discount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:inputType="number"
-                        android:drawableRight="@drawable/percentage"
-                        android:drawablePadding="10dp"
-                        android:hint="Discount"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/Black"
-                        android:gravity="left|center_vertical"
-                        android:textSize="@dimen/common_textSize"
-                        android:singleLine="true"
-                        android:maxLines="1"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <LinearLayout
-                    android:id="@+id/taxableLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:padding="10dp"
-                        android:textColor="@color/Black"
-                        android:textSize="@dimen/common_textSize"
-                        android:textStyle="bold"
-                        android:gravity="left"
-                        android:text="Taxable" />
-
-                    <CheckBox
-                        android:id="@+id/taxableCheckBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
-
-                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

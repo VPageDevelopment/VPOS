@@ -158,11 +158,11 @@ public class ItemKitFieldSpinnerAdapter extends ArrayAdapter<String> {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put(AppConstant.TAG_ID_KItem, itemKitSpinnerStatusValue.isIdStatus());
+            obj.put(AppConstant.TAG_ID, itemKitSpinnerStatusValue.isIdStatus());
             obj.put(AppConstant.TAG_IKName, itemKitSpinnerStatusValue.isItemKitNameStatus());
             obj.put(AppConstant.TAG_IKDes, itemKitSpinnerStatusValue.isItemKitDesStatus());
-            obj.put(AppConstant.TAG_IKCPrice, itemKitSpinnerStatusValue.isCostPriceStatus());
-            obj.put(AppConstant.TAG_IKRPrice, itemKitSpinnerStatusValue.isRetailPriceStatus());
+            obj.put(AppConstant.TAG_CPrice, itemKitSpinnerStatusValue.isCostPriceStatus());
+            obj.put(AppConstant.TAG_RPrice, itemKitSpinnerStatusValue.isRetailPriceStatus());
 
             jsonArray.put(obj);
 
@@ -181,11 +181,11 @@ public class ItemKitFieldSpinnerAdapter extends ArrayAdapter<String> {
             JSONArray jsonArrayData = new JSONArray(setting);
             for (int i = 0; i < jsonArrayData.length(); i++) {
                 JSONObject jsonObject = jsonArrayData.getJSONObject(i);
-                ID = jsonObject.getBoolean(AppConstant.TAG_ID_KItem);
+                ID = jsonObject.getBoolean(AppConstant.TAG_ID);
                 IKName = jsonObject.getBoolean(AppConstant.TAG_IKName);
                 IKDes = jsonObject.getBoolean(AppConstant.TAG_IKDes);
-                IKCPrice = jsonObject.getBoolean(AppConstant.TAG_IKCPrice);
-                IKRPrice = jsonObject.getBoolean(AppConstant.TAG_IKRPrice);
+                IKCPrice = jsonObject.getBoolean(AppConstant.TAG_CPrice);
+                IKRPrice = jsonObject.getBoolean(AppConstant.TAG_RPrice);
 
             }
 

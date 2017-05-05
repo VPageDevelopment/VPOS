@@ -231,7 +231,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     @FocusChange({R.id.UPC, R.id.itemName,R.id.category, R.id.costPrice,R.id.retailPrice, R.id.tax1,
             R.id.tax1Percent, R.id.tax2,R.id.tax2Percent, R.id.quantityStock,R.id.receivingQuantity,
-            R.id.reorderLevel})
+            R.id.reorderLevel,R.id.description})
     public void focusChangedOnUser(View v, boolean hasFocus) {
         if (hasFocus) {
             textError.setVisibility(View.GONE);

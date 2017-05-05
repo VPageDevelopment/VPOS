@@ -74,6 +74,14 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name=".activity.SupplierActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.AddSupplierActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".activity.EmailActivity_"
             android:screenOrientation="portrait"
             />

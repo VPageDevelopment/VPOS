@@ -225,7 +225,7 @@ public class ItemFieldSpinnerAdapter extends ArrayAdapter<String> {
         JSONObject obj = new JSONObject();
         try {
 
-            obj.put(AppConstant.TAG_ID_Item, itemSpinnerStatusValue.isIdStatus());
+            obj.put(AppConstant.TAG_ID, itemSpinnerStatusValue.isIdStatus());
             obj.put(AppConstant.TAG_Barcode, itemSpinnerStatusValue.isBarCodeStatus());
             obj.put(AppConstant.TAG_IName, itemSpinnerStatusValue.isItemNameStatus());
             obj.put(AppConstant.TAG_Category, itemSpinnerStatusValue.isCategoryStatus());
@@ -254,7 +254,7 @@ public class ItemFieldSpinnerAdapter extends ArrayAdapter<String> {
             for (int i = 0; i < jsonArrayData.length(); i++) {
 
                 JSONObject jsonObject = jsonArrayData.getJSONObject(i);
-                id = jsonObject.getBoolean(AppConstant.TAG_ID_Item);
+                id = jsonObject.getBoolean(AppConstant.TAG_ID);
                 barCode = jsonObject.getBoolean(AppConstant.TAG_Barcode);
                 IName = jsonObject.getBoolean(AppConstant.TAG_IName);
                 category = jsonObject.getBoolean(AppConstant.TAG_Category);

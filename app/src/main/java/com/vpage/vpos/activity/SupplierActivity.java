@@ -29,9 +29,9 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
-import com.vpage.vpos.adapter.ItemKitFieldSpinnerAdapter;
-import com.vpage.vpos.adapter.ItemKitListAdapter;
-import com.vpage.vpos.pojos.ItemKitResponse;
+import com.vpage.vpos.adapter.SupplierFieldSpinnerAdapter;
+import com.vpage.vpos.adapter.SupplierListAdapter;
+import com.vpage.vpos.pojos.SupplierResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
@@ -44,25 +44,25 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
-@EActivity(R.layout.activity_itemkit)
-public class ItemKitActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack {
+@EActivity(R.layout.activity_supplier)
+public class SupplierActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack {
 
-    private static final String TAG = ItemKitActivity.class.getName();
+    private static final String TAG = SupplierActivity.class.getName();
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
 
-    @ViewById(R.id.noItemKitContent)
-    LinearLayout noItemKitContent;
+    @ViewById(R.id.noSupplierContent)
+    LinearLayout noSupplierContent;
 
-    @ViewById(R.id.itemKitContent)
-    LinearLayout itemKitContent;
+    @ViewById(R.id.SupplierContent)
+    LinearLayout SupplierContent;
 
-    @ViewById(R.id.addNewItemKitButton)
-    Button addNewItemKitButton;
+    @ViewById(R.id.addNewSupplier)
+    Button addNewSupplierButton;
 
-    @ViewById(R.id.addItemKitButton)
-    Button addItemKitButton;
+    @ViewById(R.id.addSupplierButton)
+    Button addSupplierButton;
 
     @ViewById(R.id.spinnerField)
     Spinner spinnerField;
@@ -70,23 +70,23 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @ViewById(R.id.spinnerFormat)
     Spinner spinnerFormat;
 
-    @ViewById(R.id.itemKitRecycleView)
+    @ViewById(R.id.supplierRecycleView)
     RecyclerView recyclerView;
 
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
-    FloatingActionButton deleteFAB,generateBarcodeFAB;
+    FloatingActionButton deleteFAB,emailFAB;
 
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
 
-    ItemKitListAdapter itemKitListAdapter;
-    ItemKitFieldSpinnerAdapter itemKitFieldSpinnerAdapter;
+    SupplierListAdapter supplierListAdapter;
+    SupplierFieldSpinnerAdapter supplierFieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
-    List<ItemKitResponse> list;
+    List<SupplierResponse> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -97,7 +97,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @AfterViews
     public void onInitView() {
 
-        activity = ItemKitActivity.this;
+        activity = SupplierActivity.this;
 
         setActionBarSupport();
 
@@ -118,15 +118,15 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     void customerCountCheck(int customerCount){
 
         if(customerCount == 0){
-            noItemKitContent.setVisibility(View.VISIBLE);
-            itemKitContent.setVisibility(View.GONE);
+            noSupplierContent.setVisibility(View.VISIBLE);
+            SupplierContent.setVisibility(View.GONE);
             floatingActionMenu.setVisibility(View.GONE);
-            addNewItemKitButton.setOnClickListener(this);
+            addNewSupplierButton.setOnClickListener(this);
         }else {
-            noItemKitContent.setVisibility(View.GONE);
-            itemKitContent.setVisibility(View.VISIBLE);
+            noSupplierContent.setVisibility(View.GONE);
+            SupplierContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
-            addItemKitButton.setOnClickListener(this);
+            addSupplierButton.setOnClickListener(this);
             addItemsOnSpinner();
             addFabView();
             addRecyclerView();
@@ -135,24 +135,26 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        gotoAddItemKitView("New Item Kit");
+        gotoAddSupplierView("New Supplier");
     }
 
     private void addItemsOnSpinner() {
         try{
             spinnerList = new ArrayList<>();
             spinnerList.add("Filter By");
-            spinnerList.add("Kit Id");
-            spinnerList.add("Item Kit Name");
-            spinnerList.add("Item Kit Description");
-            spinnerList.add("Cost Price");
-            spinnerList.add("Retail Price");
+            spinnerList.add("Id");
+            spinnerList.add("Company Name");
+            spinnerList.add("Agency Name");
+            spinnerList.add("First Name");
+            spinnerList.add("Last Name");
+            spinnerList.add("Email");
+            spinnerList.add("Phone Number");
 
-            itemKitFieldSpinnerAdapter = new ItemKitFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            itemKitFieldSpinnerAdapter.setFilterCallBack(this);
-            spinnerField.setAdapter(itemKitFieldSpinnerAdapter);
+            supplierFieldSpinnerAdapter = new SupplierFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
+            supplierFieldSpinnerAdapter.setFilterCallBack(this);
+            spinnerField.setAdapter(supplierFieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
-            if (LogFlag.bLogOn) Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
+            if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
 
             spinnerFormat.setOnItemSelectedListener(this);
 
@@ -167,29 +169,33 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
         // To be replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            ItemKitResponse itemKitResponse = new ItemKitResponse();
-            itemKitResponse.setId(String.valueOf(i));
+            SupplierResponse supplierResponse = new SupplierResponse();
+            supplierResponse.setId(String.valueOf(i));
             if((i/2) == 0){
-                itemKitResponse.setItemKitName("Baby Product");
-                itemKitResponse.setItemKitDescription("Soap");
-                itemKitResponse.setCostPrice("50");
+                supplierResponse.setCompanyName("Vpage");
+                supplierResponse.setAgencyName("Vpage");
+                supplierResponse.setFirstName("Ram");
+                supplierResponse.setLastName("Kumar");
+                supplierResponse.setEmail("ramkumar@gmail.com");
             }else {
-                itemKitResponse.setItemKitName("Baby Product");
-                itemKitResponse.setItemKitDescription("Soap");
-                itemKitResponse.setCostPrice("50");
+                supplierResponse.setCompanyName("Vpage");
+                supplierResponse.setAgencyName("Vpage");
+                supplierResponse.setFirstName("Sree");
+                supplierResponse.setLastName("Kala");
+                supplierResponse.setEmail("sreekala@gmail.com");
             }
-            itemKitResponse.setRetailPrice("25");
+            supplierResponse.setPhoneNumber("93587210537");
 
-            list.add(itemKitResponse);
+            list.add(supplierResponse);
         }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        itemKitListAdapter = new ItemKitListAdapter(activity,list);
-        itemKitListAdapter.setEditCallBack(this);
-        itemKitListAdapter.setCheckedCallBack(this);
-        recyclerView.setAdapter(itemKitListAdapter);
+        supplierListAdapter = new SupplierListAdapter(activity,list);
+        supplierListAdapter.setEditCallBack(this);
+        supplierListAdapter.setCheckedCallBack(this);
+        recyclerView.setAdapter(supplierListAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -221,16 +227,16 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     private void addFabView(){
 
+        emailFAB = new FloatingActionButton(activity);
+        emailFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        emailFAB.setLabelText("Email");
+        emailFAB.setImageResource(android.R.drawable.ic_dialog_email);
+
 
         deleteFAB = new FloatingActionButton(activity);
         deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
         deleteFAB.setLabelText("Delete");
         deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
-
-        generateBarcodeFAB = new FloatingActionButton(activity);
-        generateBarcodeFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
-        generateBarcodeFAB.setLabelText("GenerateBarcode");
-        generateBarcodeFAB.setImageResource(R.drawable.barcode);
 
         addFabButton();
 
@@ -251,10 +257,10 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
                 if (LogFlag.bLogOn)Log.d(TAG, "floatingActionMenu Clicked " );
                 if (!floatingActionMenu.isOpened()) {
                     if(checkedStatus){
-                        generateBarcodeFAB.setVisibility(View.VISIBLE);
+                        emailFAB.setVisibility(View.VISIBLE);
                         deleteFAB.setVisibility(View.VISIBLE);
                     }else {
-                        generateBarcodeFAB.setVisibility(View.GONE);
+                        emailFAB.setVisibility(View.GONE);
                         deleteFAB.setVisibility(View.GONE);
                     }
                     // To Do Export function after getting url to Export
@@ -279,17 +285,17 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        generateBarcodeFAB.setOnClickListener(new View.OnClickListener() {
+        emailFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                generateBarcodeFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
+                emailFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
                         ContextCompat.getColor(activity, R.color.LiteGray),
                         ContextCompat.getColor(activity, R.color.White));
-                generateBarcodeFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
+                emailFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                 floatingActionMenu.toggle(true);
-                gotoBarcodeGenerateView();
+                showEmailAlertDialog();
 
             }
         });
@@ -329,7 +335,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
 */
-                itemKitListAdapter.notifyDataSetChanged();
+                supplierListAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
             }
@@ -338,11 +344,48 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    void showEmailAlertDialog() {
+
+        TextView title = new TextView(activity);
+        // You Can Customise your Title here
+        title.setText(getResources().getString(R.string.app_name));
+        title.setBackgroundColor(Color.BLACK);
+        title.setPadding(10, 15, 15, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(20);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+        alertDialog.setCustomTitle(title);
+        alertDialog.setMessage("Are you Ready to Email");
+
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                String [] emailArray = null;
+                for(int i = 0;i<checkedPositionArrayList.size();i++){
+                    // get the content of selected customers and then email
+                    if(checkedPositionArrayList.get(i)){
+                        // To do server response of customer data contains email id
+                        emailArray = new String[]{list.get(i).getEmail()};
+                    }
+                }
+
+                if(null != emailArray){
+
+                    gotoEmailView(emailArray);
+                }
+            }
+        });
+        alertDialog.show();
+
+    }
+
     private void addFabButton(){
 
-        floatingActionMenu.addMenuButton(generateBarcodeFAB);
+        floatingActionMenu.addMenuButton(emailFAB);
         floatingActionMenu.addMenuButton(deleteFAB);
-        generateBarcodeFAB.setVisibility(View.GONE);
+        emailFAB.setVisibility(View.GONE);
         deleteFAB.setVisibility(View.GONE);
     }
 
@@ -368,10 +411,10 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            itemKitListAdapter = new ItemKitListAdapter(activity,list);
-            itemKitListAdapter.setEditCallBack(this);
-            itemKitListAdapter.setCheckedCallBack(this);
-            recyclerView.setAdapter(itemKitListAdapter);
+            supplierListAdapter = new SupplierListAdapter(activity,list);
+            supplierListAdapter.setEditCallBack(this);
+            supplierListAdapter.setCheckedCallBack(this);
+            recyclerView.setAdapter(supplierListAdapter);
         }
     }
 
@@ -401,7 +444,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public boolean onQueryTextChange(String searchQuery) {
-                itemKitListAdapter.filter(searchQuery.toString().trim());
+                supplierListAdapter.filter(searchQuery.toString().trim());
                 recyclerView.invalidate();
                 return true;
             }
@@ -447,7 +490,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // To Do service response data to pass
-        gotoAddItemKitView("Update Item Kit");
+        gotoAddSupplierView("Update Supplier");
     }
 
     @Override
@@ -459,22 +502,23 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onSelectedStatusArray(List<Boolean> checkedPositionArrayList) {
-
         if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
         this.checkedPositionArrayList = checkedPositionArrayList;
 
     }
 
-    private void gotoAddItemKitView(String pageName){
-        Intent intent = new Intent(getApplicationContext(), AddItemKitActivity_.class);
+    private void gotoAddSupplierView(String pageName){
+        Intent intent = new Intent(getApplicationContext(), AddSupplierActivity_.class);
         intent.putExtra("PageName",pageName);
         startActivity(intent);
     }
 
-    private void gotoBarcodeGenerateView(){
 
-        Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+    private void gotoEmailView(String [] emailArray){
+        Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
+        intent.putExtra("EmailId",emailArray);
         startActivity(intent);
     }
 }
+
 

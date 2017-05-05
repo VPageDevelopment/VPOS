@@ -192,7 +192,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case 3:
-                // TO DO
+                gotoSupplierView();
                 break;
         }
     }
@@ -215,6 +215,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
+    private void gotoSupplierView(){
+        Intent intent = new Intent(getApplicationContext(), SupplierActivity_.class);
+        startActivity(intent);
+    }
+
+
     private void gotoLoginView(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity_.class);
         startActivity(intent);
@@ -225,4 +231,5 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
     }
+
 }

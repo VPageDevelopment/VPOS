@@ -75,10 +75,10 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
 
     @Override
-    public ItemListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_item, parent, false);
-        ItemListAdapter.ViewHolder viewHolder = new ItemListAdapter.ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
     }
@@ -355,7 +355,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             JSONArray jsonArrayData = new JSONArray(setting);
             for (int i = 0; i < jsonArrayData.length(); i++) {
                 JSONObject jsonObject = jsonArrayData.getJSONObject(i);
-                id = jsonObject.getBoolean(AppConstant.TAG_ID_Item);
+                id = jsonObject.getBoolean(AppConstant.TAG_ID);
                 barCode = jsonObject.getBoolean(AppConstant.TAG_Barcode);
                 IName = jsonObject.getBoolean(AppConstant.TAG_IName);
                 category = jsonObject.getBoolean(AppConstant.TAG_Category);
