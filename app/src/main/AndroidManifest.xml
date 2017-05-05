@@ -66,6 +66,14 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name=".activity.ItemKitActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.AddItemKitActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".activity.EmailActivity_"
             android:screenOrientation="portrait"
             />

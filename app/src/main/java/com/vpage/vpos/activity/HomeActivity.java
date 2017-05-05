@@ -188,7 +188,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case 2:
-                // TO DO
+                gotoItemKitView();
                 break;
 
             case 3:
@@ -209,6 +209,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
+
+    private void gotoItemKitView(){
+        Intent intent = new Intent(getApplicationContext(), ItemKitActivity_.class);
+        startActivity(intent);
+    }
 
     private void gotoLoginView(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity_.class);

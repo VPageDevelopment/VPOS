@@ -42,9 +42,9 @@ import org.androidannotations.annotations.ViewById;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
+/*import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.entity.mime.content.StringBody;*/
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -477,7 +477,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    @UiThread
+   /* @UiThread
     public void startUploadImage(){
         dialog = new ProgressDialog(activity);
         dialog.setMessage("Uploading...");
@@ -526,5 +526,5 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
             Toast.makeText(getApplicationContext(), uploadResponse, Toast.LENGTH_LONG).show();
         }
 
-    }
+    }*/
 }

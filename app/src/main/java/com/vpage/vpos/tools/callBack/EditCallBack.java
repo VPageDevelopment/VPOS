@@ -1,5 +1,5 @@
 package com.vpage.vpos.tools.callBack;
 
-public interface CustomerEditCallBack {
+public interface EditCallBack {
     void onEditSelected(int position);
 }

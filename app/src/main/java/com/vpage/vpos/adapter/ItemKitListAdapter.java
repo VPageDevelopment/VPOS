@@ -1,8 +1,5 @@
 package com.vpage.vpos.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,27 +10,28 @@ import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.CustomerResponse;
+import com.vpage.vpos.pojos.ItemKitResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapter.ViewHolder> {
+public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.ViewHolder> {
 
-    private static final String TAG = CustomerListAdapter.class.getName();
+    private static final String TAG = ItemKitListAdapter.class.getName();
 
     private SparseBooleanArray mChecked = new SparseBooleanArray();
 
@@ -48,17 +46,17 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     private CheckBox checkBox_header;
 
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
-    Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
+    Boolean ID = false, IKName = false, IKDes = false, IKCPrice = false, IKRPrice = false;
     String jsonObjectData = null;
 
-    private List<CustomerResponse> customerResponseList;
-    private List<CustomerResponse> responseList;
+    private List<ItemKitResponse> itemKitResponseList;
+    private List<ItemKitResponse> responseList;
 
-    public CustomerListAdapter(Activity activity,List<CustomerResponse> customerResponseList) {
+    public ItemKitListAdapter(Activity activity,List<ItemKitResponse> itemKitResponseList) {
         this.activity = activity;
-        this.customerResponseList = customerResponseList;
+        this.itemKitResponseList = itemKitResponseList;
         responseList = new ArrayList<>();
-        responseList.addAll( this.customerResponseList );
+        responseList.addAll( this.itemKitResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
 
@@ -72,38 +70,38 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
 
     @Override
-    public CustomerListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemKitListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_customer, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_itemkit, parent, false);
+        ItemKitListAdapter.ViewHolder viewHolder = new ItemKitListAdapter.ViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = customerResponseList.get(position).getFirstName();
+    public void onBindViewHolder(final ItemKitListAdapter.ViewHolder holder, final int position) {
+        final String name = itemKitResponseList.get(position).getItemKitName();
 
-        jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+        jsonObjectData = VPOSPreferences.get(AppConstant.iKFilterPreference);
         if (null != jsonObjectData) {
             if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
             getJSONData(jsonObjectData,holder);
         }else {
             holder.IdText.setVisibility(View.VISIBLE);
-            holder.firstText.setVisibility(View.VISIBLE);
-            holder.lastText.setVisibility(View.VISIBLE);
-            holder.emailText.setVisibility(View.VISIBLE);
-            holder.phoneNumberText.setVisibility(View.VISIBLE);
+            holder.itemKitName.setVisibility(View.VISIBLE);
+            holder.itemKitDescription.setVisibility(View.VISIBLE);
+            holder.costPrice.setVisibility(View.VISIBLE);
+            holder.retailPrice.setVisibility(View.VISIBLE);
         }
 
 
-        holder.IdText.setText("ID: " +customerResponseList.get(position).getId());
-        holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirstName());
-        holder.lastText.setText("Last Name: " + customerResponseList.get(position).getLastName());
-        holder.emailText.setText("IKCPrice: " + customerResponseList.get(position).getEmail());
-        holder.phoneNumberText.setText("Phone Number: " + customerResponseList.get(position).getPhoneNumber());
+        holder.IdText.setText("Kit Id: " + itemKitResponseList.get(position).getId());
+        holder.itemKitName.setText("Item Kit Name: " + itemKitResponseList.get(position).getItemKitName());
+        holder.itemKitDescription.setText("Item Kit Description: " + itemKitResponseList.get(position).getItemKitDescription());
+        holder.costPrice.setText("Cost Price: " + itemKitResponseList.get(position).getCostPrice());
+        holder.retailPrice.setText("Retail Price: " + itemKitResponseList.get(position).getRetailPrice());
 
-        holder.editButton.setOnClickListener(new OnClickListener() {
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // call back to customer view
@@ -112,31 +110,31 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
         });
 
 
-        holder.deleteButton.setOnClickListener(new OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                    TextView title = new TextView(activity);
-                    // You Can Customise your Title here
-                    title.setText(activity.getResources().getString(R.string.app_name));
-                    title.setBackgroundColor(Color.BLACK);
-                    title.setPadding(10, 15, 15, 10);
-                    title.setGravity(Gravity.CENTER);
-                    title.setTextColor(Color.WHITE);
-                    title.setTextSize(20);
+                TextView title = new TextView(activity);
+                // You Can Customise your Title here
+                title.setText(activity.getResources().getString(R.string.app_name));
+                title.setBackgroundColor(Color.BLACK);
+                title.setPadding(10, 15, 15, 10);
+                title.setGravity(Gravity.CENTER);
+                title.setTextColor(Color.WHITE);
+                title.setTextSize(20);
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-                    alertDialog.setCustomTitle(title);
-                    alertDialog.setMessage("Are you Sure to Delete Customer Record");
+                AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+                alertDialog.setCustomTitle(title);
+                alertDialog.setMessage("Are you Sure to Delete Customer Record");
 
-                    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            // To Do delete the data from Customer response
-                            remove(name);
-                        }
-                    });
-                    alertDialog.show();
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        // To Do delete the data from Customer response
+                        remove(name);
+                    }
+                });
+                alertDialog.show();
             }
         });
 
@@ -184,10 +182,10 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
                     }
                 }
 
-                    for (int i = 0; i < count; i++) {
-                        checkedPositionArrayList.add(mChecked.get(i));
-                    }
-                    checkedCallBack.onSelectedStatusArray(checkedPositionArrayList);
+                for (int i = 0; i < count; i++) {
+                    checkedPositionArrayList.add(mChecked.get(i));
+                }
+                checkedCallBack.onSelectedStatusArray(checkedPositionArrayList);
             }
 
         });
@@ -247,36 +245,36 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
     @Override
     public int getItemCount() {
-        count = customerResponseList.size();
+        count = itemKitResponseList.size();
         return count;
     }
 
 
-    public void add(int position, CustomerResponse item) {
-        customerResponseList.add(position, item);
+    public void add(int position, ItemKitResponse item) {
+        itemKitResponseList.add(position, item);
         notifyItemInserted(position);
     }
 
     void remove(String item) {
-        int position = customerResponseList.indexOf(item);
-        customerResponseList.remove(position);
+        int position = itemKitResponseList.indexOf(item);
+        itemKitResponseList.remove(position);
         notifyItemRemoved(position);
     }
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView IdText,firstText,lastText,emailText,phoneNumberText;
+        TextView IdText,itemKitName,itemKitDescription,costPrice,retailPrice;
         CheckBox itemCheckBox;
         ImageButton editButton,deleteButton;
 
         ViewHolder(View v) {
             super(v);
             IdText = (TextView) v.findViewById(R.id.IdText);
-            firstText = (TextView) v.findViewById(R.id.firstText);
-            lastText = (TextView) v.findViewById(R.id.lastText);
-            emailText = (TextView) v.findViewById(R.id.emailText);
-            phoneNumberText = (TextView) v.findViewById(R.id.phoneNumberText);
+            itemKitName = (TextView) v.findViewById(R.id.itemKitName);
+            itemKitDescription = (TextView) v.findViewById(R.id.itemKitDescription);
+            costPrice = (TextView) v.findViewById(R.id.costPrice);
+            retailPrice = (TextView) v.findViewById(R.id.retailPrice);
             itemCheckBox = (CheckBox) v.findViewById(R.id.itemCheckBox);
             editButton = (ImageButton) v.findViewById(R.id.editButton);
             deleteButton = (ImageButton) v.findViewById(R.id.deleteButton);
@@ -285,19 +283,18 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
 
 
     public void filter(String charText) {
-
         charText = charText.toLowerCase(Locale.getDefault());
 
-        customerResponseList.clear();
+        itemKitResponseList.clear();
         if (charText.length() == 0) {
-            customerResponseList.addAll(responseList);
+            itemKitResponseList.addAll(responseList);
 
         } else {
-            for (CustomerResponse customerResponse : responseList) {
-                if (charText.length() != 0 && customerResponse.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    customerResponseList.add(customerResponse);
-                } else if (charText.length() != 0 && customerResponse.getLastName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    customerResponseList.add(customerResponse);
+            for (ItemKitResponse itemKitResponse : responseList) {
+                if (charText.length() != 0 && itemKitResponse.getItemKitName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    itemKitResponseList.add(itemKitResponse);
+                } else if (charText.length() != 0 && itemKitResponse.getItemKitDescription().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    itemKitResponseList.add(itemKitResponse);
                 }
             }
         }
@@ -305,18 +302,18 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     }
 
 
-    private void getJSONData(String setting,ViewHolder holder) {
+    private void getJSONData(String setting,ItemKitListAdapter.ViewHolder holder) {
 
         try {
 
             JSONArray jsonArrayData = new JSONArray(setting);
             for (int i = 0; i < jsonArrayData.length(); i++) {
                 JSONObject jsonObject = jsonArrayData.getJSONObject(i);
-                ID = jsonObject.getBoolean(AppConstant.TAG_ID);
-                FName = jsonObject.getBoolean(AppConstant.TAG_FName);
-                LName = jsonObject.getBoolean(AppConstant.TAG_LName);
-                Email = jsonObject.getBoolean(AppConstant.TAG_Email);
-                PhoneNumber = jsonObject.getBoolean(AppConstant.TAG_PhoneNumber);
+                ID = jsonObject.getBoolean(AppConstant.TAG_ID_KItem);
+                IKName = jsonObject.getBoolean(AppConstant.TAG_IKName);
+                IKDes = jsonObject.getBoolean(AppConstant.TAG_IKDes);
+                IKCPrice = jsonObject.getBoolean(AppConstant.TAG_IKCPrice);
+                IKRPrice = jsonObject.getBoolean(AppConstant.TAG_IKRPrice);
 
             }
 
@@ -330,28 +327,28 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
             holder.IdText.setVisibility(View.GONE);
         }
 
-        if(FName){
-            holder.firstText.setVisibility(View.VISIBLE);
+        if(IKName){
+            holder.itemKitName.setVisibility(View.VISIBLE);
         }else {
-            holder.firstText.setVisibility(View.GONE);
+            holder.itemKitName.setVisibility(View.GONE);
         }
 
-        if(LName){
-            holder.lastText.setVisibility(View.VISIBLE);
+        if(IKDes){
+            holder.itemKitDescription.setVisibility(View.VISIBLE);
         }else {
-            holder.lastText.setVisibility(View.GONE);
+            holder.itemKitDescription.setVisibility(View.GONE);
         }
 
-        if(Email){
-            holder.emailText.setVisibility(View.VISIBLE);
+        if(IKCPrice){
+            holder.costPrice.setVisibility(View.VISIBLE);
         }else {
-            holder.emailText.setVisibility(View.GONE);
+            holder.costPrice.setVisibility(View.GONE);
         }
 
-        if(PhoneNumber){
-            holder.phoneNumberText.setVisibility(View.VISIBLE);
+        if(IKRPrice){
+            holder.retailPrice.setVisibility(View.VISIBLE);
         }else {
-            holder.phoneNumberText.setVisibility(View.GONE);
+            holder.retailPrice.setVisibility(View.GONE);
         }
 
     }
