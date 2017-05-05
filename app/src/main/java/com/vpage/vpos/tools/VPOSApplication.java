@@ -1,10 +1,9 @@
 package com.vpage.vpos.tools;
 
-
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
-public class VPOSApplication extends Application {
+public class VPOSApplication extends MultiDexApplication {
 
     private static final String TAG = VPOSApplication.class.getName();
 
@@ -26,9 +25,5 @@ public class VPOSApplication extends Application {
     public static Context getContext() {
         return mContext;
     }
-
-
-
-
 
 }

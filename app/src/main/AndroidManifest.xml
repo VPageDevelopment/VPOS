@@ -62,6 +62,10 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name=".activity.BarcodeGenerateActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".activity.EmailActivity_"
             android:screenOrientation="portrait"
             />

@@ -393,6 +393,8 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }*/
 
+                gotoBarcodeGenerateView();
+
             }
         });
 
@@ -831,5 +833,14 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(getApplicationContext(), EditMultipleItemActivity_.class);
         startActivity(intent);
     }
+
+
+    private void gotoBarcodeGenerateView(){
+
+        Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+        startActivity(intent);
+    }
+
+
 
 }

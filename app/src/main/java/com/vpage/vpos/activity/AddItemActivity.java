@@ -2,31 +2,30 @@ package com.vpage.vpos.activity;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
@@ -34,12 +33,25 @@ import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
-import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 @EActivity(R.layout.activity_additem)
 public class AddItemActivity extends AppCompatActivity implements View.OnClickListener, OnNetworkChangeListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
@@ -128,6 +140,9 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     String pageName = "";
 
     Activity activity;
+
+    private ProgressDialog dialog;
+    Bitmap bitmap;
 
     @AfterViews
     public void onInitView() {
@@ -396,7 +411,11 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         if (requestCode == AppConstant.PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             //Getting the Bitmap from Gallery
-            // bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+            } catch (IOException e) {
+                if (LogFlag.bLogOn) Log.e(TAG, e.toString());
+            }
 
             if(null != filePath){
                 if (LogFlag.bLogOn) Log.d(TAG,"FilePath: "+filePath);
@@ -455,6 +474,57 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @UiThread
+    public void startUploadImage(){
+        dialog = new ProgressDialog(activity);
+        dialog.setMessage("Uploading...");
+        dialog.show();
+        uploadImageTask();
+    }
+
+    @Background
+    public void uploadImageTask(){
+         String webAddressToPost = "";
+
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext((HttpContext) getApplicationContext());
+            HttpPost httpPost = new HttpPost(webAddressToPost);
+
+            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            byte[] data = bos.toByteArray();
+            String file = Base64.encodeToString(data,0,0,0);
+            entity.addPart("uploaded", new StringBody(file));
+
+            entity.addPart("someOtherStringToSend", new StringBody("your string here"));
+
+            httpPost.setEntity(entity);
+            HttpResponse response = httpClient.execute(httpPost,
+                    localContext);
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            response.getEntity().getContent(), "UTF-8"));
+
+            String sResponse = reader.readLine();
+            uploadImageTaskFinish(sResponse);
+            if (LogFlag.bLogOn)Log.d(TAG, "sResponse: " + sResponse);
+        } catch (Exception e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.toString());
+        }
+    }
+
+    @UiThread
+    public void uploadImageTaskFinish(String uploadResponse){
+        if(uploadResponse != null){
+            dialog.dismiss();
+            Toast.makeText(getApplicationContext(), uploadResponse, Toast.LENGTH_LONG).show();
+        }
 
     }
 }

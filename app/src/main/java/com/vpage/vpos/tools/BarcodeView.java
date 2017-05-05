@@ -6,6 +6,10 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
+import com.onbarcode.barcode.android.AndroidColor;
+import com.onbarcode.barcode.android.AndroidFont;
+import com.onbarcode.barcode.android.IBarcode;
+import com.onbarcode.barcode.android.UPCA;
 import com.vpage.vpos.tools.utils.LogFlag;
 
 public class BarcodeView extends View
@@ -22,7 +26,7 @@ public class BarcodeView extends View
 
         try {
 
-           // testUPCA(canvas);
+            testUPCA(canvas);
 
         } catch (Exception e) {
             if (LogFlag.bLogOn) Log.e(TAG, e.toString());
@@ -30,26 +34,26 @@ public class BarcodeView extends View
     }
 
 
-    /*private static void testUPCA(Canvas canvas)
+    private static void testUPCA(Canvas canvas)
     {
         UPCA barcode = new UPCA();
 
-        *//*
-           UPC-A Valid data char set:
+
+         /*  UPC-A Valid data char set:
                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 (Digits)
 
-           UPC-A Valid data length: 11 digits only, excluding the last checksum digit
-        *//*
+           UPC-A Valid data length: 11 digits only, excluding the last checksum digit*/
+
         barcode.setData("01234567890");
 
         // for UPC-A with supplement data (2 or 5 digits)
-        *//*
+
         barcode.setSupData("12");
         // supplement bar height vs bar height ratio
         barcode.setSupHeight(0.8f);
         // space between barcode and supplement barcode (in pixel)
         barcode.setSupSpace(15);
-        *//*
+
 
         // Unit of Measure, pixel, cm, or inch
         barcode.setUom(IBarcode.UOM_PIXEL);
@@ -79,14 +83,14 @@ public class BarcodeView extends View
         barcode.setForeColor(AndroidColor.black);
         barcode.setBackColor(AndroidColor.white);
 
-        *//*
-        specify your barcode drawing area
-	    *//*
+
+        //specify your barcode drawing area
+
         RectF bounds = new RectF(30, 30, 0, 0);
         try {
             barcode.drawBarcode(canvas, bounds);
         } catch (Exception e) {
-            Log.e(TAG,e.getMessage());
+            if (LogFlag.bLogOn)Log.e(TAG,e.getMessage());
         }
-    }*/
+    }
 }

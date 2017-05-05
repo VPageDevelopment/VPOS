@@ -5,6 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -17,6 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.tools.utils.LogFlag;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -252,6 +259,52 @@ public class VTools {
         return milliseconds;
     }
 
+    public static Bitmap decodeFile(String filePath) {
+        // Decode image size
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
 
+        // The new size we want to scale to
+        final int REQUIRED_SIZE = 1024;
+
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = options.outWidth, height_tmp = options.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE)
+                break;
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, o2);
+
+        return bitmap;
+    }
+
+
+    public static String getRequestWithAppVersion(String jsonParams) {
+        JSONObject jsonObject = null;
+        if (LogFlag.bLogOn)Log.d(TAG, "Additional request data");
+        try {
+            PackageInfo pinfo = VPOSApplication.getContext().getPackageManager().getPackageInfo(VPOSApplication.getContext().getPackageName(), 0);
+            if (LogFlag.bLogOn)Log.d("pinfoCode",String.valueOf(pinfo.versionCode));
+            if (LogFlag.bLogOn)Log.d("pinfoName",pinfo.versionName);
+            jsonObject = new JSONObject(jsonParams);
+            jsonObject.put("appVersion",pinfo.versionName);
+            jsonObject.put("devicePlatformName", "Android");
+        } catch (JSONException e) {
+            if (LogFlag.bLogOn) Log.d(TAG, e.toString());
+        } catch (PackageManager.NameNotFoundException e) {
+            if (LogFlag.bLogOn) Log.d(TAG, e.toString());
+        }
+        if (LogFlag.bLogOn)Log.d(TAG, "AppVersion & DeVicePlatform-->"+jsonObject.toString());
+        return jsonObject.toString();
+    }
 
 }
