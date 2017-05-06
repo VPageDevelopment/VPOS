@@ -150,30 +150,24 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
             description.getText().toString();
             itemKitNameInput = itemKitName.getText().toString();
             if (itemKitNameInput.isEmpty()) {
-
-                playGifView.setVisibility(View.GONE);
                 setErrorMessage("Fill all Required Input");
-
-            } else {
+                return;
+            }
 
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                // To Do service call
-
+                // TODO Service call
                 gotoItemKitView();
 
-            }
-
         }else {
-
-            playGifView.setVisibility(View.GONE);
             setErrorMessage("Check Network Connection");
         }
     }
 
 
     void setErrorMessage(String errorMessage) {
+        playGifView.setVisibility(View.GONE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }

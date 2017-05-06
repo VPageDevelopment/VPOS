@@ -120,15 +120,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
             validationStatus = ValidationUtils.isValidLoginUserNamePassword(userNameInput, userPasswordInput);
 
-            if (validationStatus.isStatus() == false) {
+            if (!validationStatus.isStatus()) {
                 playGifView.setVisibility(View.GONE);
                 setErrorMessage(validationStatus.getMessage());
-            } else {
+                return;
+            }
+
+
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
-
+              // TODO Service call
                 gotoHomeView();
-            }
+
 
         }else {
 

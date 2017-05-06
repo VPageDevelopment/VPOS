@@ -82,6 +82,14 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name=".activity.EmployeeActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.AddEmployeeActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".activity.EmailActivity_"
             android:screenOrientation="portrait"
             />

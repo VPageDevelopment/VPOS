@@ -304,19 +304,17 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                // To Do service call
-
+                // TODO Service call
                 gotoItemView();
 
             } else {
 
-                playGifView.setVisibility(View.GONE);
                 setErrorMessage("Fill all Required Input");
             }
 
         }else {
 
-            playGifView.setVisibility(View.GONE);
+
             setErrorMessage("Check Network Connection");
         }
     }
@@ -341,22 +339,22 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
-
+                
                 clearAllInputs();
+                // TODO Service call
 
             } else {
-                playGifView.setVisibility(View.GONE);
                 setErrorMessage("Fill all Required Input");
             }
 
         }else {
 
-            playGifView.setVisibility(View.GONE);
             setErrorMessage("Check Network Connection");
         }
     }
 
     void setErrorMessage(String errorMessage) {
+        playGifView.setVisibility(View.GONE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }

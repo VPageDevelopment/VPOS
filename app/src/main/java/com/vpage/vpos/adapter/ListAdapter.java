@@ -31,9 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapter.ViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-    private static final String TAG = CustomerListAdapter.class.getName();
+    private static final String TAG = ListAdapter.class.getName();
 
     private SparseBooleanArray mChecked = new SparseBooleanArray();
 
@@ -54,9 +54,12 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     private List<CustomerResponse> customerResponseList;
     private List<CustomerResponse> responseList;
 
-    public CustomerListAdapter(Activity activity,List<CustomerResponse> customerResponseList) {
+    String pageName;
+
+    public ListAdapter(Activity activity, List<CustomerResponse> customerResponseList, String pageName) {
         this.activity = activity;
         this.customerResponseList = customerResponseList;
+        this.pageName     = pageName;
         responseList = new ArrayList<>();
         responseList.addAll( this.customerResponseList );
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
@@ -84,7 +87,12 @@ public class CustomerListAdapter extends RecyclerView.Adapter<CustomerListAdapte
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final String name = customerResponseList.get(position).getFirstName();
 
-        jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+        if(pageName.equals("Customer")){
+            jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+        }else if(pageName.equals("Employee")){
+            jsonObjectData = VPOSPreferences.get(AppConstant.eFilterPreference);
+        }
+
         if (null != jsonObjectData) {
             if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
             getJSONData(jsonObjectData,holder);

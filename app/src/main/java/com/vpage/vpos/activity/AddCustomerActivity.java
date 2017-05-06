@@ -106,8 +106,8 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
-    String firstNameInput = "", lastNameInput = "",genderSelected = "Male";
-    ValidationStatus validationStatus;
+    String firstNameInput = "", lastNameInput = "",genderSelected = "Male",phoneNumberInput="";
+    ValidationStatus validationStatus,validationStatusPhoneNumber;
 
     boolean isNetworkAvailable = false;
 
@@ -212,7 +212,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
             switch (v.getId()) {
 
                 case R.id.lastName:
-
+                    getInputs();
                     validateInput();
 
                     break;
@@ -247,7 +247,6 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     void getInputs(){
 
         email.getText().toString();
-        phoneNumber.getText().toString();
         addressLine1.getText().toString();
         addressLine2.getText().toString();
         city.getText().toString();
@@ -269,27 +268,38 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
             firstNameInput = firstName.getText().toString();
             lastNameInput = lastName.getText().toString();
 
-            validationStatus = ValidationUtils.isValidNamePassword(firstNameInput,lastNameInput);
+            validationStatus = ValidationUtils.isValidName(firstNameInput,lastNameInput);
 
-            if (validationStatus.isStatus() == false) {
-                playGifView.setVisibility(View.GONE);
+            if (!validationStatus.isStatus()) {
                 setErrorMessage(validationStatus.getMessage());
-            } else {
+                return;
+            }
+
+            phoneNumberInput= phoneNumber.getText().toString();
+            if(!phoneNumberInput.isEmpty()){
+                validationStatusPhoneNumber =  ValidationUtils.isValidUserPhoneNumber(phoneNumberInput);
+                if (!validationStatusPhoneNumber.isStatus()) {
+                    if (LogFlag.bLogOn)Log.d(TAG, validationStatusPhoneNumber.getMessage());
+                    setErrorMessage(validationStatusPhoneNumber.getMessage());
+                    return;
+                }
+            }
+
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                // To Do service call
+            // TODO Service call
                 gotoCustomerView();
-            }
+
 
         }else {
 
-            playGifView.setVisibility(View.GONE);
             setErrorMessage("Check Network Connection");
         }
     }
 
     void setErrorMessage(String errorMessage) {
+        playGifView.setVisibility(View.GONE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }

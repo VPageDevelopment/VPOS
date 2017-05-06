@@ -1,6 +1,5 @@
 package com.vpage.vpos.activity;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,9 +28,9 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
-import com.vpage.vpos.adapter.SupplierFieldSpinnerAdapter;
-import com.vpage.vpos.adapter.SupplierListAdapter;
-import com.vpage.vpos.pojos.SupplierResponse;
+import com.vpage.vpos.adapter.FieldSpinnerAdapter;
+import com.vpage.vpos.adapter.ListAdapter;
+import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
@@ -44,25 +43,25 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
-@EActivity(R.layout.activity_supplier)
-public class SupplierActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack {
+@EActivity(R.layout.activity_employee)
+public class EmployeeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack {
 
-    private static final String TAG = SupplierActivity.class.getName();
+    private static final String TAG = EmployeeActivity.class.getName();
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
 
-    @ViewById(R.id.noSupplierContent)
-    LinearLayout noSupplierContent;
+    @ViewById(R.id.noEmployeeContent)
+    LinearLayout noEmployeeContentLayout;
 
-    @ViewById(R.id.SupplierContent)
-    LinearLayout SupplierContent;
+    @ViewById(R.id.employeeContent)
+    LinearLayout employeeContent;
 
-    @ViewById(R.id.addNewSupplier)
-    Button addNewSupplierButton;
+    @ViewById(R.id.addNewEmployeeButton)
+    Button addNewEmployeeButton;
 
-    @ViewById(R.id.addSupplierButton)
-    Button addSupplierButton;
+    @ViewById(R.id.addEmployeeButton)
+    Button addEmployeeButton;
 
     @ViewById(R.id.spinnerField)
     Spinner spinnerField;
@@ -70,23 +69,23 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
     @ViewById(R.id.spinnerFormat)
     Spinner spinnerFormat;
 
-    @ViewById(R.id.supplierRecycleView)
+    @ViewById(R.id.employeeRecycleView)
     RecyclerView recyclerView;
 
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
-    FloatingActionButton deleteFAB,emailFAB;
+    FloatingActionButton emailFAB;
 
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
 
-    SupplierListAdapter supplierListAdapter;
-    SupplierFieldSpinnerAdapter supplierFieldSpinnerAdapter;
+    ListAdapter listAdapter;
+    FieldSpinnerAdapter fieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
-    List<SupplierResponse> list;
+    List<CustomerResponse> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -94,15 +93,17 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     Activity activity;
 
+    String pageName ="Employee";
+
     @AfterViews
     public void onInitView() {
 
-        activity = SupplierActivity.this;
+        activity = EmployeeActivity.this;
 
         setActionBarSupport();
 
-        int itemCount = 1; // to test placed static data replaced by server response count
-        itemCountCheck(itemCount);
+        int customerCount = 1; // to test placed static data replaced by server response count
+        customerCountCheck(customerCount);
 
     }
 
@@ -111,22 +112,22 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("Suppliers");
+        getSupportActionBar().setTitle("Employees");
 
     }
 
-    void itemCountCheck(int itemCount){
+    void customerCountCheck(int customerCount){
 
-        if(itemCount == 0){
-            noSupplierContent.setVisibility(View.VISIBLE);
-            SupplierContent.setVisibility(View.GONE);
+        if(customerCount == 0){
+            noEmployeeContentLayout.setVisibility(View.VISIBLE);
+            employeeContent.setVisibility(View.GONE);
             floatingActionMenu.setVisibility(View.GONE);
-            addNewSupplierButton.setOnClickListener(this);
+            addNewEmployeeButton.setOnClickListener(this);
         }else {
-            noSupplierContent.setVisibility(View.GONE);
-            SupplierContent.setVisibility(View.VISIBLE);
+            noEmployeeContentLayout.setVisibility(View.GONE);
+            employeeContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
-            addSupplierButton.setOnClickListener(this);
+            addEmployeeButton.setOnClickListener(this);
             addItemsOnSpinner();
             addFabView();
             addRecyclerView();
@@ -135,7 +136,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        gotoAddSupplierView("New Supplier");
+        gotoAddEmployeeView("New Employee");
     }
 
     private void addItemsOnSpinner() {
@@ -143,18 +144,16 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
             spinnerList = new ArrayList<>();
             spinnerList.add("Filter By");
             spinnerList.add("Id");
-            spinnerList.add("Company Name");
-            spinnerList.add("Agency Name");
             spinnerList.add("First Name");
             spinnerList.add("Last Name");
             spinnerList.add("Email");
             spinnerList.add("Phone Number");
 
-            supplierFieldSpinnerAdapter = new SupplierFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            supplierFieldSpinnerAdapter.setFilterCallBack(this);
-            spinnerField.setAdapter(supplierFieldSpinnerAdapter);
+            fieldSpinnerAdapter = new FieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList,pageName);
+            fieldSpinnerAdapter.setFilterCallBack(this);
+            spinnerField.setAdapter(fieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
-            if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
+            if (LogFlag.bLogOn) Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
 
             spinnerFormat.setOnItemSelectedListener(this);
 
@@ -169,33 +168,29 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
         // To be replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            SupplierResponse supplierResponse = new SupplierResponse();
-            supplierResponse.setId(String.valueOf(i));
+            CustomerResponse customerResponse = new CustomerResponse();
+            customerResponse.setId(String.valueOf(i));
             if((i/2) == 0){
-                supplierResponse.setCompanyName("Vpage");
-                supplierResponse.setAgencyName("Vpage");
-                supplierResponse.setFirstName("Ram");
-                supplierResponse.setLastName("Kumar");
-                supplierResponse.setEmail("ramkumar@gmail.com");
+                customerResponse.setFirstName("Ram");
+                customerResponse.setLastName("Kumar");
+                customerResponse.setEmail("ramkumar@gmail.com");
             }else {
-                supplierResponse.setCompanyName("Vpage");
-                supplierResponse.setAgencyName("Vpage");
-                supplierResponse.setFirstName("Sree");
-                supplierResponse.setLastName("Kala");
-                supplierResponse.setEmail("sreekala@gmail.com");
+                customerResponse.setFirstName("Sree");
+                customerResponse.setLastName("Kala");
+                customerResponse.setEmail("sreekala@gmail.com");
             }
-            supplierResponse.setPhoneNumber("93587210537");
+            customerResponse.setPhoneNumber("93587210537");
 
-            list.add(supplierResponse);
+            list.add(customerResponse);
         }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        supplierListAdapter = new SupplierListAdapter(activity,list);
-        supplierListAdapter.setEditCallBack(this);
-        supplierListAdapter.setCheckedCallBack(this);
-        recyclerView.setAdapter(supplierListAdapter);
+        listAdapter = new ListAdapter(activity,list,pageName);
+        listAdapter.setEditCallBack(this);
+        listAdapter.setCheckedCallBack(this);
+        recyclerView.setAdapter(listAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -227,6 +222,12 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     private void addFabView(){
 
+        if(checkedPositionArrayList.size()>0){
+            floatingActionMenu.setVisibility(View.VISIBLE);
+        }else {
+            floatingActionMenu.setVisibility(View.VISIBLE);
+        }
+
         emailFAB = new FloatingActionButton(activity);
         emailFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
         emailFAB.setColorNormalResId(R.color.colorPrimaryDark);
@@ -234,13 +235,6 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         emailFAB.setLabelText("Email");
         emailFAB.setImageResource(android.R.drawable.ic_dialog_email);
 
-
-        deleteFAB = new FloatingActionButton(activity);
-        deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
-        deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
-        deleteFAB.setColorPressedResId(R.color.colorPrimary);
-        deleteFAB.setLabelText("Delete");
-        deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
 
         addFabButton();
 
@@ -262,13 +256,12 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
                 if (!floatingActionMenu.isOpened()) {
                     if(checkedStatus){
                         emailFAB.setVisibility(View.VISIBLE);
-                        deleteFAB.setVisibility(View.VISIBLE);
                     }else {
                         emailFAB.setVisibility(View.GONE);
-                        deleteFAB.setVisibility(View.GONE);
                     }
-                    // To Do Export function after getting url to Export
+
                 }
+                showDeleteAlertDialog();
                 floatingActionMenu.toggle(true);
             }
 
@@ -276,18 +269,6 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
         floatingActionMenu.setOnMenuButtonClickListener(listener);
 
-        deleteFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
-                        ContextCompat.getColor(activity, R.color.LiteGray),
-                        ContextCompat.getColor(activity, R.color.White));
-                deleteFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
-
-                floatingActionMenu.toggle(true);
-                showDeleteAlertDialog();
-            }
-        });
 
         emailFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,7 +306,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                itemCountCheck(0);
+                customerCountCheck(0);
 
                 // To Do after Server Response update
               /*  try {
@@ -339,7 +320,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
 */
-                supplierListAdapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
             }
@@ -388,9 +369,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
     private void addFabButton(){
 
         floatingActionMenu.addMenuButton(emailFAB);
-        floatingActionMenu.addMenuButton(deleteFAB);
         emailFAB.setVisibility(View.GONE);
-        deleteFAB.setVisibility(View.GONE);
     }
 
     @Override
@@ -415,10 +394,10 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            supplierListAdapter = new SupplierListAdapter(activity,list);
-            supplierListAdapter.setEditCallBack(this);
-            supplierListAdapter.setCheckedCallBack(this);
-            recyclerView.setAdapter(supplierListAdapter);
+            listAdapter = new ListAdapter(activity,list,pageName);
+            listAdapter.setEditCallBack(this);
+            listAdapter.setCheckedCallBack(this);
+            recyclerView.setAdapter(listAdapter);
         }
     }
 
@@ -448,7 +427,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public boolean onQueryTextChange(String searchQuery) {
-                supplierListAdapter.filter(searchQuery.toString().trim());
+                listAdapter.filter(searchQuery.toString().trim());
                 recyclerView.invalidate();
                 return true;
             }
@@ -494,7 +473,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // To Do service response data to pass
-        gotoAddSupplierView("Update Supplier");
+        gotoAddEmployeeView("Update Employee");
     }
 
     @Override
@@ -508,15 +487,19 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
     public void onSelectedStatusArray(List<Boolean> checkedPositionArrayList) {
         if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
         this.checkedPositionArrayList = checkedPositionArrayList;
+        if(this.checkedPositionArrayList.size()>0){
+            floatingActionMenu.setVisibility(View.VISIBLE);
+        }else {
+            floatingActionMenu.setVisibility(View.VISIBLE);
+        }
 
     }
 
-    private void gotoAddSupplierView(String pageName){
-        Intent intent = new Intent(getApplicationContext(), AddSupplierActivity_.class);
+    private void gotoAddEmployeeView(String pageName){
+        Intent intent = new Intent(getApplicationContext(), AddEmployeeActivity_.class);
         intent.putExtra("PageName",pageName);
         startActivity(intent);
     }
-
 
     private void gotoEmailView(String [] emailArray){
         Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
@@ -524,5 +507,3 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         startActivity(intent);
     }
 }
-
-

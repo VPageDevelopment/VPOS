@@ -248,7 +248,7 @@
             fab:menu_colorRipple="@color/colorAccent"
             fab:menu_labels_ellipsize="end"
             fab:menu_labels_singleLine="true"
-            fab:menu_icon="@drawable/ic_star"
+            fab:menu_icon="@drawable/export"
             fab:menu_backgroundColor="@color/black_semi_transparent"
             fab:menu_fab_label="Excel Export">
 

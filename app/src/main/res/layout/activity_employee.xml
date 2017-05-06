@@ -33,14 +33,14 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_margin="20dp"
-            android:id="@+id/noSupplierContent"
+            android:id="@+id/noEmployeeContent"
             android:visibility="gone">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/noSupplierText"
-                android:text="No Supplier Present"
+                android:id="@+id/noEmployeeText"
+                android:text="No Employee Present"
                 android:textColor="@color/Black"
                 android:gravity="center|center_horizontal"
                 android:textSize="@dimen/common_textSize"
@@ -58,8 +58,8 @@
                 fbutton:shadowEnabled="true"
                 fbutton:shadowHeight="3dp"
                 android:gravity="center|center_horizontal"
-                android:text="New Supplier"
-                android:id="@+id/addNewSupplier"
+                android:text="Add New Employee"
+                android:id="@+id/addNewEmployeeButton"
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:textColor="@color/button_text_color"
@@ -71,7 +71,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/SupplierContent"
+            android:id="@+id/employeeContent"
             android:layout_margin="10dp"
             android:visibility="visible"
             android:orientation="vertical">
@@ -138,8 +138,8 @@
                     fbutton:shadowEnabled="true"
                     fbutton:shadowHeight="3dp"
                     android:gravity="center|center_horizontal"
-                    android:text="New Supplier"
-                    android:id="@+id/addSupplierButton"
+                    android:text="Add Employee"
+                    android:id="@+id/addEmployeeButton"
                     android:textStyle="bold"
                     android:textAllCaps="false"
                     android:textColor="@color/button_text_color"
@@ -212,7 +212,7 @@
                     />
             </RelativeLayout>
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/supplierRecycleView"
+                android:id="@+id/employeeRecycleView"
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -233,9 +233,9 @@
             fab:menu_colorRipple="@color/colorAccent"
             fab:menu_labels_ellipsize="end"
             fab:menu_labels_singleLine="true"
-            fab:menu_icon="@drawable/export"
+            fab:menu_icon="@drawable/delete"
             fab:menu_backgroundColor="@color/black_semi_transparent"
-            fab:menu_fab_label="Excel Export">
+            fab:menu_fab_label="Delete">
 
             <!--    <com.github.clans.fab.FloatingActionButton
                     android:id="@+id/fab1"

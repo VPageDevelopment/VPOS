@@ -20,9 +20,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerFieldSpinnerAdapter extends ArrayAdapter<String> {
+public class FieldSpinnerAdapter extends ArrayAdapter<String> {
 
-    private static final String TAG = CustomerFieldSpinnerAdapter.class.getName();
+    private static final String TAG = FieldSpinnerAdapter.class.getName();
 
     private Activity activity;
     List<String> fieldArrayList = new ArrayList<>();
@@ -33,12 +33,15 @@ public class CustomerFieldSpinnerAdapter extends ArrayAdapter<String> {
     Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    public CustomerFieldSpinnerAdapter(Activity activitySpinner, int textViewResourceId, List<String> fieldArrayList)
+    String pageName;
+
+    public FieldSpinnerAdapter(Activity activitySpinner, int textViewResourceId, List<String> fieldArrayList, String pageName)
     {
         super(activitySpinner, textViewResourceId, fieldArrayList);
 
         activity = activitySpinner;
         this.fieldArrayList     = fieldArrayList;
+        this.pageName     = pageName;
 
     }
 
@@ -69,7 +72,12 @@ public class CustomerFieldSpinnerAdapter extends ArrayAdapter<String> {
 
             mCheckBox.setVisibility(View.GONE);
             fieldName.setVisibility(View.GONE);
-            jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+            if(pageName.equals("Customer")){
+                jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+            }else if(pageName.equals("Employee")){
+                jsonObjectData = VPOSPreferences.get(AppConstant.eFilterPreference);
+            }
+
         }
         else {
             mCheckBox.setVisibility(View.VISIBLE);
@@ -79,7 +87,12 @@ public class CustomerFieldSpinnerAdapter extends ArrayAdapter<String> {
                 if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
                 getJSONData(jsonObjectData, position, mCheckBox);
                 jsonArray = makJsonArray(customerSpinnerStatus);
-                VPOSPreferences.save(AppConstant.cFilterPreference,jsonArray.toString());
+                if(pageName.equals("Customer")){
+                    VPOSPreferences.save(AppConstant.cFilterPreference,jsonArray.toString());
+                }else if(pageName.equals("Employee")){
+                    VPOSPreferences.save(AppConstant.eFilterPreference,jsonArray.toString());
+                }
+
             }
             fieldName.setText(fieldArrayList.get(position));
 
@@ -93,7 +106,11 @@ public class CustomerFieldSpinnerAdapter extends ArrayAdapter<String> {
                     setSpinnerStatus(position,mCheckBox.isChecked(),mCheckBox);
 
                     jsonArray = makJsonArray(customerSpinnerStatus);
-                    VPOSPreferences.save(AppConstant.cFilterPreference,jsonArray.toString());
+                    if(pageName.equals("Customer")){
+                        VPOSPreferences.save(AppConstant.cFilterPreference,jsonArray.toString());
+                    }else if(pageName.equals("Employee")){
+                        VPOSPreferences.save(AppConstant.eFilterPreference,jsonArray.toString());
+                    }
 
                     filterCallBack.onFilterStatus(true);
 

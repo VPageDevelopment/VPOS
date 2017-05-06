@@ -21,5 +21,7 @@ public class AppConstant {
 
     public  static String sFilterPreference = "Supplier_CHECKBOX_DATA";
 
+    public  static String eFilterPreference = "Employee_CHECKBOX_DATA";
+
     public static int PICK_IMAGE_REQUEST = 1;
 }

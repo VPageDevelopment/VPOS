@@ -292,16 +292,22 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
         bulkEditFAB = new FloatingActionButton(activity);
         bulkEditFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        bulkEditFAB.setColorNormalResId(R.color.colorPrimaryDark);
+        bulkEditFAB.setColorPressedResId(R.color.colorPrimary);
         bulkEditFAB.setLabelText("BulkEdit");
         bulkEditFAB.setImageResource(R.drawable.edit);
 
         generateBarcodeFAB = new FloatingActionButton(activity);
         generateBarcodeFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        generateBarcodeFAB.setColorNormalResId(R.color.colorPrimaryDark);
+        generateBarcodeFAB.setColorPressedResId(R.color.colorPrimary);
         generateBarcodeFAB.setLabelText("GenerateBarcode");
         generateBarcodeFAB.setImageResource(R.drawable.barcode);
 
         deleteFAB = new FloatingActionButton(activity);
         deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
+        deleteFAB.setColorPressedResId(R.color.colorPrimary);
         deleteFAB.setLabelText("Delete");
         deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
 

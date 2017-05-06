@@ -101,8 +101,8 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
         setActionBarSupport();
 
-        int customerCount = 1; // to test placed static data replaced by server response count
-        customerCountCheck(customerCount);
+        int itemCount= 1; // to test placed static data replaced by server response count
+        itemCountCheck(itemCount);
 
     }
 
@@ -111,13 +111,13 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("Customers");
+        getSupportActionBar().setTitle("Item Kits");
 
     }
 
-    void customerCountCheck(int customerCount){
+    void itemCountCheck(int itemCount){
 
-        if(customerCount == 0){
+        if(itemCount == 0){
             noItemKitContent.setVisibility(View.VISIBLE);
             itemKitContent.setVisibility(View.GONE);
             floatingActionMenu.setVisibility(View.GONE);
@@ -224,11 +224,15 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
         deleteFAB = new FloatingActionButton(activity);
         deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
+        deleteFAB.setColorPressedResId(R.color.colorPrimary);
         deleteFAB.setLabelText("Delete");
         deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
 
         generateBarcodeFAB = new FloatingActionButton(activity);
         generateBarcodeFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        generateBarcodeFAB.setColorNormalResId(R.color.colorPrimaryDark);
+        generateBarcodeFAB.setColorPressedResId(R.color.colorPrimary);
         generateBarcodeFAB.setLabelText("GenerateBarcode");
         generateBarcodeFAB.setImageResource(R.drawable.barcode);
 
@@ -315,7 +319,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                customerCountCheck(0);
+                itemCountCheck(0);
 
                 // To Do after Server Response update
               /*  try {

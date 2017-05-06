@@ -36,7 +36,7 @@ public class ValidationUtils {
         return validationStatus;
     }
 
-    static public ValidationStatus isValidNamePassword( String firstName, String lastName) {
+    static public ValidationStatus isValidName(String firstName, String lastName) {
         ValidationStatus validationStatus = new ValidationStatus();
         validationStatus.setStatus(true);
         validationStatus.setMessage("");

@@ -130,29 +130,26 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
 
         if(isNetworkAvailable){
 
-
             inventoryInput =  inventory.getText().toString();
-
-
             if (inventoryInput.isEmpty()) {
-                playGifView.setVisibility(View.GONE);
                 setErrorMessage("Fill all Required Input");
-            } else {
-                playGifView.setVisibility(View.VISIBLE);
-                textError.setVisibility(View.GONE);
-
-                // To Do service call
-                gotoItemView();
+                return;
             }
+
+            playGifView.setVisibility(View.VISIBLE);
+            textError.setVisibility(View.GONE);
+
+            // TODO Service call
+            gotoItemView();
 
         }else {
 
-            playGifView.setVisibility(View.GONE);
             setErrorMessage("Check Network Connection");
         }
     }
 
     void setErrorMessage(String errorMessage) {
+        playGifView.setVisibility(View.GONE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }

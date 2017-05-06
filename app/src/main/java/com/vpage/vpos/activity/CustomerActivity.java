@@ -26,8 +26,8 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
-import com.vpage.vpos.adapter.CustomerListAdapter;
-import com.vpage.vpos.adapter.CustomerFieldSpinnerAdapter;
+import com.vpage.vpos.adapter.ListAdapter;
+import com.vpage.vpos.adapter.FieldSpinnerAdapter;
 import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
@@ -80,8 +80,8 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
 
-    CustomerListAdapter customerListAdapter;
-    CustomerFieldSpinnerAdapter customerFieldSpinnerAdapter;
+    ListAdapter listAdapter;
+    FieldSpinnerAdapter fieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
@@ -92,6 +92,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
     Activity activity;
+    String pageName ="Customer";
 
     @AfterViews
     public void onInitView() {
@@ -100,8 +101,8 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarSupport();
 
-        int customerCount = 1; // to test placed static data replaced by server response count
-        customerCountCheck(customerCount);
+        int itemCount= 1; // to test placed static data replaced by server response count
+        itemCountCheck(itemCount);
 
     }
 
@@ -114,9 +115,9 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    void customerCountCheck(int customerCount){
+    void itemCountCheck(int itemCount){
 
-        if(customerCount == 0){
+        if(itemCount == 0){
             noCustomerContentLayout.setVisibility(View.VISIBLE);
             customerContent.setVisibility(View.GONE);
             floatingActionMenu.setVisibility(View.GONE);
@@ -147,9 +148,9 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             spinnerList.add("Email");
             spinnerList.add("Phone Number");
 
-            customerFieldSpinnerAdapter = new CustomerFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            customerFieldSpinnerAdapter.setFilterCallBack(this);
-            spinnerField.setAdapter(customerFieldSpinnerAdapter);
+            fieldSpinnerAdapter = new FieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList,pageName);
+            fieldSpinnerAdapter.setFilterCallBack(this);
+            spinnerField.setAdapter(fieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
             if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
 
@@ -185,10 +186,10 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        customerListAdapter = new CustomerListAdapter(activity,list);
-        customerListAdapter.setEditCallBack(this);
-        customerListAdapter.setCheckedCallBack(this);
-        recyclerView.setAdapter(customerListAdapter);
+        listAdapter = new ListAdapter(activity,list,pageName);
+        listAdapter.setEditCallBack(this);
+        listAdapter.setCheckedCallBack(this);
+        recyclerView.setAdapter(listAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -222,12 +223,16 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
          emailFAB = new FloatingActionButton(activity);
          emailFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+         emailFAB.setColorNormalResId(R.color.colorPrimaryDark);
+         emailFAB.setColorPressedResId(R.color.colorPrimary);
          emailFAB.setLabelText("Email");
          emailFAB.setImageResource(android.R.drawable.ic_dialog_email);
 
 
          deleteFAB = new FloatingActionButton(activity);
          deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+         deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
+         deleteFAB.setColorPressedResId(R.color.colorPrimary);
          deleteFAB.setLabelText("Delete");
          deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
 
@@ -314,7 +319,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                customerCountCheck(0);
+                itemCountCheck(0);
 
                 // To Do after Server Response update
               /*  try {
@@ -328,7 +333,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
 */
-                customerListAdapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
             }
@@ -404,10 +409,10 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            customerListAdapter = new CustomerListAdapter(activity,list);
-            customerListAdapter.setEditCallBack(this);
-            customerListAdapter.setCheckedCallBack(this);
-            recyclerView.setAdapter(customerListAdapter);
+            listAdapter = new ListAdapter(activity,list,pageName);
+            listAdapter.setEditCallBack(this);
+            listAdapter.setCheckedCallBack(this);
+            recyclerView.setAdapter(listAdapter);
         }
     }
 
@@ -437,7 +442,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public boolean onQueryTextChange(String searchQuery) {
-                customerListAdapter.filter(searchQuery.toString().trim());
+                listAdapter.filter(searchQuery.toString().trim());
                 recyclerView.invalidate();
                 return true;
             }
