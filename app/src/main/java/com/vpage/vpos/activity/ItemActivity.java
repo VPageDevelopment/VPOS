@@ -660,27 +660,23 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         String[] items = { "Today", "Today Last Year", "Yesterday", "Last 7 Days", "Last 30 Days",
                 "This Month","Same Moth To Same Day Last Year","Same Moth Last Year","Last Month","This Year","Last Year",
                 "All Time","Custom"};
-        long millisecondsMax = 0,millisecondsMin = 0;
+
 
         if(!fromDateString.isEmpty() && !toDateString.isEmpty()){
             fromDate.setText(fromDateString);
             toDate.setText(toDateString);
-            millisecondsMax = VTools.convertStringDateToLong(fromDateString);
-            millisecondsMin = VTools.convertStringDateToLong(toDateString);
+            calendarView.setDate(VTools.convertStringDateToLong(fromDateString));
         }else {
-            millisecondsMax = VTools.convertStringDateToLong(todayDate);
-            millisecondsMin = VTools.convertStringDateToLong(todayDate);
             fromDate.setText(todayDate);
             toDate.setText(todayDate);
+            calendarView.setDate(Calendar.getInstance().getTimeInMillis());
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.popuplist, items);
 
         listView.setAdapter(adapter);
 
-        if (LogFlag.bLogOn)Log.d(TAG, "Today Date: " + Calendar.getInstance().getTimeInMillis());
-        calendarView.setMaxDate(millisecondsMax);
-        calendarView.setMinDate(millisecondsMin);
+
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 

@@ -108,7 +108,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.IdText.setText("ID: " +customerResponseList.get(position).getId());
         holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirstName());
         holder.lastText.setText("Last Name: " + customerResponseList.get(position).getLastName());
-        holder.emailText.setText("IKCPrice: " + customerResponseList.get(position).getEmail());
+        holder.emailText.setText("Email: " + customerResponseList.get(position).getEmail());
         holder.phoneNumberText.setText("Phone Number: " + customerResponseList.get(position).getPhoneNumber());
 
         holder.editButton.setOnClickListener(new OnClickListener() {

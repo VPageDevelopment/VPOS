@@ -20,6 +20,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.adapter.ExpListViewAdapter;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
@@ -32,6 +33,9 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @EActivity(R.layout.activity_addemployee)
 public class AddEmployeeActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener {
@@ -108,7 +112,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
     EditText confPassword;
 
     @ViewById(R.id.expandableListView)
-    ExpandableListView expandableListView;
+    ExpandableListView expListView;
 
     @ViewById(R.id.submitButton)
     Button submitButton;
@@ -130,6 +134,10 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
     Activity activity;
 
+    ExpListViewAdapter listAdapter;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
+
     @AfterViews
     public void onInitView() {
 
@@ -150,6 +158,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         submitButton.setOnClickListener(this);
 
         setView();
+        setExpandableListViewData();
     }
 
     private void setActionBarSupport() {
@@ -419,8 +428,53 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
             validateLoginInput();
 
         }else if(tabPosition == 2){
-
+            collapseAll();
         }
+    }
+
+    void setExpandableListViewData(){
+
+
+        expListView.setDividerHeight(2);
+        expListView.setGroupIndicator(null);
+        expListView.setClickable(true);
+
+        // TODO Service data update
+         // preparing list data
+        prepareListData();
+
+         listAdapter = new ExpListViewAdapter(this, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+        expandAll();
+
+
+        // Listview Group expanded listener
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+           /* Toast.makeText(getApplicationContext(),
+                    listDataHeader.get(groupPosition) + " Expanded",
+                    Toast.LENGTH_SHORT).show(); */
+                // if (LogFlag.bLogOn)Log.d(TAG, "mChildCheckStates: "+mParentCheckStates.get(groupPosition)[mChildPosition]);
+
+            }
+        });
+
+        // Listview Group collasped listener
+        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+           /* Toast.makeText(getApplicationContext(),
+                    listDataHeader.get(groupPosition) + " Collapsed",
+                    Toast.LENGTH_SHORT).show(); */
+                expListView.expandGroup(groupPosition);
+            }
+        });
+
     }
 
     @Override
@@ -456,6 +510,60 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         }
         if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
 
+    }
+    //method to expand all groups
+    private void expandAll() {
+        int count = listAdapter.getGroupCount();
+        for (int i = 0; i < count; i++){
+            expListView.expandGroup(i);
+        }
+    }
+
+    //method to collapse all groups
+    private void collapseAll() {
+        int count = listAdapter.getGroupCount();
+        for (int i = 0; i < count; i++){
+            expListView.collapseGroup(i);
+        }
+    }
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Top 250");
+        listDataHeader.add("Now Showing");
+        listDataHeader.add("Coming Soon..");
+
+        // Adding child data
+        List<String> top250 = new ArrayList<String>();
+        top250.add("The Shawshank Redemption");
+        top250.add("The Godfather");
+        top250.add("The Godfather: Part II");
+        top250.add("Pulp Fiction");
+        top250.add("The Good, the Bad and the Ugly");
+        top250.add("The Dark Knight");
+        top250.add("12 Angry Men");
+
+        List<String> nowShowing = new ArrayList<String>();
+        nowShowing.add("The Conjuring");
+        nowShowing.add("Despicable Me 2");
+        nowShowing.add("Turbo");
+        nowShowing.add("Grown Ups 2");
+        nowShowing.add("Red 2");
+        nowShowing.add("The Wolverine");
+
+        List<String> comingSoon = new ArrayList<String>();
+        comingSoon.add("2 Guns");
+        comingSoon.add("The Smurfs 2");
+        comingSoon.add("The Spectacular Now");
+        comingSoon.add("The Canyons");
+        comingSoon.add("Europa Report");
+
+        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), nowShowing);
+        listDataChild.put(listDataHeader.get(2), comingSoon);
     }
 
     private void gotoEmployeeView(){

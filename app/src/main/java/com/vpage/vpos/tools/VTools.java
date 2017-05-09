@@ -247,12 +247,15 @@ public class VTools {
     }
 
     public static long convertStringDateToLong(String dateToConvert){
-        long milliseconds = 0;
 
-        SimpleDateFormat f = new SimpleDateFormat("MM/dd/yyyy");
+        long milliseconds = 0;
+        if (LogFlag.bLogOn)Log.d(TAG, "dateToConvert: " + dateToConvert);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         try {
-            Date date = f.parse(dateToConvert);
-            ;milliseconds = date.getTime();
+            Date date = simpleDateFormat.parse(dateToConvert);
+            if (LogFlag.bLogOn)Log.d(TAG, "SimpleDateFormat: " + date);
+            milliseconds = date.getTime();
+            if (LogFlag.bLogOn)Log.d(TAG, "milliseconds: " + milliseconds);
         } catch (ParseException e) {
             if (LogFlag.bLogOn) Log.e(TAG, e.toString());
         }
