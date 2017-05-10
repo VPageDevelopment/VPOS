@@ -86,5 +86,16 @@
     <!-- message -->
     <string name="phoneNumber_hint">(In case of multiple recipients, enter mobile numbers separated by commas)</string>
 
+    <!-- scales -->
+
+    <string-array name="register_mode_arrays">
+        <item>scale</item>
+        <item>Return</item>
+    </string-array>
+    <string-array name="stock_location_arrays">
+        <item>stock</item>
+        <item>stock2</item>
+    </string-array>
+
 
 </resources>

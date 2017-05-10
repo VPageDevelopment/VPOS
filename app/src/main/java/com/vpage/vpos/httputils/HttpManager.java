@@ -12,7 +12,7 @@ public class HttpManager {
     private static final String TAG = HttpManager.class.getName();
     private static int DEFAULT_TIMEOUT = 20 * 1000;
 
-    private static final String BASE_URL = "http://localhost/vpos-restapi/public/api/v1/";
+    private static final String BASE_URL = "http://vpageinc.com/pos/public_html/api/v1/";
 
     private static final String CONTENT_TYPE_JSON = "application/json";
 

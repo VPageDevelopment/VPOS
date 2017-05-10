@@ -442,7 +442,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onEditSelected(int position) {
-        // call back from recycler  adapter for edit customer details
+        // call back from recycler  adapter for edit employee details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // To Do service response data to pass
         gotoAddEmployeeView("Update Employee");

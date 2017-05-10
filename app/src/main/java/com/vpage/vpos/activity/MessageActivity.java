@@ -20,7 +20,6 @@ import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.ValidationUtils;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
