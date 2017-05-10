@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/White">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/relativeLayout"
+            android:background="@color/colorPrimaryDark">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/btnClose"
+                android:layout_gravity="center_horizontal|right"
+                android:background="@android:color/transparent"
+                android:src="@drawable/close"
+                android:layout_alignParentRight="true"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_below="@+id/btnClose"
+                android:gravity="center_vertical|center"
+                android:textStyle="bold"
+                android:textColor="@color/button_text_color"
+                android:id="@+id/popUpTitle"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/btnClose"
+                android:layout_toStartOf="@+id/btnClose"
+                android:layout_alignBottom="@+id/btnClose"
+                android:layout_marginLeft="30dp"/>
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linearLayout"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@+id/relativeLayout"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/smsText"
+                android:text="Field in Red are Required"
+                android:textColor="@color/Black"
+                android:gravity="center|center_horizontal"
+                android:textSize="@dimen/common_textSize"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:visibility="visible"
+                android:id="@+id/firstNameText"
+                android:text="First Name"
+                android:textColor="@color/Black"
+                android:gravity="left|center_vertical"
+                android:textSize="@dimen/common_textSize"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:visibility="visible"
+                android:id="@+id/lastNameText"
+                android:text="Last Name"
+                android:textColor="@color/Black"
+                android:gravity="left|center_vertical"
+                android:textSize="@dimen/common_textSize"/>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/Red"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:id="@+id/smsPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:drawableLeft="@drawable/phone"
+                    android:drawablePadding="10dp"
+                    android:inputType="phone"
+                    android:hint="Phone Number"
+                    android:imeOptions="actionNext"
+                    android:textColor="@color/Black"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/Red"
+                android:layout_marginTop="10dp">
+
+                <com.vpage.vpos.tools.ActionEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:maxLines="10"
+                    android:id="@+id/smsComments"
+                    android:isScrollContainer="true"
+                    android:imeOptions="actionGo"
+                    android:textColor="@color/Black"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"
+                    android:hint="Comments"
+                    android:inputType="textAutoCorrect|textCapSentences|textMultiLine" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:id="@+id/textError"
+                android:textColor="@color/Red"
+                android:gravity="left|center_vertical"
+                android:textSize="@dimen/common_textSize"/>
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:gravity="center|center_horizontal"
+                android:layout_gravity="center_horizontal"
+                fbutton:buttonColor="@color/common_button_color"
+                fbutton:shadowColor="@color/LiteGray"
+                fbutton:shadowEnabled="true"
+                fbutton:shadowHeight="3dp"
+                android:text="Submit"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text_color"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/common_textSize">
+            </info.hoang8f.widget.FButton>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -808,6 +808,8 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
         }
+        fromDateString = fromDate.getText().toString();
+        toDateString = toDate.getText().toString();
         PopUp.dismiss();
     }
 

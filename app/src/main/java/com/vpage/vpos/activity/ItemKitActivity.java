@@ -455,6 +455,11 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    public void onSendSMSSelected(int position) {
+        // Nothing to do it in ItemKit Module
+    }
+
+    @Override
     public void onSelectedStatus(Boolean checkedStatus) {
         this.checkedStatus = checkedStatus;
         if (LogFlag.bLogOn)Log.d(TAG, "checkedStatus: " + this.checkedStatus);

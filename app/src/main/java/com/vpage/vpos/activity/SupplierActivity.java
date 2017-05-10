@@ -498,6 +498,11 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    public void onSendSMSSelected(int position) {
+        // Nothing to do it in Supplier Module
+    }
+
+    @Override
     public void onSelectedStatus(Boolean checkedStatus) {
         this.checkedStatus = checkedStatus;
         if (LogFlag.bLogOn)Log.d(TAG, "checkedStatus: " + this.checkedStatus);

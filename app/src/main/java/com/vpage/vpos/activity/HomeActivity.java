@@ -198,6 +198,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 gotoEmployeeView();
                 break;
 
+            case 9:
+                gotoMessageView();
+                break;
+
         }
     }
 
@@ -235,9 +239,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    private void gotoMessageView(){
+        Intent intent = new Intent(getApplicationContext(), MessageActivity_.class);
+        startActivity(intent);
+    }
+
+
     private void gotoSettingsView(){
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
     }
+
 
 }

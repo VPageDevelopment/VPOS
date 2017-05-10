@@ -89,8 +89,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         if(pageName.equals("Customer")){
             jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+            holder.smsButton.setVisibility(View.GONE);
         }else if(pageName.equals("Employee")){
             jsonObjectData = VPOSPreferences.get(AppConstant.eFilterPreference);
+            holder.smsButton.setVisibility(View.VISIBLE);
         }
 
         if (null != jsonObjectData) {
@@ -110,6 +112,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.lastText.setText("Last Name: " + customerResponseList.get(position).getLastName());
         holder.emailText.setText("Email: " + customerResponseList.get(position).getEmail());
         holder.phoneNumberText.setText("Phone Number: " + customerResponseList.get(position).getPhoneNumber());
+
+        holder.smsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editCallBack.onSendSMSSelected(position);
+            }
+        });
+
 
         holder.editButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -276,7 +286,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         TextView IdText,firstText,lastText,emailText,phoneNumberText;
         CheckBox itemCheckBox;
-        ImageButton editButton,deleteButton;
+        ImageButton editButton,deleteButton,smsButton;
 
         ViewHolder(View v) {
             super(v);
@@ -288,6 +298,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             itemCheckBox = (CheckBox) v.findViewById(R.id.itemCheckBox);
             editButton = (ImageButton) v.findViewById(R.id.editButton);
             deleteButton = (ImageButton) v.findViewById(R.id.deleteButton);
+            smsButton = (ImageButton) v.findViewById(R.id.smsButton);
         }
     }
 

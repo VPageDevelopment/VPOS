@@ -15,14 +15,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
@@ -31,20 +37,27 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.FieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ListAdapter;
 import com.vpage.vpos.pojos.CustomerResponse;
+import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.RecyclerTouchListener;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
+import com.vpage.vpos.tools.utils.NetworkUtil;
+import com.vpage.vpos.tools.utils.ValidationUtils;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
 @EActivity(R.layout.activity_employee)
-public class EmployeeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack {
+public class EmployeeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack, View.OnKeyListener,OnNetworkChangeListener {
 
     private static final String TAG = EmployeeActivity.class.getName();
 
@@ -95,6 +108,14 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     String pageName ="Employee";
 
+    private PopupWindow smsPopUp;
+    TextView textError,firstNameText,lastNameText;
+    EditText smsPhoneNumber,smsComments;
+    String phoneNumberInput="",commentsInput="";
+    boolean isNetworkAvailable = false;
+    ValidationStatus validationStatusPhoneNumber;
+
+
     @AfterViews
     public void onInitView() {
 
@@ -136,7 +157,25 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        gotoAddEmployeeView("New Employee");
+        switch (v.getId()) {
+
+            case R.id.addNewEmployeeButton:
+                gotoAddEmployeeView("New Employee");
+                break;
+
+            case R.id.addEmployeeButton:
+                gotoAddEmployeeView("New Employee");
+                break;
+
+            case R.id.submitButton:
+                validateInput();
+                break;
+
+            case R.id.btnClose:
+                smsPopUp.dismiss();
+                break;
+        }
+
     }
 
     private void addItemsOnSpinner() {
@@ -477,6 +516,12 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    public void onSendSMSSelected(int position) {
+        // TODO Update of phone number and message from service call
+        goSMSPopup();
+    }
+
+    @Override
     public void onSelectedStatus(Boolean checkedStatus) {
         this.checkedStatus = checkedStatus;
         if (LogFlag.bLogOn)Log.d(TAG, "checkedStatus: " + this.checkedStatus);
@@ -506,4 +551,132 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         intent.putExtra("EmailId",emailArray);
         startActivity(intent);
     }
+
+    public void sendSMS(String phoneNo, String message) {
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            ArrayList<String> parts = smsManager.divideMessage(message);
+            smsManager.sendMultipartTextMessage(phoneNo, null, parts, null, null);
+        } catch (Exception e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
+        }
+    }
+
+    private void goSMSPopup() {
+        final View popUpView = getLayoutInflater().inflate(R.layout.popupsmsview, null); // inflating popup layout
+        smsPopUp = VTools.createPopUp(popUpView);
+        Button submitButton = (Button) popUpView.findViewById(R.id.submitButton);
+        final ImageButton btnClose = (ImageButton) popUpView.findViewById(R.id.btnClose);
+        checkInternetStatus();
+
+        firstNameText = (TextView) popUpView.findViewById(R.id.firstNameText);
+        lastNameText = (TextView) popUpView.findViewById(R.id.lastNameText);
+        smsPhoneNumber = (EditText) popUpView.findViewById(R.id.smsPhoneNumber);
+        smsComments = (EditText) popUpView.findViewById(R.id.smsComments);
+        textError = (TextView) popUpView.findViewById(R.id.textError);
+        smsComments.setOnKeyListener(this);
+
+        submitButton.setOnClickListener(this);
+        btnClose.setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == EditorInfo.IME_ACTION_GO ||
+                keyCode == EditorInfo.IME_ACTION_DONE ||
+                event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+            validateInput();
+
+        }
+        return false;
+    }
+    void validateInput(){
+
+        if(isNetworkAvailable){
+
+            // TODO Data update from service call
+            firstNameText.setText("First Name: ");
+            lastNameText.setText("Last Name: ");
+
+            phoneNumberInput = smsPhoneNumber.getText().toString();
+            commentsInput = smsComments.getText().toString();
+
+            if (!phoneNumberInput.isEmpty()&& !commentsInput.isEmpty()) {
+
+                validationStatusPhoneNumber =  ValidationUtils.isValidUserPhoneNumber(phoneNumberInput);
+                if (!validationStatusPhoneNumber.isStatus()) {
+                    if (LogFlag.bLogOn)Log.d(TAG, validationStatusPhoneNumber.getMessage());
+                    setErrorMessage(validationStatusPhoneNumber.getMessage());
+                    return;
+                }
+
+                textError.setVisibility(View.GONE);
+
+                // TODO Service call
+                smsPopUp.dismiss();
+                sendSMS(phoneNumberInput,commentsInput);
+
+            } else {
+
+                setErrorMessage("Fill all Required Input");
+            }
+
+
+        }else {
+
+            setErrorMessage("Check Network Connection");
+        }
+    }
+
+    void setErrorMessage(String errorMessage) {
+
+        textError.setVisibility(View.VISIBLE);
+        textError.setText(errorMessage);
+    }
+
+
+    @Override
+    public void onChange(String status) {
+        if (LogFlag.bLogOn)Log.d(TAG, "Network Availability: "+status);
+        switch (status) {
+            case "Connected to Internet with Mobile Data":
+                isNetworkAvailable = true;
+                break;
+            case "Connected to Internet with WIFI":
+                isNetworkAvailable = true;
+                break;
+            default:
+                isNetworkAvailable = false;
+                break;
+        }
+        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+    }
+
+
+    public  void checkInternetStatus(){
+        String status = NetworkUtil.getConnectivityStatusString(getApplicationContext());
+        switch (status) {
+            case "Connected to Internet with Mobile Data":
+                isNetworkAvailable = true;
+                break;
+            case "Connected to Internet with WIFI":
+                isNetworkAvailable = true;
+                break;
+            default:
+                isNetworkAvailable = false;
+                break;
+        }
+        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+
+    }
+
+    @FocusChange({R.id.smsPhoneNumber, R.id.smsComments})
+    public void focusChangedOnUser(View v, boolean hasFocus) {
+        if (hasFocus) {
+            textError.setVisibility(View.GONE);
+        }
+    }
+
+
 }

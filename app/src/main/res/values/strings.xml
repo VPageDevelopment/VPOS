@@ -83,4 +83,8 @@
         <item>Change All To zunSerialized</item>
     </string-array>
 
+    <!-- message -->
+    <string name="phoneNumber_hint">(In case of multiple recipients, enter mobile numbers separated by commas)</string>
+
+
 </resources>
