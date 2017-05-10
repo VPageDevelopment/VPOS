@@ -1,6 +1,5 @@
 package com.vpage.vpos.activity;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,12 +25,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
-import com.vpage.vpos.adapter.ItemKitFieldSpinnerAdapter;
-import com.vpage.vpos.adapter.ItemKitListAdapter;
-import com.vpage.vpos.pojos.ItemKitResponse;
+import com.vpage.vpos.adapter.GiftCardFieldSpinnerAdapter;
+import com.vpage.vpos.adapter.GiftCardListAdapter;
+import com.vpage.vpos.pojos.GiftCardResponse;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
@@ -40,29 +41,31 @@ import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
-@EActivity(R.layout.activity_itemkit)
-public class ItemKitActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack {
+@Fullscreen
+@EActivity(R.layout.activity_giftcard)
+public class GiftCardActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack {
 
-    private static final String TAG = ItemKitActivity.class.getName();
+    private static final String TAG = GiftCardActivity.class.getName();
 
     @ViewById(R.id.toolbar)
     Toolbar toolbar;
 
-    @ViewById(R.id.noItemKitContent)
-    LinearLayout noItemKitContent;
+    @ViewById(R.id.noGiftCardContent)
+    LinearLayout noGiftCardContentLayout;
 
-    @ViewById(R.id.itemKitContent)
-    LinearLayout itemKitContent;
+    @ViewById(R.id.giftCardContent)
+    LinearLayout giftCardContent;
 
-    @ViewById(R.id.addNewItemKitButton)
-    Button addNewItemKitButton;
+    @ViewById(R.id.addNewGiftCardButton)
+    Button addNewGiftCardButton;
 
-    @ViewById(R.id.addItemKitButton)
-    Button addItemKitButton;
+    @ViewById(R.id.addGiftCardButton)
+    Button addGiftCardButton;
 
     @ViewById(R.id.spinnerField)
     Spinner spinnerField;
@@ -70,23 +73,23 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @ViewById(R.id.spinnerFormat)
     Spinner spinnerFormat;
 
-    @ViewById(R.id.itemKitRecycleView)
+    @ViewById(R.id.giftCardRecycleView)
     RecyclerView recyclerView;
 
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
-    FloatingActionButton deleteFAB,generateBarcodeFAB;
+    FloatingActionButton deleteFAB;
 
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
 
-    ItemKitListAdapter itemKitListAdapter;
-    ItemKitFieldSpinnerAdapter itemKitFieldSpinnerAdapter;
+    GiftCardListAdapter listAdapter;
+    GiftCardFieldSpinnerAdapter fieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
 
-    List<ItemKitResponse> list;
+    List<GiftCardResponse> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -97,7 +100,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @AfterViews
     public void onInitView() {
 
-        activity = ItemKitActivity.this;
+        activity = GiftCardActivity.this;
 
         setActionBarSupport();
 
@@ -111,22 +114,22 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("Item Kits");
+        getSupportActionBar().setTitle("Gift Card");
 
     }
 
     void itemCountCheck(int itemCount){
 
         if(itemCount == 0){
-            noItemKitContent.setVisibility(View.VISIBLE);
-            itemKitContent.setVisibility(View.GONE);
+            noGiftCardContentLayout.setVisibility(View.VISIBLE);
+            giftCardContent.setVisibility(View.GONE);
             floatingActionMenu.setVisibility(View.GONE);
-            addNewItemKitButton.setOnClickListener(this);
+            addNewGiftCardButton.setOnClickListener(this);
         }else {
-            noItemKitContent.setVisibility(View.GONE);
-            itemKitContent.setVisibility(View.VISIBLE);
+            noGiftCardContentLayout.setVisibility(View.GONE);
+            giftCardContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
-            addItemKitButton.setOnClickListener(this);
+            addGiftCardButton.setOnClickListener(this);
             addItemsOnSpinner();
             addFabView();
             addRecyclerView();
@@ -135,24 +138,24 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        gotoAddItemKitView("New Item Kit");
+        gotoAddGiftCardView("New Gift Card");
     }
 
     private void addItemsOnSpinner() {
         try{
             spinnerList = new ArrayList<>();
             spinnerList.add("Filter By");
-            spinnerList.add("Kit Id");
-            spinnerList.add("Item Kit Name");
-            spinnerList.add("Item Kit Description");
-            spinnerList.add("Cost Price");
-            spinnerList.add("Retail Price");
+            spinnerList.add("Id");
+            spinnerList.add("First Name");
+            spinnerList.add("Last Name");
+            spinnerList.add("GiftCard Number");
+            spinnerList.add("Value");
 
-            itemKitFieldSpinnerAdapter = new ItemKitFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
-            itemKitFieldSpinnerAdapter.setFilterCallBack(this);
-            spinnerField.setAdapter(itemKitFieldSpinnerAdapter);
+            fieldSpinnerAdapter = new GiftCardFieldSpinnerAdapter(activity, R.layout.item_spinner_field, spinnerList);
+            fieldSpinnerAdapter.setFilterCallBack(this);
+            spinnerField.setAdapter(fieldSpinnerAdapter);
             spinnerFormatData = spinnerFormat.getSelectedItem().toString();
-            if (LogFlag.bLogOn) Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
+            if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " + spinnerFormatData);
 
             spinnerFormat.setOnItemSelectedListener(this);
 
@@ -167,29 +170,29 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
         // To be replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            ItemKitResponse itemKitResponse = new ItemKitResponse();
-            itemKitResponse.setId(String.valueOf(i));
+            GiftCardResponse giftCardResponse = new GiftCardResponse();
+            giftCardResponse.setId(String.valueOf(i));
             if((i/2) == 0){
-                itemKitResponse.setItemKitName("Baby Product");
-                itemKitResponse.setItemKitDescription("Soap");
-                itemKitResponse.setCostPrice("50");
+                giftCardResponse.setFirstName("Ram");
+                giftCardResponse.setLastName("Kumar");
+                giftCardResponse.setGiftCardNumber(2);
             }else {
-                itemKitResponse.setItemKitName("Baby Product");
-                itemKitResponse.setItemKitDescription("Soap");
-                itemKitResponse.setCostPrice("50");
+                giftCardResponse.setFirstName("Sree");
+                giftCardResponse.setLastName("Kala");
+                giftCardResponse.setGiftCardNumber(6);
             }
-            itemKitResponse.setRetailPrice("25");
+            giftCardResponse.setGiftCardValue(34.00f);
 
-            list.add(itemKitResponse);
+            list.add(giftCardResponse);
         }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        itemKitListAdapter = new ItemKitListAdapter(activity,list);
-        itemKitListAdapter.setEditCallBack(this);
-        itemKitListAdapter.setCheckedCallBack(this);
-        recyclerView.setAdapter(itemKitListAdapter);
+        listAdapter = new GiftCardListAdapter(activity,list);
+        listAdapter.setEditCallBack(this);
+        listAdapter.setCheckedCallBack(this);
+        recyclerView.setAdapter(listAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -222,19 +225,13 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     private void addFabView(){
 
 
+
         deleteFAB = new FloatingActionButton(activity);
         deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
         deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
         deleteFAB.setColorPressedResId(R.color.colorPrimary);
         deleteFAB.setLabelText("Delete");
         deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
-
-        generateBarcodeFAB = new FloatingActionButton(activity);
-        generateBarcodeFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
-        generateBarcodeFAB.setColorNormalResId(R.color.colorPrimaryDark);
-        generateBarcodeFAB.setColorPressedResId(R.color.colorPrimary);
-        generateBarcodeFAB.setLabelText("GenerateBarcode");
-        generateBarcodeFAB.setImageResource(R.drawable.barcode);
 
         addFabButton();
 
@@ -255,13 +252,12 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
                 if (LogFlag.bLogOn)Log.d(TAG, "floatingActionMenu Clicked " );
                 if (!floatingActionMenu.isOpened()) {
                     if(checkedStatus){
-                        generateBarcodeFAB.setVisibility(View.VISIBLE);
+
                         deleteFAB.setVisibility(View.VISIBLE);
                     }else {
-                        generateBarcodeFAB.setVisibility(View.GONE);
+                        Toast.makeText(activity, "Pls select any field to proceed", Toast.LENGTH_SHORT).show();
                         deleteFAB.setVisibility(View.GONE);
                     }
-                    // To Do Export function after getting url to Export
                 }
                 floatingActionMenu.toggle(true);
             }
@@ -280,21 +276,6 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
                 floatingActionMenu.toggle(true);
                 showDeleteAlertDialog();
-            }
-        });
-
-        generateBarcodeFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                generateBarcodeFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
-                        ContextCompat.getColor(activity, R.color.LiteGray),
-                        ContextCompat.getColor(activity, R.color.White));
-                generateBarcodeFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
-
-                floatingActionMenu.toggle(true);
-                gotoBarcodeGenerateView();
-
             }
         });
 
@@ -333,7 +314,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
 */
-                itemKitListAdapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
             }
@@ -342,11 +323,10 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+
     private void addFabButton(){
 
-        floatingActionMenu.addMenuButton(generateBarcodeFAB);
         floatingActionMenu.addMenuButton(deleteFAB);
-        generateBarcodeFAB.setVisibility(View.GONE);
         deleteFAB.setVisibility(View.GONE);
     }
 
@@ -372,10 +352,10 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            itemKitListAdapter = new ItemKitListAdapter(activity,list);
-            itemKitListAdapter.setEditCallBack(this);
-            itemKitListAdapter.setCheckedCallBack(this);
-            recyclerView.setAdapter(itemKitListAdapter);
+            listAdapter = new GiftCardListAdapter(activity,list);
+            listAdapter.setEditCallBack(this);
+            listAdapter.setCheckedCallBack(this);
+            recyclerView.setAdapter(listAdapter);
         }
     }
 
@@ -405,7 +385,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public boolean onQueryTextChange(String searchQuery) {
-                itemKitListAdapter.filter(searchQuery.toString().trim());
+                listAdapter.filter(searchQuery.toString().trim());
                 recyclerView.invalidate();
                 return true;
             }
@@ -451,7 +431,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // To Do service response data to pass
-        gotoAddItemKitView("Update Item Kit");
+        gotoAddGiftCardView("Update Customer");
     }
 
     @Override
@@ -463,22 +443,20 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onSelectedStatusArray(List<Boolean> checkedPositionArrayList) {
-
         if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
         this.checkedPositionArrayList = checkedPositionArrayList;
 
     }
 
-    private void gotoAddItemKitView(String pageName){
-        Intent intent = new Intent(getApplicationContext(), AddItemKitActivity_.class);
+    private void gotoAddGiftCardView(String pageName){
+        Intent intent = new Intent(getApplicationContext(), AddGiftCardActivity_.class);
         intent.putExtra("PageName",pageName);
         startActivity(intent);
     }
 
-    private void gotoBarcodeGenerateView(){
-
-        Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+    private void gotoEmailView(String [] emailArray){
+        Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
+        intent.putExtra("EmailId",emailArray);
         startActivity(intent);
     }
 }
-

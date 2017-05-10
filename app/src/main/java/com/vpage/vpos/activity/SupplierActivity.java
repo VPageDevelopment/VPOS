@@ -497,10 +497,6 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         gotoAddSupplierView("Update Supplier");
     }
 
-    @Override
-    public void onSendSMSSelected(int position) {
-        // Nothing to do it in Supplier Module
-    }
 
     @Override
     public void onSelectedStatus(Boolean checkedStatus) {

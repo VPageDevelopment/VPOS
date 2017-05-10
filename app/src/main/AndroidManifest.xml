@@ -99,6 +99,15 @@
             android:screenOrientation="portrait"
             />
         <activity
+            android:name=".activity.GiftCardActivity_"
+            android:screenOrientation="portrait"
+            />
+
+        <activity
+            android:name=".activity.AddGiftCardActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".activity.SettingsActivity"
             android:screenOrientation="portrait"
             />

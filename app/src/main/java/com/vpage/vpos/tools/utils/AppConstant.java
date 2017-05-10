@@ -11,6 +11,8 @@ public class AppConstant {
 
     public  static String TAG_IKName = "Item Kit Name",TAG_IKDes = "Item Kit Des";
 
+    public  static String TAG_GC_NO = "GiftCard Number",TAG_GC_Value = "Value";
+
     public  static String TAG_AName = "Agency Name";
 
     public  static String cFilterPreference = "Customer_CHECKBOX_DATA";
@@ -22,6 +24,8 @@ public class AppConstant {
     public  static String sFilterPreference = "Supplier_CHECKBOX_DATA";
 
     public  static String eFilterPreference = "Employee_CHECKBOX_DATA";
+
+    public  static String gFilterPreference = "GiftCard_CHECKBOX_DATA";
 
     public static int PICK_IMAGE_REQUEST = 1;
 }

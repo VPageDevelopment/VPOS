@@ -1,8 +1,5 @@
 package com.vpage.vpos.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,36 +10,34 @@ import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.CustomerResponse;
+import com.vpage.vpos.pojos.GiftCardResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
-import com.vpage.vpos.tools.callBack.SendSmsCallBack;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapter.ViewHolder> {
 
-    private static final String TAG = ListAdapter.class.getName();
+    private static final String TAG = GiftCardListAdapter.class.getName();
 
     private SparseBooleanArray mChecked = new SparseBooleanArray();
 
     private EditCallBack editCallBack;
 
     private CheckedCallBack checkedCallBack;
-
-    private SendSmsCallBack sendSmsCallBack;
 
     private Activity activity;
 
@@ -51,20 +46,18 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private CheckBox checkBox_header;
 
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
-    Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
+    Boolean ID = false,FName = false,LName = false,GC_No= false,GCValue = false;
     String jsonObjectData = null;
 
-    private List<CustomerResponse> customerResponseList;
-    private List<CustomerResponse> responseList;
+    private List<GiftCardResponse> giftCardResponseList;
+    private List<GiftCardResponse> responseList;
 
-    String pageName;
 
-    public ListAdapter(Activity activity, List<CustomerResponse> customerResponseList, String pageName) {
+    public GiftCardListAdapter(Activity activity, List<GiftCardResponse> giftCardResponseList) {
         this.activity = activity;
-        this.customerResponseList = customerResponseList;
-        this.pageName     = pageName;
+        this.giftCardResponseList = giftCardResponseList;
         responseList = new ArrayList<>();
-        responseList.addAll( this.customerResponseList );
+        responseList.addAll( this.giftCardResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
 
@@ -76,30 +69,21 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         this.checkedCallBack = checkedCallBack;
     }
 
-    public void setSendSmsCallBack(SendSmsCallBack sendSmsCallBack) {
-        this.sendSmsCallBack = sendSmsCallBack;
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_customer, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+       ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = customerResponseList.get(position).getFirstName();
+        final String name = giftCardResponseList.get(position).getFirstName();
 
-        if(pageName.equals("Customer")){
-            jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
-            holder.smsButton.setVisibility(View.GONE);
-        }else if(pageName.equals("Employee")){
-            jsonObjectData = VPOSPreferences.get(AppConstant.eFilterPreference);
-            holder.smsButton.setVisibility(View.VISIBLE);
-        }
+        jsonObjectData = VPOSPreferences.get(AppConstant.gFilterPreference);
 
         if (null != jsonObjectData) {
             if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
@@ -108,26 +92,18 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             holder.IdText.setVisibility(View.VISIBLE);
             holder.firstText.setVisibility(View.VISIBLE);
             holder.lastText.setVisibility(View.VISIBLE);
-            holder.emailText.setVisibility(View.VISIBLE);
-            holder.phoneNumberText.setVisibility(View.VISIBLE);
+            holder.giftCardNoText.setVisibility(View.VISIBLE);
+            holder.giftCardValueText.setVisibility(View.VISIBLE);
         }
 
 
-        holder.IdText.setText("ID: " +customerResponseList.get(position).getId());
-        holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirstName());
-        holder.lastText.setText("Last Name: " + customerResponseList.get(position).getLastName());
-        holder.emailText.setText("Email: " + customerResponseList.get(position).getEmail());
-        holder.phoneNumberText.setText("Phone Number: " + customerResponseList.get(position).getPhoneNumber());
+        holder.IdText.setText("ID: " + giftCardResponseList.get(position).getId());
+        holder.firstText.setText("First Name: " + giftCardResponseList.get(position).getFirstName());
+        holder.lastText.setText("Last Name: " + giftCardResponseList.get(position).getLastName());
+        holder.giftCardNoText.setText("GiftCard Number: " + giftCardResponseList.get(position).getGiftCardNumber());
+        holder.giftCardValueText.setText("GiftCard Value: " + giftCardResponseList.get(position).getGiftCardValue());
 
-        holder.smsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendSmsCallBack.onSendSMSSelected(position);
-            }
-        });
-
-
-        holder.editButton.setOnClickListener(new OnClickListener() {
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // call back to customer view
@@ -136,31 +112,31 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         });
 
 
-        holder.deleteButton.setOnClickListener(new OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                    TextView title = new TextView(activity);
-                    // You Can Customise your Title here
-                    title.setText(activity.getResources().getString(R.string.app_name));
-                    title.setBackgroundColor(Color.BLACK);
-                    title.setPadding(10, 15, 15, 10);
-                    title.setGravity(Gravity.CENTER);
-                    title.setTextColor(Color.WHITE);
-                    title.setTextSize(20);
+                TextView title = new TextView(activity);
+                // You Can Customise your Title here
+                title.setText(activity.getResources().getString(R.string.app_name));
+                title.setBackgroundColor(Color.BLACK);
+                title.setPadding(10, 15, 15, 10);
+                title.setGravity(Gravity.CENTER);
+                title.setTextColor(Color.WHITE);
+                title.setTextSize(20);
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
-                    alertDialog.setCustomTitle(title);
-                    alertDialog.setMessage("Are you Sure to Delete Customer Record");
+                AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
+                alertDialog.setCustomTitle(title);
+                alertDialog.setMessage("Are you Sure to Delete Customer Record");
 
-                    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            // To Do delete the data from Customer response
-                            remove(name);
-                        }
-                    });
-                    alertDialog.show();
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        // To Do delete the data from Customer response
+                        remove(name);
+                    }
+                });
+                alertDialog.show();
             }
         });
 
@@ -208,10 +184,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                     }
                 }
 
-                    for (int i = 0; i < count; i++) {
-                        checkedPositionArrayList.add(mChecked.get(i));
-                    }
-                    checkedCallBack.onSelectedStatusArray(checkedPositionArrayList);
+                for (int i = 0; i < count; i++) {
+                    checkedPositionArrayList.add(mChecked.get(i));
+                }
+                checkedCallBack.onSelectedStatusArray(checkedPositionArrayList);
             }
 
         });
@@ -271,40 +247,39 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        count = customerResponseList.size();
+        count = giftCardResponseList.size();
         return count;
     }
 
 
-    public void add(int position, CustomerResponse item) {
-        customerResponseList.add(position, item);
+    public void add(int position, GiftCardResponse item) {
+        giftCardResponseList.add(position, item);
         notifyItemInserted(position);
     }
 
     void remove(String item) {
-        int position = customerResponseList.indexOf(item);
-        customerResponseList.remove(position);
+        int position = giftCardResponseList.indexOf(item);
+        giftCardResponseList.remove(position);
         notifyItemRemoved(position);
     }
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView IdText,firstText,lastText,emailText,phoneNumberText;
+        TextView IdText,firstText,lastText,giftCardNoText,giftCardValueText;
         CheckBox itemCheckBox;
-        ImageButton editButton,deleteButton,smsButton;
+        ImageButton editButton,deleteButton;
 
         ViewHolder(View v) {
             super(v);
             IdText = (TextView) v.findViewById(R.id.IdText);
             firstText = (TextView) v.findViewById(R.id.firstText);
             lastText = (TextView) v.findViewById(R.id.lastText);
-            emailText = (TextView) v.findViewById(R.id.emailText);
-            phoneNumberText = (TextView) v.findViewById(R.id.phoneNumberText);
+            giftCardNoText = (TextView) v.findViewById(R.id.emailText);
+            giftCardValueText = (TextView) v.findViewById(R.id.phoneNumberText);
             itemCheckBox = (CheckBox) v.findViewById(R.id.itemCheckBox);
             editButton = (ImageButton) v.findViewById(R.id.editButton);
             deleteButton = (ImageButton) v.findViewById(R.id.deleteButton);
-            smsButton = (ImageButton) v.findViewById(R.id.smsButton);
         }
     }
 
@@ -313,16 +288,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         charText = charText.toLowerCase(Locale.getDefault());
 
-        customerResponseList.clear();
+        giftCardResponseList.clear();
         if (charText.length() == 0) {
-            customerResponseList.addAll(responseList);
+            giftCardResponseList.addAll(responseList);
 
         } else {
-            for (CustomerResponse customerResponse : responseList) {
-                if (charText.length() != 0 && customerResponse.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    customerResponseList.add(customerResponse);
-                } else if (charText.length() != 0 && customerResponse.getLastName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    customerResponseList.add(customerResponse);
+            for (GiftCardResponse giftCardResponse : responseList) {
+                if (charText.length() != 0 && giftCardResponse.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    giftCardResponseList.add(giftCardResponse);
+                } else if (charText.length() != 0 && giftCardResponse.getLastName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    giftCardResponseList.add(giftCardResponse);
                 }
             }
         }
@@ -340,8 +315,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 ID = jsonObject.getBoolean(AppConstant.TAG_ID);
                 FName = jsonObject.getBoolean(AppConstant.TAG_FName);
                 LName = jsonObject.getBoolean(AppConstant.TAG_LName);
-                Email = jsonObject.getBoolean(AppConstant.TAG_Email);
-                PhoneNumber = jsonObject.getBoolean(AppConstant.TAG_PhoneNumber);
+                GC_No = jsonObject.getBoolean(AppConstant.TAG_GC_NO);
+                GCValue = jsonObject.getBoolean(AppConstant.TAG_GC_Value);
 
             }
 
@@ -367,16 +342,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             holder.lastText.setVisibility(View.GONE);
         }
 
-        if(Email){
-            holder.emailText.setVisibility(View.VISIBLE);
+        if(GC_No){
+            holder.giftCardNoText.setVisibility(View.VISIBLE);
         }else {
-            holder.emailText.setVisibility(View.GONE);
+            holder.giftCardNoText.setVisibility(View.GONE);
         }
 
-        if(PhoneNumber){
-            holder.phoneNumberText.setVisibility(View.VISIBLE);
+        if(GCValue){
+            holder.giftCardValueText.setVisibility(View.VISIBLE);
         }else {
-            holder.phoneNumberText.setVisibility(View.GONE);
+            holder.giftCardValueText.setVisibility(View.GONE);
         }
 
     }

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/White"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:id="@+id/topLayout"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/DarkGray"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:id="@+id/customer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:inputType="text"
+                    android:hint="Customer"
+                    android:imeOptions="actionNext"
+                    android:textColor="@color/Black"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/Red"
+                android:layout_marginTop="10dp">
+                <EditText
+                    android:id="@+id/giftCardNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:inputType="number"
+                    android:hint="Gift Card Number"
+                    android:imeOptions="actionNext"
+                    android:textColor="@color/Black"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/Red"
+                android:layout_marginTop="10dp">
+                <EditText
+                    android:id="@+id/value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/dollar_symbol"
+                    android:drawablePadding="10dp"
+                    android:padding="10dp"
+                    android:inputType="numberDecimal"
+                    android:hint="Value"
+                    android:imeOptions="actionGo"
+                    android:textColor="@color/Black"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"
+                    android:singleLine="true"
+                    android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:id="@+id/textError"
+                android:textColor="@color/Red"
+                android:gravity="left|center_vertical"
+                android:textSize="@dimen/common_textSize"/>
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:gravity="center|center_horizontal"
+                android:layout_gravity="center_horizontal"
+                fbutton:buttonColor="@color/common_button_color"
+                fbutton:shadowColor="@color/LiteGray"
+                fbutton:shadowEnabled="true"
+                fbutton:shadowHeight="3dp"
+                android:text="Submit"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text_color"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/common_textSize">
+            </info.hoang8f.widget.FButton>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

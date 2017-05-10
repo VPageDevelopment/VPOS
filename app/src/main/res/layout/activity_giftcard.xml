@@ -33,14 +33,14 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_margin="20dp"
-            android:id="@+id/noEmployeeContent"
+            android:id="@+id/noGiftCardContent"
             android:visibility="gone">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/noEmployeeText"
-                android:text="No Employee Present"
+                android:id="@+id/noGiftCardText"
+                android:text="No Gift Card Present"
                 android:textColor="@color/Black"
                 android:gravity="center|center_horizontal"
                 android:textSize="@dimen/common_textSize"
@@ -58,8 +58,8 @@
                 fbutton:shadowEnabled="true"
                 fbutton:shadowHeight="3dp"
                 android:gravity="center|center_horizontal"
-                android:text="Add New Employee"
-                android:id="@+id/addNewEmployeeButton"
+                android:text="Add New Gift Card"
+                android:id="@+id/addNewGiftCardButton"
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:textColor="@color/button_text_color"
@@ -71,7 +71,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/employeeContent"
+            android:id="@+id/giftCardContent"
             android:layout_margin="10dp"
             android:visibility="visible"
             android:orientation="vertical">
@@ -138,8 +138,8 @@
                     fbutton:shadowEnabled="true"
                     fbutton:shadowHeight="3dp"
                     android:gravity="center|center_horizontal"
-                    android:text="Add Employee"
-                    android:id="@+id/addEmployeeButton"
+                    android:text="Add Gift Card"
+                    android:id="@+id/addGiftCardButton"
                     android:textStyle="bold"
                     android:textAllCaps="false"
                     android:textColor="@color/button_text_color"
@@ -192,7 +192,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_vertical">
-                />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -212,7 +211,7 @@
                     />
             </RelativeLayout>
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/employeeRecycleView"
+                android:id="@+id/giftCardRecycleView"
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

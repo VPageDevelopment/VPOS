@@ -194,8 +194,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case 3:
                 gotoSupplierView();
                 break;
+
             case 7:
                 gotoEmployeeView();
+                break;
+
+            case 8:
+                gotoGiftCardView();
                 break;
 
             case 9:
@@ -238,6 +243,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
+    private void gotoGiftCardView(){
+        Intent intent = new Intent(getApplicationContext(), GiftCardActivity_.class);
+        startActivity(intent);
+    }
 
     private void gotoMessageView(){
         Intent intent = new Intent(getApplicationContext(), MessageActivity_.class);

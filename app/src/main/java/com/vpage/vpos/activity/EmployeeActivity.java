@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
@@ -45,10 +46,10 @@ import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
+import com.vpage.vpos.tools.callBack.SendSmsCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
@@ -57,7 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EActivity(R.layout.activity_employee)
-public class EmployeeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack, View.OnKeyListener,OnNetworkChangeListener {
+public class EmployeeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack, View.OnKeyListener,OnNetworkChangeListener, SendSmsCallBack {
 
     private static final String TAG = EmployeeActivity.class.getName();
 
@@ -88,7 +89,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
-    FloatingActionButton emailFAB;
+    FloatingActionButton deleteFAB,emailFAB;
 
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
@@ -229,6 +230,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         listAdapter = new ListAdapter(activity,list,pageName);
         listAdapter.setEditCallBack(this);
         listAdapter.setCheckedCallBack(this);
+        listAdapter.setSendSmsCallBack(this);
         recyclerView.setAdapter(listAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -261,11 +263,13 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     private void addFabView(){
 
-        if(checkedPositionArrayList.size()>0){
-            floatingActionMenu.setVisibility(View.VISIBLE);
-        }else {
-            floatingActionMenu.setVisibility(View.VISIBLE);
-        }
+
+        deleteFAB = new FloatingActionButton(activity);
+        deleteFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
+        deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
+        deleteFAB.setColorPressedResId(R.color.colorPrimary);
+        deleteFAB.setLabelText("Delete");
+        deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
 
         emailFAB = new FloatingActionButton(activity);
         emailFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
@@ -295,19 +299,32 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
                 if (!floatingActionMenu.isOpened()) {
                     if(checkedStatus){
                         emailFAB.setVisibility(View.VISIBLE);
+                        deleteFAB.setVisibility(View.VISIBLE);
                     }else {
+                        Toast.makeText(activity, "Pls select any field to proceed", Toast.LENGTH_SHORT).show();
                         emailFAB.setVisibility(View.GONE);
+                        deleteFAB.setVisibility(View.GONE);
                     }
-
                 }
-                showDeleteAlertDialog();
                 floatingActionMenu.toggle(true);
             }
 
         };
-
         floatingActionMenu.setOnMenuButtonClickListener(listener);
 
+
+        deleteFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteFAB.setLabelColors(ContextCompat.getColor(activity, R.color.LiteGray),
+                        ContextCompat.getColor(activity, R.color.LiteGray),
+                        ContextCompat.getColor(activity, R.color.White));
+                deleteFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
+
+                floatingActionMenu.toggle(true);
+                showDeleteAlertDialog();
+            }
+        });
 
         emailFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,6 +341,174 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        switch (parent.getId()) {
+
+            case R.id.spinnerFormat:
+                spinnerFormatData = spinnerFormat.getSelectedItem().toString();
+                if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " +spinnerFormatData);
+
+                // To Do Import function after getting url to import
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Override
+    public void onFilterStatus(Boolean filterStatus) {
+        if(filterStatus){
+            listAdapter = new ListAdapter(activity,list,pageName);
+            listAdapter.setEditCallBack(this);
+            listAdapter.setCheckedCallBack(this);
+            listAdapter.setSendSmsCallBack(this);
+            recyclerView.setAdapter(listAdapter);
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_customer, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        //*** setOnQueryTextFocusChangeListener ***
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchQuery) {
+                listAdapter.filter(searchQuery.toString().trim());
+                recyclerView.invalidate();
+                return true;
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_search) {
+
+            return true;
+        }
+
+        if (id == android.R.id.home) {
+            if (LogFlag.bLogOn) Log.d(TAG, "Back Pressed ");
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onEditSelected(int position) {
+        // call back from recycler  adapter for edit customer details
+        if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
+        // To Do service response data to pass
+        gotoAddEmployeeView("Update Employee");
+    }
+
+    @Override
+    public void onSelectedStatus(Boolean checkedStatus) {
+        this.checkedStatus = checkedStatus;
+        if (LogFlag.bLogOn)Log.d(TAG, "checkedStatus: " + this.checkedStatus);
+
+    }
+
+    @Override
+    public void onSelectedStatusArray(List<Boolean> checkedPositionArrayList) {
+        if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
+        this.checkedPositionArrayList = checkedPositionArrayList;
+        if(this.checkedPositionArrayList.size()>0){
+            floatingActionMenu.setVisibility(View.VISIBLE);
+        }else {
+            floatingActionMenu.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == EditorInfo.IME_ACTION_GO ||
+                keyCode == EditorInfo.IME_ACTION_DONE ||
+                event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+            validateInput();
+
+        }
+        return false;
+    }
+
+
+    @Override
+    public void onChange(String status) {
+        if (LogFlag.bLogOn)Log.d(TAG, "Network Availability: "+status);
+        switch (status) {
+            case "Connected to Internet with Mobile Data":
+                isNetworkAvailable = true;
+                break;
+            case "Connected to Internet with WIFI":
+                isNetworkAvailable = true;
+                break;
+            default:
+                isNetworkAvailable = false;
+                break;
+        }
+        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+    }
+
+    @FocusChange({R.id.smsPhoneNumber, R.id.smsComments})
+    public void focusChangedOnUser(View v, boolean hasFocus) {
+        if (hasFocus) {
+            textError.setVisibility(View.GONE);
+        }
+    }
+
+
+    @Override
+    public void onSendSMSSelected(int position) {
+        // TODO Update of phone number and message from service call
+        goSMSPopup();
     }
 
     void showDeleteAlertDialog() {
@@ -408,137 +593,11 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     private void addFabButton(){
 
         floatingActionMenu.addMenuButton(emailFAB);
+        floatingActionMenu.addMenuButton(deleteFAB);
         emailFAB.setVisibility(View.GONE);
+        deleteFAB.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-        switch (parent.getId()) {
-
-            case R.id.spinnerFormat:
-                spinnerFormatData = spinnerFormat.getSelectedItem().toString();
-                if (LogFlag.bLogOn)Log.d(TAG, "spinnerFormatData: " +spinnerFormatData);
-
-                // To Do Import function after getting url to import
-                break;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    @Override
-    public void onFilterStatus(Boolean filterStatus) {
-        if(filterStatus){
-            listAdapter = new ListAdapter(activity,list,pageName);
-            listAdapter.setEditCallBack(this);
-            listAdapter.setCheckedCallBack(this);
-            recyclerView.setAdapter(listAdapter);
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_customer, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        //*** setOnQueryTextFocusChangeListener ***
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-
-            }
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String searchQuery) {
-                listAdapter.filter(searchQuery.toString().trim());
-                recyclerView.invalidate();
-                return true;
-            }
-        });
-
-        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                // Do something when collapsed
-                return true;  // Return true to collapse action view
-            }
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                // Do something when expanded
-                return true;  // Return true to expand action view
-            }
-        });
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_search) {
-
-            return true;
-        }
-
-        if (id == android.R.id.home) {
-            if (LogFlag.bLogOn) Log.d(TAG, "Back Pressed ");
-            onBackPressed();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onEditSelected(int position) {
-        // call back from recycler  adapter for edit customer details
-        if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
-        // To Do service response data to pass
-        gotoAddEmployeeView("Update Employee");
-    }
-
-    @Override
-    public void onSendSMSSelected(int position) {
-        // TODO Update of phone number and message from service call
-        goSMSPopup();
-    }
-
-    @Override
-    public void onSelectedStatus(Boolean checkedStatus) {
-        this.checkedStatus = checkedStatus;
-        if (LogFlag.bLogOn)Log.d(TAG, "checkedStatus: " + this.checkedStatus);
-
-    }
-
-    @Override
-    public void onSelectedStatusArray(List<Boolean> checkedPositionArrayList) {
-        if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
-        this.checkedPositionArrayList = checkedPositionArrayList;
-        if(this.checkedPositionArrayList.size()>0){
-            floatingActionMenu.setVisibility(View.VISIBLE);
-        }else {
-            floatingActionMenu.setVisibility(View.VISIBLE);
-        }
-
-    }
 
     private void gotoAddEmployeeView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddEmployeeActivity_.class);
@@ -580,17 +639,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         btnClose.setOnClickListener(this);
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (keyCode == EditorInfo.IME_ACTION_GO ||
-                keyCode == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-            validateInput();
-
-        }
-        return false;
-    }
     void validateInput(){
 
         if(isNetworkAvailable){
@@ -635,25 +683,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         textError.setText(errorMessage);
     }
 
-
-    @Override
-    public void onChange(String status) {
-        if (LogFlag.bLogOn)Log.d(TAG, "Network Availability: "+status);
-        switch (status) {
-            case "Connected to Internet with Mobile Data":
-                isNetworkAvailable = true;
-                break;
-            case "Connected to Internet with WIFI":
-                isNetworkAvailable = true;
-                break;
-            default:
-                isNetworkAvailable = false;
-                break;
-        }
-        if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
-    }
-
-
     public  void checkInternetStatus(){
         String status = NetworkUtil.getConnectivityStatusString(getApplicationContext());
         switch (status) {
@@ -669,13 +698,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         }
         if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
 
-    }
-
-    @FocusChange({R.id.smsPhoneNumber, R.id.smsComments})
-    public void focusChangedOnUser(View v, boolean hasFocus) {
-        if (hasFocus) {
-            textError.setVisibility(View.GONE);
-        }
     }
 
 
