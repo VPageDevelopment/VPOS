@@ -150,6 +150,7 @@
                 android:layout_weight="2"
                 android:layout_height="match_parent"
                 android:layout_marginRight="20dp"
+                android:hint="Start Typing item Name"
                 android:ems="10"
                 android:text=""
                 android:textColor="@color/Black" />
@@ -178,6 +179,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/scalesRecycleView"
                 android:scrollbars="vertical"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/square_gray_corners"
@@ -209,17 +211,33 @@
             android:id="@+id/fabButtonSelectCustomer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/user_white"
+            android:visibility="visible"
             app:fab_colorNormal="@color/colorPrimary"
             app:fab_colorPressed="@color/colorPrimary"
             app:fab_colorRipple="@color/White"
             app:fab_showShadow="true"
             app:fab_shadowColor="@color/LiteGray"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="12dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/login"
-            app:fab_label="Select Customer"
+            fab:fab_size="mini"
             app:fab_elevationCompat="4dp" />
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="20dp"
+            android:id="@+id/fabLabel"
+            android:visibility="visible"
+            android:background="@color/Black"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="60dp"
+            android:text="Select Customer"
+            android:layout_gravity="bottom|right"
+            android:textColor="@color/button_text_color"
+            android:gravity="center|center_horizontal"
+            android:textSize="@dimen/common_textSize"
+            />
 
     </FrameLayout>
 

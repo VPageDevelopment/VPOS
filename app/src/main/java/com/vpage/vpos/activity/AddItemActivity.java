@@ -179,7 +179,13 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle(pageName);
+
+        if(pageName.equals(" New Sales Item")){
+            getSupportActionBar().setTitle("New Item");
+        }else {
+            getSupportActionBar().setTitle(pageName);
+        }
+
 
     }
 
@@ -305,7 +311,11 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                 textError.setVisibility(View.GONE);
 
                 // TODO Service call
-                gotoItemView();
+                if(pageName.equals("New Sales Customer")){
+                    gotoSalesView();
+                }else {
+                    gotoItemView();
+                }
 
             } else {
 
@@ -425,14 +435,6 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-
-    private void gotoItemView(){
-        Intent intent = new Intent(getApplicationContext(), ItemActivity_.class);
-        startActivity(intent);
-        finish();
-    }
-
-
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
@@ -474,6 +476,20 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
+    private void gotoItemView(){
+        Intent intent = new Intent(getApplicationContext(), ItemActivity_.class);
+        startActivity(intent);
+        finish();
+    }
+    private void gotoSalesView(){
+        Intent intent = new Intent(getApplicationContext(), SalesActivity_.class);
+        startActivity(intent);
+        finish();
+    }
+
+
 
    /* @UiThread
     public void startUploadImage(){

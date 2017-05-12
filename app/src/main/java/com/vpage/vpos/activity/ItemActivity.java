@@ -637,7 +637,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     void setDateFilterPopupView() {
 
-        View popUpView = getLayoutInflater().inflate(R.layout.popupview, null); // inflating popup layout
+        View popUpView = getLayoutInflater().inflate(R.layout.popupcalenderview, null); // inflating popup layout
         PopUp = VTools.createPopUp(popUpView);
 
 

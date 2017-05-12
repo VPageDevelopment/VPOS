@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/White">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relativeLayout"
+            android:background="@color/colorPrimaryDark">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/btnClose"
+                android:layout_gravity="center_horizontal|right"
+                android:background="@android:color/transparent"
+                android:src="@drawable/close_white"
+                android:layout_alignParentRight="true"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_below="@+id/btnClose"
+                android:gravity="center_vertical|center"
+                android:textStyle="bold"
+                android:textColor="@color/button_text_color"
+                android:id="@+id/popUpTitle"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/btnClose"
+                android:layout_toStartOf="@+id/btnClose"
+                android:layout_alignBottom="@+id/btnClose"
+                android:layout_marginLeft="30dp"/>
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@+id/relativeLayout"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/customerSearchLayout"
+                android:visibility="visible"
+                android:orientation="vertical">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoTextCustomer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:hint="Start Typing Customer Name"
+                    android:ems="10"
+                    android:text=""
+                    android:textColor="@color/Black" />
+
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/newCustomerButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/user_white"
+                    android:drawablePadding="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:gravity="center|center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    fbutton:buttonColor="@color/common_button_color"
+                    fbutton:shadowColor="@color/LiteGray"
+                    fbutton:shadowEnabled="true"
+                    fbutton:shadowHeight="3dp"
+                    android:text="New Customer"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:textColor="@color/button_text_color"
+                    android:background="@android:color/transparent"
+                    android:textSize="@dimen/common_textSize">
+                </info.hoang8f.widget.FButton>
+
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customerContentLayout"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/nameText"
+                    android:text="Name"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/customerName"
+                    android:text="customerName"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nameText"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/emailText"
+                    android:text="Email"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/nameText"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/customerEmail"
+                    android:text="name@email.com"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/customerEmail"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/discountText"
+                    android:text="Discount"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/customerEmail"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/customerDiscount"
+                    android:text="0.00%"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/discountText"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/totalTopText"
+                    android:text="Total"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/discountText"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/customerTotal"
+                    android:text="$4.90"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                </RelativeLayout>
+            <info.hoang8f.widget.FButton
+                android:id="@+id/removeCustomerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/close_white"
+                android:drawablePadding="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:gravity="center|center_horizontal"
+                android:layout_gravity="center_horizontal"
+                fbutton:buttonColor="@color/Red"
+                fbutton:shadowColor="@color/LiteGray"
+                fbutton:shadowEnabled="true"
+                fbutton:shadowHeight="3dp"
+                android:text="Remove Customer"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text_color"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/common_textSize">
+            </info.hoang8f.widget.FButton>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:id="@+id/bottomLine"
+                android:textColor="@color/LiteGray"
+                android:textStyle="bold"
+                android:gravity="center|center_vertical|top"
+                android:textSize="@dimen/common_textSize"
+                android:background="@color/Black" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/subTotalText"
+                    android:text="Sub Total"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/subTotalPrice"
+                    android:text="$0.00"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/subTotalText"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/totalText"
+                    android:text="Total"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/subTotalText"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/totalPrice"
+                    android:text="$0.00"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:gravity="center|center_vertical|top"
+                    android:textSize="@dimen/common_textSize" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

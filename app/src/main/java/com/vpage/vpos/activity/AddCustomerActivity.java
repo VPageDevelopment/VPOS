@@ -147,8 +147,11 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle(pageName);
-
+        if(pageName.equals("New Sales Customer")){
+            getSupportActionBar().setTitle("New Customer");
+        }else {
+            getSupportActionBar().setTitle(pageName);
+        }
     }
 
 
@@ -244,6 +247,15 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked){
+            taxableCheckBox.setChecked(true);
+        }else {
+            taxableCheckBox.setChecked(false);
+        }
+    }
+
     void getInputs(){
 
         email.getText().toString();
@@ -289,8 +301,11 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 textError.setVisibility(View.GONE);
 
             // TODO Service call
+            if(pageName.equals("New Sales Customer")){
+                gotoSalesView();
+            }else {
                 gotoCustomerView();
-
+            }
 
         }else {
 
@@ -345,13 +360,10 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         finish();
     }
 
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(isChecked){
-            taxableCheckBox.setChecked(true);
-        }else {
-            taxableCheckBox.setChecked(false);
-        }
+    private void gotoSalesView(){
+        Intent intent = new Intent(getApplicationContext(), SalesActivity_.class);
+        startActivity(intent);
+        finish();
     }
+
 }

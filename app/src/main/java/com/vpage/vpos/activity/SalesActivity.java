@@ -1,30 +1,42 @@
 package com.vpage.vpos.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
+import com.vpage.vpos.adapter.ItemListAdapter;
+import com.vpage.vpos.pojos.ItemResponse;
+import com.vpage.vpos.tools.RecyclerTouchListener;
+import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EActivity(R.layout.activity_sales)
 public class SalesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
@@ -43,6 +55,12 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
     @ViewById(R.id.fabButtonSelectCustomer)
     FloatingActionButton fabButtonSelectCustomer;
 
+    @ViewById(R.id.fabLabel)
+    TextView fabLabel;
+
+    @ViewById(R.id.scalesRecycleView)
+    RecyclerView recyclerView;
+
     @ViewById(R.id.takingButton)
     Button takingButton;
 
@@ -52,9 +70,19 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
     @ViewById(R.id.autocompleteEditTextView)
     AutoCompleteTextView autoTextView ;
 
+    AutoCompleteTextView autoTextCustomer;
+
+    AlertDialog alertDialog;
+
+    LinearLayout customerSearchLayout,customerContentLayout;
+
     String spinnerRegisterModeData="",spinnerStockLocationData="";
 
     private Handler mUiHandler = new Handler();
+    private int mScrollOffset = 4;
+    List<ItemResponse> list;
+    ItemListAdapter itemListAdapter;
+    ArrayAdapter<String> customerArrayAdapter;
 
     Activity activity;
 
@@ -68,8 +96,9 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         setActionBarSupport();
         setSpinnerView();
         setView();
-        addFabView();
         setAutoTextView();
+       // addRecyclerView();
+        addFabView();
 
     }
 
@@ -102,8 +131,13 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
 
         //Setting adapter
         autoTextView.setAdapter(arrayAdapter);
-        autoTextView.setOnItemSelectedListener(this);
         autoTextView.setOnItemClickListener(this);
+
+        // TODO data update after service call
+        String[] customerArray = { "Ragul", "Ramesh", "Deepa","Mathu"};
+
+        customerArrayAdapter = new ArrayAdapter<String>(SalesActivity.this, android.R.layout.select_dialog_item, customerArray);
+
     }
 
     private  void setSpinnerView(){
@@ -128,6 +162,77 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         spinnerStockLocation.setOnItemSelectedListener(this);
     }
 
+
+    private void addRecyclerView(){
+
+        list = new ArrayList<>();
+
+
+        // TODO replaced by server data after service call Response
+        for(int i=0 ;i < 5;i++){
+            ItemResponse itemResponse = new ItemResponse();
+            itemResponse.setId(String.valueOf(i));
+            if((i/2) == 0){
+                itemResponse.setBarcode("JHJKK4656");
+                itemResponse.setItemName("Soap");
+                itemResponse.setCategory("Cosmetic");
+                itemResponse.setCompanyName("Vpage");
+                itemResponse.setCostPrice("30");
+                itemResponse.setRetailPrice("25");
+                itemResponse.setQuantity("10");
+                itemResponse.setTaxPercent("5");
+                itemResponse.setAvatarUrl("");
+            }else {
+                itemResponse.setBarcode("1226VGJHS");
+                itemResponse.setItemName("Bag");
+                itemResponse.setCategory("Accessories");
+                itemResponse.setCompanyName("Vpage");
+                itemResponse.setCostPrice("40");
+                itemResponse.setRetailPrice("25");
+                itemResponse.setQuantity("15");
+                itemResponse.setTaxPercent("10");
+                itemResponse.setAvatarUrl("");
+            }
+
+            list.add(itemResponse);
+        }
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        itemListAdapter = new ItemListAdapter(activity,list);
+        recyclerView.setAdapter(itemListAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (Math.abs(dy) > mScrollOffset) {
+                    if (dy > 0) {
+                        fabButtonSelectCustomer.setVisibility(View.GONE);
+                        fabLabel.setVisibility(View.GONE);
+                    } else {
+                        fabButtonSelectCustomer.setVisibility(View.VISIBLE);
+                        fabLabel.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchCallBack() {
+            @Override
+            public void onClick(View view, int position) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "selected onClick: " + position);
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                if (LogFlag.bLogOn)Log.d(TAG, "recyclerView onLongClick: " + position);
+            }
+        }));
+    }
+
     private void addFabView(){
 
         fabButtonSelectCustomer.hide(false);
@@ -135,7 +240,6 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void run() {
                 fabButtonSelectCustomer.show(true);
-               // fabButtonSelectCustomer.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
                 fabButtonSelectCustomer.setShowAnimation(AnimationUtils.loadAnimation(activity, R.anim.show_from_bottom));
                 fabButtonSelectCustomer.setHideAnimation(AnimationUtils.loadAnimation(activity, R.anim.hide_to_bottom));
             }
@@ -145,23 +249,12 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         fabButtonSelectCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoAddCustomerView();
+                showCustomSelectView();
             }
         });
 
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.takingButton:
-                // TODO
-                break;
-            case R.id.itemButton:
-                gotoAddItemView();
-                break;
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -191,39 +284,116 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
                 if (LogFlag.bLogOn) Log.d(TAG, "spinnerStockLocationData: " + spinnerStockLocationData);
                 break;
 
-            case R.id.autocompleteEditTextView:
-                if (LogFlag.bLogOn)Log.d(TAG, "onItemSelected() position " + position);
-                break;
-
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        switch (parent.getId()) {
-
-            case R.id.autocompleteEditTextView:
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                break;
-        }
 
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (LogFlag.bLogOn)Log.d(TAG, "onItemClick: "+parent.getItemAtPosition(position));
+
+        switch (parent.getId()) {
+
+            case R.id.autocompleteEditTextView:
+                if (LogFlag.bLogOn)Log.d(TAG, "onItemSelected: " + parent.getItemIdAtPosition(position));
+                recyclerView.setVisibility(View.VISIBLE);
+                break;
+
+        }
     }
 
 
+    private void  showCustomSelectView(){
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialogselectcustomerview, null);
+        dialogBuilder.setView(dialogView);
+
+        TextView popUpTitle = (TextView) dialogView.findViewById(R.id.popUpTitle);
+        autoTextCustomer = (AutoCompleteTextView) dialogView.findViewById(R.id.autoTextCustomer);
+        ImageButton btnClose = (ImageButton) dialogView.findViewById(R.id.btnClose);
+        customerSearchLayout  = (LinearLayout) dialogView.findViewById(R.id.customerSearchLayout);
+        customerContentLayout  = (LinearLayout) dialogView.findViewById(R.id.customerContentLayout);
+
+        Button newCustomerButton =(Button)dialogView.findViewById(R.id.newCustomerButton);
+        Button removeCustomerButton =(Button)dialogView.findViewById(R.id.removeCustomerButton);
+
+        TextView customerName = (TextView)dialogView.findViewById(R.id.customerName);
+        TextView customerEmail = (TextView)dialogView.findViewById(R.id.customerEmail);
+        TextView customerDiscount = (TextView)dialogView.findViewById(R.id.customerDiscount);
+        TextView customerTotal = (TextView)dialogView.findViewById(R.id.customerTotal);
+
+        TextView subTotalPrice = (TextView)dialogView.findViewById(R.id.subTotalPrice);
+        TextView totalPrice = (TextView)dialogView.findViewById(R.id.totalPrice);
+
+
+        popUpTitle.setText("Customer Select");
+
+        alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        autoTextCustomer.setThreshold(1);
+        //Setting adapter
+        autoTextCustomer.setAdapter(customerArrayAdapter);
+        autoTextCustomer.setOnItemClickListener(autoTextCustomerClickItem);
+
+        btnClose.setOnClickListener(this);
+        newCustomerButton.setOnClickListener(this);
+        removeCustomerButton.setOnClickListener(this);
+
+    }
+
+
+    private AdapterView.OnItemClickListener autoTextCustomerClickItem = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String info = ((TextView) view).getText().toString();
+            if(LogFlag.bLogOn)Log.d(TAG, "onItemSelected: " + info);
+            customerSearchLayout.setVisibility(View.GONE);
+            customerContentLayout.setVisibility(View.VISIBLE);
+        }
+    };
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.takingButton:
+                // TODO
+                break;
+
+            case R.id.itemButton:
+                gotoAddItemView();
+                break;
+
+            case R.id.removeCustomerButton:
+                customerSearchLayout.setVisibility(View.VISIBLE);
+                customerContentLayout.setVisibility(View.GONE);
+                break;
+
+            case R.id.newCustomerButton:
+                gotoAddCustomerView();
+                break;
+
+            case R.id.btnClose:
+               // PopUp.dismiss();
+                alertDialog.dismiss();
+                break;
+        }
+    }
+
     private void gotoAddCustomerView(){
         Intent intent = new Intent(getApplicationContext(), AddCustomerActivity_.class);
-        intent.putExtra("PageName","New Customer");
+        intent.putExtra("PageName","New Sales Customer");
         startActivity(intent);
     }
 
     private void gotoAddItemView(){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);
-        intent.putExtra("PageName","New Item");
+        intent.putExtra("PageName","New Sales Item");
         startActivity(intent);
     }
 
