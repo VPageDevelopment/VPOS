@@ -4,6 +4,7 @@ package com.vpage.vpos.tools;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -19,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.vpage.vpos.R;
 import com.vpage.vpos.tools.utils.LogFlag;
 
@@ -291,23 +295,24 @@ public class VTools {
     }
 
 
-    public static String getRequestWithAppVersion(String jsonParams) {
-        JSONObject jsonObject = null;
-        if (LogFlag.bLogOn)Log.d(TAG, "Additional request data");
+    public static void showToast(String message) {
         try {
-            PackageInfo pinfo = VPOSApplication.getContext().getPackageManager().getPackageInfo(VPOSApplication.getContext().getPackageName(), 0);
-            if (LogFlag.bLogOn)Log.d("pinfoCode",String.valueOf(pinfo.versionCode));
-            if (LogFlag.bLogOn)Log.d("pinfoName",pinfo.versionName);
-            jsonObject = new JSONObject(jsonParams);
-            jsonObject.put("appVersion",pinfo.versionName);
-            jsonObject.put("devicePlatformName", "Android");
-        } catch (JSONException e) {
-            if (LogFlag.bLogOn) Log.d(TAG, e.toString());
-        } catch (PackageManager.NameNotFoundException e) {
-            if (LogFlag.bLogOn) Log.d(TAG, e.toString());
+            final Context context = VPOSApplication.getContext();
+            final CharSequence text = message;
+            final int duration = Toast.LENGTH_SHORT;
+            Handler mainHandler = new Handler(context.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    Toast toast = Toast.makeText(context, "  " + text + "  ", duration);
+                    toast.show();
+                }
+            };
+            mainHandler.post(myRunnable);
+        } catch (Exception e) {
+            if (LogFlag.bLogOn) Log.e(TAG, e.toString());
         }
-        if (LogFlag.bLogOn)Log.d(TAG, "AppVersion & DeVicePlatform-->"+jsonObject.toString());
-        return jsonObject.toString();
+
     }
 
 }

@@ -69,8 +69,8 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @ViewById(R.id.spinnerFormat)
     Spinner spinnerFormat;
 
-    @ViewById(R.id.customerRecycleView)
-    RecyclerView recyclerView;
+   /* @ViewById(R.id.customerRecycleView)
+    RecyclerView recyclerView;*/
 
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
@@ -129,7 +129,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             addCustomerButton.setOnClickListener(this);
             addItemsOnSpinner();
             addFabView();
-            addRecyclerView();
+          //  addRecyclerView();
         }
     }
 
@@ -161,7 +161,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void addRecyclerView(){
+    /*private void addRecyclerView(){
 
         list = new ArrayList<>();
 
@@ -217,7 +217,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
                 if (LogFlag.bLogOn)Log.d(TAG, "recyclerView onLongClick: " + position);
             }
         }));
-    }
+    }*/
 
      private void addFabView(){
 
@@ -334,7 +334,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
                 }
 */
                 listAdapter.notifyDataSetChanged();
-                recyclerView.invalidate();
+              //  recyclerView.invalidate();
 
             }
         });
@@ -412,7 +412,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             listAdapter = new ListAdapter(activity,list,pageName);
             listAdapter.setEditCallBack(this);
             listAdapter.setCheckedCallBack(this);
-            recyclerView.setAdapter(listAdapter);
+          //  recyclerView.setAdapter(listAdapter);
         }
     }
 
@@ -443,7 +443,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public boolean onQueryTextChange(String searchQuery) {
                 listAdapter.filter(searchQuery.toString().trim());
-                recyclerView.invalidate();
+               // recyclerView.invalidate();
                 return true;
             }
         });

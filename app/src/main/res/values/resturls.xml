@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- signIn -->
+    <string name="userName">admin</string>
+    <string name="password">password</string>
+    <string name="signIn">auth</string>
+
+    <!-- customers -->
+    <string name="customer">customers</string>
+    <string name="view_customer">customer/{id}</string>
+    <string name="add_customer">customers/add</string>
+    <string name="update_customer">customer/update/{id}</string>
+    <string name="delete_customer">customer/delete/{id}</string>
+
+    <!-- employees -->
+    <string name="employee">employees</string>
+    <string name="view_employee">employee/{id}</string>
+    <string name="add_employee">employees/add</string>
+    <string name="update_employee">employee/update/{id}</string>
+    <string name="delete_employee">employee/delete/{id}</string>
+
+    <!-- employees-login -->
+    <string name="employee_login">employees-login</string>
+    <string name="view_employee_login">employee-login/{id}</string>
+    <string name="add_employee_login">employees-login/add</string>
+    <string name="update_employee_login">employee-login/update/{id}</string>
+    <string name="delete_employee_login">employee-login/delete/{id}</string>
+
+
+    <!-- employees-permissions -->
+    <string name="employee_permission">employees-permissions</string>
+    <string name="view_employee_permission">employee-permission/{id}</string>
+    <string name="add_employee_permission">employees-permission/add</string>
+    <string name="update_employee_permission">employee-permission/update/{id}</string>
+    <string name="delete_employee_permission">employee-permission/delete/{id}</string>
+
+
+    <!-- item -->
+    <string name="item">items</string>
+    <string name="view_item">item/{id}</string>
+    <string name="add_item">items/add</string>
+    <string name="update_item">item/update/{id}</string>
+    <string name="delete_item">item/delete/{id}</string>
+
+    <!-- item-kits -->
+    <string name="item_kits">item-kits</string>
+    <string name="view_item_kits">item-kit/{id}</string>
+    <string name="add_item_kits">item-kits/add</string>
+    <string name="update_item_kits">item-kit/update/{id}</string>
+    <string name="delete_item_kits">item-kit/delete/{id}</string>
+
+    <!-- sale -->
+    <string name="sale">sales</string>
+    <string name="view_sale">sale/{id}</string>
+    <string name="add_sale">sales/add</string>
+    <string name="update_sale">sale/update/{id}</string>
+    <string name="delete_sale">sale/delete/{id}</string>
+
+    <!-- supplier -->
+    <string name="supplier">suppliers</string>
+    <string name="view_supplier">supplier/{id}</string>
+    <string name="add_supplier">suppliers/add</string>
+    <string name="update_supplier">supplier/update/{id}</string>
+    <string name="delete_supplier">supplier/delete/{id}</string>
+
+
+    <!-- gift-cards -->
+    <string name="gift_cards">gift-cards</string>
+    <string name="view_gift_cards">gift-card/{id}</string>
+    <string name="add_gift_cards">gift-cards/add</string>
+    <string name="update_gift_cards">gift-card/update/{id}</string>
+    <string name="delete_gift_cards">gift-card/delete/{id}</string>
+
+</resources>
