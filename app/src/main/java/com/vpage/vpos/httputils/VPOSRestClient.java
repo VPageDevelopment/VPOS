@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.vpage.vpos.R;
+import com.vpage.vpos.pojos.ItemResponse;
 import com.vpage.vpos.pojos.SignInRequest;
 import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
@@ -12,8 +13,16 @@ import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerRequest;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
+import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeRequest;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
+import com.vpage.vpos.pojos.item.UpdateItemResponse;
+import com.vpage.vpos.pojos.item.addItem.AddItemRequest;
+import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
+import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
+import com.vpage.vpos.pojos.itemkits.UpdateItemKitsResponse;
+import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsRequest;
+import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
 import com.vpage.vpos.tools.VPOSApplication;
 import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VPOSTools;
@@ -305,6 +314,249 @@ public class VPOSRestClient {
 
         });
         return addEmployeeResponses[0];
+    }
+
+
+    public UpdateEmployeeResponse updateEmployee(String employeeId) {
+        String employeeUrl = VPOSApplication.getContext().getResources().getString(R.string.update_employee);
+        employeeUrl = employeeUrl.replace("{id}",employeeId);
+        if (LogFlag.bLogOn)Log.d(TAG, employeeUrl);
+        final UpdateEmployeeResponse[] updateEmployeeResponses = {null};
+
+        HttpManager.putwithEntity(employeeUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateEmployeeResponses[0] = VPOSRestTools.getInstance().updateEmployeeResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateEmployeeResponses[0].toString());
+            }
+
+        });
+        return updateEmployeeResponses[0];
+    }
+
+
+    public UpdateEmployeeResponse deleteEmployee(String employeeId) {
+
+        String employeeUrl = VPOSApplication.getContext().getResources().getString(R.string.delete_employee);
+        employeeUrl = employeeUrl.replace("{id}",employeeId);
+
+        final UpdateEmployeeResponse[] updateEmployeeResponses = {null};
+        HttpManager.delete(employeeUrl, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateEmployeeResponses[0] = VPOSRestTools.getInstance().updateEmployeeResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateEmployeeResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+
+        return updateEmployeeResponses[0];
+    }
+
+    public ItemResponse getItem() {
+
+        String itemUrl = VPOSApplication.getContext().getResources().getString(R.string.item);
+
+        final ItemResponse[] itemResponses = {null};
+        HttpManager.get(itemUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                itemResponses[0] = VPOSRestTools.getInstance().getItemResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "itemResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "itemResponses: "+itemResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                itemResponses[0] = null;
+
+            }
+        });
+        return itemResponses[0];
+    }
+
+
+    public void setAddItemParams(AddItemRequest addItemRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(addItemRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+    public AddItemResponse addItem() {
+        String itemUrl = VPOSApplication.getContext().getResources().getString(R.string.add_item);
+        if (LogFlag.bLogOn)Log.d(TAG, itemUrl);
+        final AddItemResponse[] addItemResponses = {null};
+
+        HttpManager.post(itemUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                addItemResponses[0] = VPOSRestTools.getInstance().addItemResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "addItemResponses: "+addItemResponses[0].toString());
+            }
+
+        });
+        return addItemResponses[0];
+    }
+
+    public UpdateItemResponse updateItem(String itemId) {
+        String itemUrl = VPOSApplication.getContext().getResources().getString(R.string.update_item);
+        itemUrl = itemUrl.replace("{id}",itemId);
+        if (LogFlag.bLogOn)Log.d(TAG, itemUrl);
+        final UpdateItemResponse[] updateItemResponses = {null};
+
+        HttpManager.putwithEntity(itemUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateItemResponses[0] = VPOSRestTools.getInstance().updateItemResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateItemResponses[0].toString());
+            }
+
+        });
+        return updateItemResponses[0];
+    }
+
+
+    public UpdateItemResponse deleteItem(String itemId) {
+
+        String itemUrl = VPOSApplication.getContext().getResources().getString(R.string.delete_item);
+        itemUrl = itemUrl.replace("{id}",itemId);
+
+        final UpdateItemResponse[] updateItemResponses = {null};
+        HttpManager.delete(itemUrl, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateItemResponses[0] = VPOSRestTools.getInstance().updateItemResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateItemResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+
+        return updateItemResponses[0];
+    }
+
+
+    public ItemKitsResponse getItemKits() {
+
+        String itemKitsUrl = VPOSApplication.getContext().getResources().getString(R.string.item_kits);
+
+        final ItemKitsResponse[] itemKitsResponses = {null};
+        HttpManager.get(itemKitsUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                itemKitsResponses[0] = VPOSRestTools.getInstance().getItemKitsResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "itemKitsResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "itemKitsResponses: "+itemKitsResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                itemKitsResponses[0] = null;
+
+            }
+        });
+        return itemKitsResponses[0];
+    }
+
+
+    public void setAddItemKitsParams(AddItemKitsRequest addItemKitsRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(addItemKitsRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+
+    public AddItemKitsResponse addItemKits() {
+        String itemKitsUrl = VPOSApplication.getContext().getResources().getString(R.string.add_item_kits);
+        if (LogFlag.bLogOn)Log.d(TAG, itemKitsUrl);
+        final AddItemKitsResponse[] addItemKitsResponses = {null};
+
+        HttpManager.post(itemKitsUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                addItemKitsResponses[0] = VPOSRestTools.getInstance().addItemKitsResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "addItemKitsResponses: "+addItemKitsResponses[0].toString());
+            }
+
+        });
+        return addItemKitsResponses[0];
+    }
+
+    public UpdateItemKitsResponse updateItemKits(String itemKitId) {
+        String itemKitsUrl = VPOSApplication.getContext().getResources().getString(R.string.update_item_kits);
+        itemKitsUrl = itemKitsUrl.replace("{id}",itemKitId);
+        if (LogFlag.bLogOn)Log.d(TAG, itemKitsUrl);
+        final UpdateItemKitsResponse[] updateItemKitsResponses = {null};
+
+        HttpManager.putwithEntity(itemKitsUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateItemKitsResponses[0] = VPOSRestTools.getInstance().updateItemKitsResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateItemKitsResponses[0].toString());
+            }
+
+        });
+        return updateItemKitsResponses[0];
+    }
+
+
+    public UpdateItemKitsResponse deleteItemKit(String itemKitId) {
+
+        String itemKitsUrl = VPOSApplication.getContext().getResources().getString(R.string.delete_item_kits);
+        itemKitsUrl = itemKitsUrl.replace("{id}",itemKitId);
+
+        final UpdateItemKitsResponse[] updateItemKitsResponses = {null};
+        HttpManager.delete(itemKitsUrl, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateItemKitsResponses[0] = VPOSRestTools.getInstance().updateItemKitsResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateItemKitsResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+
+        return updateItemKitsResponses[0];
     }
 
 }

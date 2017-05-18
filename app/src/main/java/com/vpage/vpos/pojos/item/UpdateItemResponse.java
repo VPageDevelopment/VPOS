@@ -1,6 +1,7 @@
-package com.vpage.vpos.pojos.employee.addEmployee;
+package com.vpage.vpos.pojos.item;
 
-public class AddEmployeeResponse {
+
+public class UpdateItemResponse {
 
     private String code;
 
@@ -24,7 +25,7 @@ public class AddEmployeeResponse {
 
     @Override
     public String toString() {
-        return "AddEmployeeResponse{" +
+        return "UpdateItemResponse{" +
                 "code='" + code + '\'' +
                 ", message='" + message + '\'' +
                 '}';
