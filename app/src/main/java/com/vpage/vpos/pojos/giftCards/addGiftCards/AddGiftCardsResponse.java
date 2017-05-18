@@ -1,7 +1,6 @@
-package com.vpage.vpos.pojos.customer.addCustomer;
+package com.vpage.vpos.pojos.giftCards.addGiftCards;
 
-
-public class AddCustomerResponse {
+public class AddGiftCardsResponse {
 
     private String code;
 
@@ -25,7 +24,7 @@ public class AddCustomerResponse {
 
     @Override
     public String toString() {
-        return "AddCustomerResponse{" +
+        return "AddGiftCardsResponse{" +
                 "code='" + code + '\'' +
                 ", message='" + message + '\'' +
                 '}';

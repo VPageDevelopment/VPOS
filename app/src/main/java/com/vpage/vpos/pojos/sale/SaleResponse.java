@@ -1,22 +1,23 @@
-package com.vpage.vpos.pojos.item;
+package com.vpage.vpos.pojos.sale;
 
 import java.util.Arrays;
 
-public class ItemResponse {
+public class SaleResponse {
 
-    private Items[] items;
+    private Sales[] items;
 
-    public Items[] getItems() {
+
+    public Sales[] getItems() {
         return items;
     }
 
-    public void setItems(Items[] items) {
+    public void setItems(Sales[] items) {
         this.items = items;
     }
 
     @Override
     public String toString() {
-        return "ItemResponse{" +
+        return "SaleResponse{" +
                 "items=" + Arrays.toString(items) +
                 '}';
     }

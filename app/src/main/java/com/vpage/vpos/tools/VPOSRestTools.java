@@ -2,6 +2,7 @@ package com.vpage.vpos.tools;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vpage.vpos.pojos.GiftCardResponse;
 import com.vpage.vpos.pojos.ItemResponse;
 import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
@@ -11,11 +12,19 @@ import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
 import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
+import com.vpage.vpos.pojos.giftCards.UpdateGiftCardResponse;
+import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsResponse;
 import com.vpage.vpos.pojos.item.UpdateItemResponse;
 import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
 import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
 import com.vpage.vpos.pojos.itemkits.UpdateItemKitsResponse;
 import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
+import com.vpage.vpos.pojos.sale.SaleResponse;
+import com.vpage.vpos.pojos.sale.UpdateSaleResponse;
+import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
+import com.vpage.vpos.pojos.supplier.SupplierResponse;
+import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
+import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierResponse;
 
 
 public class VPOSRestTools {
@@ -102,6 +111,49 @@ public class VPOSRestTools {
         return gson.fromJson(jsonString, UpdateItemKitsResponse.class);
     }
 
+    public SaleResponse getSaleResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, SaleResponse.class);
+    }
+
+    public AddSaleResponse addSaleResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, AddSaleResponse.class);
+    }
+
+    public UpdateSaleResponse updateSaleResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, UpdateSaleResponse.class);
+    }
+
+    public SupplierResponse getSuppliersResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, SupplierResponse.class);
+    }
+
+    public AddSupplierResponse addSupplierResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, AddSupplierResponse.class);
+    }
+
+    public UpdateSuppliersResponse updateSupplierResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, UpdateSuppliersResponse.class);
+    }
+
+    public GiftCardResponse getGiftCardResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, GiftCardResponse.class);
+    }
+
+    public AddGiftCardsResponse addGiftCardResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, AddGiftCardsResponse.class);
+    }
 
 
+    public UpdateGiftCardResponse updateGiftCardResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, UpdateGiftCardResponse.class);
+    }
 }

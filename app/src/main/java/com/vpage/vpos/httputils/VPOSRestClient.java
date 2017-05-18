@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.vpage.vpos.R;
+import com.vpage.vpos.pojos.GiftCardResponse;
 import com.vpage.vpos.pojos.ItemResponse;
 import com.vpage.vpos.pojos.SignInRequest;
 import com.vpage.vpos.pojos.SignInResponse;
@@ -16,6 +17,10 @@ import com.vpage.vpos.pojos.employee.EmployeeResponse;
 import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeRequest;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
+import com.vpage.vpos.pojos.giftCards.GiftCardRequest;
+import com.vpage.vpos.pojos.giftCards.UpdateGiftCardResponse;
+import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsRequest;
+import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsResponse;
 import com.vpage.vpos.pojos.item.UpdateItemResponse;
 import com.vpage.vpos.pojos.item.addItem.AddItemRequest;
 import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
@@ -23,6 +28,14 @@ import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
 import com.vpage.vpos.pojos.itemkits.UpdateItemKitsResponse;
 import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsRequest;
 import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
+import com.vpage.vpos.pojos.sale.SaleResponse;
+import com.vpage.vpos.pojos.sale.UpdateSaleResponse;
+import com.vpage.vpos.pojos.sale.addSale.AddSaleRequest;
+import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
+import com.vpage.vpos.pojos.supplier.SupplierResponse;
+import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
+import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierRequest;
+import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierResponse;
 import com.vpage.vpos.tools.VPOSApplication;
 import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VPOSTools;
@@ -557,6 +570,308 @@ public class VPOSRestClient {
         });
 
         return updateItemKitsResponses[0];
+    }
+
+
+    public SaleResponse getScales() {
+
+        String saleUrl = VPOSApplication.getContext().getResources().getString(R.string.sale);
+
+        final SaleResponse[] saleResponses = {null};
+        HttpManager.get(saleUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                saleResponses[0] = VPOSRestTools.getInstance().getSaleResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "saleResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "saleResponses: "+saleResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                saleResponses[0] = null;
+
+            }
+        });
+        return saleResponses[0];
+    }
+
+
+    public void setAddSaleParams(AddSaleRequest addSaleRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(addSaleRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+
+    public AddSaleResponse addSale() {
+        String saleUrl = VPOSApplication.getContext().getResources().getString(R.string.add_sale);
+        if (LogFlag.bLogOn)Log.d(TAG, saleUrl);
+        final AddSaleResponse[] addSaleResponses = {null};
+
+        HttpManager.post(saleUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                addSaleResponses[0] = VPOSRestTools.getInstance().addSaleResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "addSaleResponses: "+addSaleResponses[0].toString());
+            }
+
+        });
+        return addSaleResponses[0];
+    }
+
+
+    public UpdateSaleResponse updateSale(String saleId) {
+        String saleUrl = VPOSApplication.getContext().getResources().getString(R.string.update_sale);
+        saleUrl = saleUrl.replace("{id}",saleId);
+        if (LogFlag.bLogOn)Log.d(TAG, saleUrl);
+        final UpdateSaleResponse[] updateItemKitsResponses = {null};
+
+        HttpManager.putwithEntity(saleUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateItemKitsResponses[0] = VPOSRestTools.getInstance().updateSaleResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateItemKitsResponses[0].toString());
+            }
+
+        });
+        return updateItemKitsResponses[0];
+    }
+
+
+    public UpdateSaleResponse deleteSale(String saleId) {
+
+        String saleUrl = VPOSApplication.getContext().getResources().getString(R.string.delete_sale);
+        saleUrl = saleUrl.replace("{id}",saleId);
+
+        final UpdateSaleResponse[] updateItemKitsResponses = {null};
+        HttpManager.delete(saleUrl, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateItemKitsResponses[0] = VPOSRestTools.getInstance().updateSaleResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateItemKitsResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+
+        return updateItemKitsResponses[0];
+    }
+
+    public SupplierResponse getSuppliers() {
+
+        String supplierUrl = VPOSApplication.getContext().getResources().getString(R.string.supplier);
+
+        final SupplierResponse[] supplierResponses = {null};
+        HttpManager.get(supplierUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                supplierResponses[0] = VPOSRestTools.getInstance().getSuppliersResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "supplierResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "supplierResponses: "+supplierResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                supplierResponses[0] = null;
+
+            }
+        });
+        return supplierResponses[0];
+    }
+
+    public void setAddSupplierParams(AddSupplierRequest addSupplierRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(addSupplierRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+    public AddSupplierResponse addSupplier() {
+        String supplierUrl = VPOSApplication.getContext().getResources().getString(R.string.add_supplier);
+        if (LogFlag.bLogOn)Log.d(TAG, supplierUrl);
+        final AddSupplierResponse[] addSupplierResponses = {null};
+
+        HttpManager.post(supplierUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                addSupplierResponses[0] = VPOSRestTools.getInstance().addSupplierResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "addSupplierResponses: "+addSupplierResponses[0].toString());
+            }
+
+        });
+        return addSupplierResponses[0];
+    }
+
+    public UpdateSuppliersResponse updateSupplier(String supplierId) {
+        String supplierUrl = VPOSApplication.getContext().getResources().getString(R.string.update_supplier);
+        supplierUrl = supplierUrl.replace("{id}",supplierId);
+        if (LogFlag.bLogOn)Log.d(TAG, supplierUrl);
+        final UpdateSuppliersResponse[] updateSuppliersResponses = {null};
+
+        HttpManager.putwithEntity(supplierUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateSuppliersResponses[0] = VPOSRestTools.getInstance().updateSupplierResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateSuppliersResponses[0].toString());
+            }
+
+        });
+        return updateSuppliersResponses[0];
+    }
+
+
+    public UpdateSuppliersResponse deleteSupplier(String supplierId) {
+
+        String supplierUrl = VPOSApplication.getContext().getResources().getString(R.string.delete_supplier);
+        supplierUrl = supplierUrl.replace("{id}",supplierId);
+
+        final UpdateSuppliersResponse[] updateSuppliersResponses = {null};
+        HttpManager.delete(supplierUrl, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateSuppliersResponses[0] = VPOSRestTools.getInstance().updateSupplierResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateSuppliersResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+
+        return updateSuppliersResponses[0];
+    }
+
+
+    public GiftCardResponse getGiftCards() {
+
+        String giftCardUrl = VPOSApplication.getContext().getResources().getString(R.string.gift_cards);
+
+        final GiftCardResponse[] giftCardResponses = {null};
+        HttpManager.get(giftCardUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                giftCardResponses[0] = VPOSRestTools.getInstance().getGiftCardResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "giftCardResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "giftCardResponses: "+giftCardResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                giftCardResponses[0] = null;
+
+            }
+        });
+        return giftCardResponses[0];
+    }
+
+    public void setAddGiftCardParams(AddGiftCardsRequest addGiftCardsRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(addGiftCardsRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+
+    public AddGiftCardsResponse addGiftCard() {
+        String giftCardUrl = VPOSApplication.getContext().getResources().getString(R.string.add_gift_cards);
+        if (LogFlag.bLogOn)Log.d(TAG, giftCardUrl);
+        final AddGiftCardsResponse[] addGiftCardsResponses = {null};
+
+        HttpManager.post(giftCardUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                addGiftCardsResponses[0] = VPOSRestTools.getInstance().addGiftCardResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "addGiftCardsResponses: "+addGiftCardsResponses[0].toString());
+            }
+
+        });
+        return addGiftCardsResponses[0];
+    }
+
+    public UpdateGiftCardResponse updateGiftCard(String giftCardId) {
+        String giftCardUrl = VPOSApplication.getContext().getResources().getString(R.string.update_gift_cards);
+        giftCardUrl = giftCardUrl.replace("{id}",giftCardId);
+        if (LogFlag.bLogOn)Log.d(TAG, giftCardUrl);
+        final UpdateGiftCardResponse[] updateGiftCardResponses = {null};
+
+        HttpManager.putwithEntity(giftCardId, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateGiftCardResponses[0] = VPOSRestTools.getInstance().updateGiftCardResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateGiftCardResponses[0].toString());
+            }
+
+        });
+        return updateGiftCardResponses[0];
+    }
+
+    public UpdateGiftCardResponse deleteGiftCard(String giftCardId) {
+
+        String giftCardUrl = VPOSApplication.getContext().getResources().getString(R.string.delete_gift_cards);
+        giftCardUrl = giftCardUrl.replace("{id}",giftCardId);
+
+        final UpdateGiftCardResponse[] updateGiftCardResponses = {null};
+        HttpManager.delete(giftCardUrl, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateGiftCardResponses[0] = VPOSRestTools.getInstance().updateGiftCardResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, updateGiftCardResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+
+        return updateGiftCardResponses[0];
     }
 
 }
