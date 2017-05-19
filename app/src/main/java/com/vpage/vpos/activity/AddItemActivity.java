@@ -26,6 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.item.addItem.AddItemRequest;
+import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
@@ -133,6 +136,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     String itemNameInput = "", categoryInput = "",costPriceInput = "",retailPriceInput = "",spinnerSupplierData="",
             quantityStockInput = "",receivingQuantityInput = "",reorderLevelInput = "",imagePath = "";
 
+    String serialCheckBoxData="F",altCheckBoxData="F",deleteCheckBoxData="F",upcCode="",taxOne="",taxTwo="";
+
     boolean isNetworkAvailable = false;
 
     TextWatcher textDescription;
@@ -143,6 +148,9 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     private ProgressDialog dialog;
     Bitmap bitmap;
+
+
+    AddItemRequest addItemRequest;
 
     @AfterViews
     public void onInitView() {
@@ -220,7 +228,6 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.submitButton:
                 getInputs();
                 validateInput();
-
                 break;
 
             case R.id.newButton:
@@ -259,10 +266,10 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     void getInputs(){
 
-        UPC.getText().toString();
-        tax1.getText().toString();
+        upcCode = UPC.getText().toString();
+        taxOne = tax1.getText().toString();
         tax1Percent.getText().toString();
-        tax2.getText().toString();
+        taxTwo = tax2.getText().toString();
         tax2Percent.getText().toString();
         description.getText().toString();
         spinnerSupplierData = spinnerSupplier.getSelectedItem().toString();
@@ -287,6 +294,9 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         altCheckBox.setChecked(false);
         serialCheckBox.setChecked(false);
         deletedCheckBox.setChecked(false);
+        serialCheckBoxData="F";
+        altCheckBoxData="F";
+        deleteCheckBoxData="F";
 
     }
 
@@ -310,12 +320,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                // TODO Service call
-                if(pageName.equals("New Sales Customer")){
-                    gotoSalesView();
-                }else {
-                    gotoItemView();
-                }
+                callAddItemResponse();
 
             } else {
 
@@ -442,16 +447,20 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.altCheckBox:
                 if(isChecked){
                     altCheckBox.setChecked(true);
+                    altCheckBoxData="T";
                 }else {
                     altCheckBox.setChecked(false);
+                    altCheckBoxData="F";
                 }
                 break;
 
             case R.id.serialCheckBox:
                 if(isChecked){
                     serialCheckBox.setChecked(true);
+                    serialCheckBoxData="T";
                 }else {
                     serialCheckBox.setChecked(false);
+                    serialCheckBoxData="F";
                 }
 
                 break;
@@ -459,8 +468,10 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.deletedCheckBox:
                 if(isChecked){
                     deletedCheckBox.setChecked(true);
+                    deleteCheckBoxData="T";
                 }else {
                     deletedCheckBox.setChecked(false);
+                    deleteCheckBoxData="F";
                 }
                 break;
         }
@@ -474,6 +485,64 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    @Background
+    void callAddItemResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callAddItemResponse");
+        setAddItemRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddItemParams(addItemRequest);
+        AddItemResponse addItemResponse = vposRestClient.addItem();
+        if (null != addItemResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "addItemResponse: " + addItemResponse.toString());
+              hideLoderGifImage();
+              addItemResponseFinish();
+            } else {
+                hideLoderGifImage();
+                showToastErrorMsg("addItemResponse failed");
+            }
+    }
+
+    @UiThread
+    public void addItemResponseFinish(){
+        if(pageName.equals("New Sales Customer")){
+            gotoSalesView();
+        }else {
+            gotoItemView();
+        }
+    }
+
+    @UiThread
+    public void hideLoderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+
+    void  setAddItemRequestData(){
+
+        addItemRequest = new AddItemRequest();
+        addItemRequest.setUpc_ean_isbn(upcCode);
+        addItemRequest.setItem_name(itemNameInput);
+        addItemRequest.setCategory(categoryInput);
+        addItemRequest.setSupplier_fk(spinnerSupplierData);
+        addItemRequest.setCost_price(costPriceInput);
+        addItemRequest.setRetail_price(retailPriceInput);
+        addItemRequest.setTax_one(taxOne);
+        addItemRequest.setTax_two(taxTwo);
+        addItemRequest.setQuantity_stock(quantityStockInput);
+        addItemRequest.setReceiving_quantity(receivingQuantityInput);
+        addItemRequest.setAvatar(imagePath);
+        addItemRequest.setAllow_alt_description(altCheckBoxData);
+        addItemRequest.setItem_has_serial_number(serialCheckBoxData);
+        addItemRequest.setDeleted(deleteCheckBoxData);
 
     }
 

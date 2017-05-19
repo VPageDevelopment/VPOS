@@ -19,7 +19,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerRequest;
+import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
+import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
@@ -28,8 +32,10 @@ import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_addcustomer)
@@ -107,6 +113,10 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     PlayGifView playGifView;
 
     String firstNameInput = "", lastNameInput = "",genderSelected = "Male",phoneNumberInput="";
+
+    String emailInput="",addressLine1Input="",addressLine2Input="",cityInput="",stateInput="",zipInput="",
+            countryInput="",commentsInput="",companyInput="",accountInput="",totalInput="",discountInput="",taxableMode="N";
+
     ValidationStatus validationStatus,validationStatusPhoneNumber;
 
     boolean isNetworkAvailable = false;
@@ -116,6 +126,8 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     String pageName = " ";
 
     Activity activity;
+
+    AddCustomerRequest addCustomerRequest;
 
     @AfterViews
     public void onInitView() {
@@ -251,25 +263,27 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if(isChecked){
             taxableCheckBox.setChecked(true);
+            taxableMode = "Y";
         }else {
             taxableCheckBox.setChecked(false);
+            taxableMode = "N";
         }
     }
 
     void getInputs(){
 
-        email.getText().toString();
-        addressLine1.getText().toString();
-        addressLine2.getText().toString();
-        city.getText().toString();
-        state.getText().toString();
-        zip.getText().toString();
-        country.getText().toString();
-        comments.getText().toString();
-        company.getText().toString();
-        account.getText().toString();
-        total.getText().toString();
-        discount.getText().toString();
+        emailInput = email.getText().toString();
+        addressLine1Input = addressLine1.getText().toString();
+        addressLine2Input = addressLine2.getText().toString();
+        cityInput = city.getText().toString();
+        stateInput = state.getText().toString();
+        zipInput = zip.getText().toString();
+        countryInput = country.getText().toString();
+        commentsInput = comments.getText().toString();
+        companyInput = company.getText().toString();
+        accountInput = account.getText().toString();
+        totalInput = total.getText().toString();
+        discountInput = discount.getText().toString();
 
     }
 
@@ -300,12 +314,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-            // TODO Service call
-            if(pageName.equals("New Sales Customer")){
-                gotoSalesView();
-            }else {
-                gotoCustomerView();
-            }
+               callAddCustomerResponse();
 
         }else {
 
@@ -351,6 +360,68 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 break;
         }
         if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+
+    }
+
+    @Background
+    void callAddCustomerResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callAddCustomerResponse");
+        setAddCustomerData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddCustomerParams(addCustomerRequest);
+        AddCustomerResponse addCustomerResponse = vposRestClient.addCustomer();
+        if (null != addCustomerResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "addCustomerResponse: " + addCustomerResponse.toString());
+            hideLoaderGifImage();
+            addCustomerResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("addCustomerResponse failed");
+        }
+    }
+
+    @UiThread
+    public void addCustomerResponseFinish(){
+        if(pageName.equals("New Sales Customer")){
+            gotoSalesView();
+        }else {
+            gotoCustomerView();
+        }
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+
+    void  setAddCustomerData(){
+
+        addCustomerRequest = new AddCustomerRequest();
+        addCustomerRequest.setFirst_name(firstNameInput);
+        addCustomerRequest.setLast_name(lastNameInput);
+        addCustomerRequest.setGender(genderSelected);
+        addCustomerRequest.setEmail(emailInput);
+        addCustomerRequest.setPhone_number(phoneNumberInput);
+        addCustomerRequest.setAddress_one(addressLine1Input);
+        addCustomerRequest.setAddress_two(addressLine2Input);
+        addCustomerRequest.setCity(cityInput);
+        addCustomerRequest.setState(stateInput);
+        addCustomerRequest.setZip(zipInput);
+        addCustomerRequest.setCountry(countryInput);
+        addCustomerRequest.setComments(commentsInput);
+        addCustomerRequest.setCompany(companyInput);
+        addCustomerRequest.setAccount(accountInput);
+        addCustomerRequest.setTotal(totalInput);
+        addCustomerRequest.setDiscount(discountInput);
+        addCustomerRequest.setTaxable(taxableMode);
 
     }
 

@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
             validationStatus = ValidationUtils.isValidLoginUserNamePassword(userNameInput, userPasswordInput);
 
             if (!validationStatus.isStatus()) {
-                hideLoderGifImage();
+                hideLoaderGifImage();
                 setErrorMessage(validationStatus.getMessage());
                 return;
             }
@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
         }else {
 
-            hideLoderGifImage();
+            hideLoaderGifImage();
             setErrorMessage(getResources().getString(R.string.connection_check));
         }
     }
@@ -149,27 +149,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
     @Background
     void callSignInResponse() {
         if (LogFlag.bLogOn)Log.d(TAG, "callSignInResponse");
-        setSignInRequestRequestData();
+        setSignInRequestData();
 
         VPOSRestClient vposRestClient = new VPOSRestClient();
         SignInResponse signInResponse = vposRestClient.getSignInResponse(signInRequest);
         if(signInResponse != null){
             if (LogFlag.bLogOn)Log.d(TAG, "signInResponse: " + signInResponse.toString());
             if(signInResponse.getStatus().equals("ok")){
-                hideLoderGifImage();
+                hideLoaderGifImage();
                 gotoHomeView();
             }else {
-                hideLoderGifImage();
+                hideLoaderGifImage();
                 setErrorMessage(signInResponse.getStatus());
             }
         }else {
-            hideLoderGifImage();
+            hideLoaderGifImage();
             showToastErrorMsg("signInResponse is null");
         }
     }
 
     @UiThread
-    public void hideLoderGifImage(){
+    public void hideLoaderGifImage(){
         playGifView.setVisibility(View.GONE);
     }
 
@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
         VTools.showToast(error);
     }
 
-    void  setSignInRequestRequestData(){
+    void  setSignInRequestData(){
 
         signInRequest = new SignInRequest();
         signInRequest.setUsername(userNameInput);
