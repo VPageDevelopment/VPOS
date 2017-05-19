@@ -5,6 +5,8 @@ import android.util.Log;
 import com.loopj.android.http.*;
 import com.vpage.vpos.tools.VPOSApplication;
 import com.loopj.android.http.RequestParams;
+import com.vpage.vpos.tools.utils.LogFlag;
+
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
@@ -107,12 +109,12 @@ public class HttpManager {
 
 
     private static String getAbsoluteSignInUrl(String relativeUrl) {
-        Log.d(TAG, BASE_URL_SIGNIN + relativeUrl);
+        if (LogFlag.bLogOn)Log.d(TAG, BASE_URL_SIGNIN + relativeUrl);
         return BASE_URL_SIGNIN + relativeUrl;
     }
 
     private static String getAbsoluteUrl(String relativeUrl) {
-        Log.d(TAG, BASE_URL + relativeUrl);
+        if (LogFlag.bLogOn)Log.d(TAG, BASE_URL + relativeUrl);
         return BASE_URL + relativeUrl;
     }
 

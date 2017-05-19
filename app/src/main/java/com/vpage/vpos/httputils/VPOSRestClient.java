@@ -144,7 +144,7 @@ public class VPOSRestClient {
 
     public SignInResponse getSignInResponse() {
         String signInUrl = VPOSApplication.getContext().getResources().getString(R.string.signIn);
-        Log.d(TAG, signInUrl);
+        if (LogFlag.bLogOn)Log.d(TAG, signInUrl);
         final SignInResponse[] signInResponses = {null};
         HttpManager.setBasicAuthData(VPOSApplication.getContext().getResources().getString(R.string.userName),VPOSApplication.getContext().getResources().getString(R.string.password));
         HttpManager.postSignIn(signInUrl, parsedJsonParams, new JsonHttpResponseHandler() {
@@ -200,7 +200,7 @@ public class VPOSRestClient {
             String jsonParams = gson.toJson(addCustomerRequest);
             parsedJsonParams = new StringEntity(jsonParams);
 
-            Log.d(TAG, jsonParams);
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
 
         } catch (UnsupportedEncodingException e) {
 
@@ -303,7 +303,7 @@ public class VPOSRestClient {
             String jsonParams = gson.toJson(addEmployeeRequest);
             parsedJsonParams = new StringEntity(jsonParams);
 
-            Log.d(TAG, jsonParams);
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
 
         } catch (UnsupportedEncodingException e) {
             if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
@@ -405,7 +405,7 @@ public class VPOSRestClient {
             String jsonParams = gson.toJson(addItemRequest);
             parsedJsonParams = new StringEntity(jsonParams);
 
-            Log.d(TAG, jsonParams);
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
 
         } catch (UnsupportedEncodingException e) {
             if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
@@ -430,17 +430,20 @@ public class VPOSRestClient {
         return addItemResponses[0];
     }
 
+
     public UpdateItemResponse updateItem(String itemId) {
         String itemUrl = VPOSApplication.getContext().getResources().getString(R.string.update_item);
         itemUrl = itemUrl.replace("{id}",itemId);
         if (LogFlag.bLogOn)Log.d(TAG, itemUrl);
         final UpdateItemResponse[] updateItemResponses = {null};
 
-        HttpManager.putwithEntity(itemUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+        HttpManager.post(itemUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
                 updateItemResponses[0] = VPOSRestTools.getInstance().updateItemResponseData(resultData.toString());
-                if (LogFlag.bLogOn)Log.d(TAG, updateItemResponses[0].toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponses: "+updateItemResponses[0].toString());
             }
 
         });
@@ -506,7 +509,7 @@ public class VPOSRestClient {
             String jsonParams = gson.toJson(addItemKitsRequest);
             parsedJsonParams = new StringEntity(jsonParams);
 
-            Log.d(TAG, jsonParams);
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
 
         } catch (UnsupportedEncodingException e) {
             if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
@@ -608,7 +611,7 @@ public class VPOSRestClient {
             String jsonParams = gson.toJson(addSaleRequest);
             parsedJsonParams = new StringEntity(jsonParams);
 
-            Log.d(TAG, jsonParams);
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
 
         } catch (UnsupportedEncodingException e) {
             if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
@@ -709,7 +712,7 @@ public class VPOSRestClient {
             String jsonParams = gson.toJson(addSupplierRequest);
             parsedJsonParams = new StringEntity(jsonParams);
 
-            Log.d(TAG, jsonParams);
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
 
         } catch (UnsupportedEncodingException e) {
             if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
@@ -809,7 +812,7 @@ public class VPOSRestClient {
             String jsonParams = gson.toJson(addGiftCardsRequest);
             parsedJsonParams = new StringEntity(jsonParams);
 
-            Log.d(TAG, jsonParams);
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
 
         } catch (UnsupportedEncodingException e) {
             if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
