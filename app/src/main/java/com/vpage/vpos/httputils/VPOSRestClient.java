@@ -142,11 +142,11 @@ public class VPOSRestClient {
     }
 
 
-    public SignInResponse getSignInResponse() {
+    public SignInResponse getSignInResponse(SignInRequest signInRequest) {
         String signInUrl = VPOSApplication.getContext().getResources().getString(R.string.signIn);
         if (LogFlag.bLogOn)Log.d(TAG, signInUrl);
         final SignInResponse[] signInResponses = {null};
-        HttpManager.setBasicAuthData(VPOSApplication.getContext().getResources().getString(R.string.userName),VPOSApplication.getContext().getResources().getString(R.string.password));
+        HttpManager.setBasicAuthData(signInRequest.getUsername(),signInRequest.getPassword());
         HttpManager.postSignIn(signInUrl, parsedJsonParams, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {

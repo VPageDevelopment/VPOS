@@ -11,15 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.SignInRequest;
+import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_login)
@@ -49,6 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
     ValidationStatus validationStatus;
 
     boolean isNetworkAvailable = false;
+
+    SignInRequest signInRequest;
 
     @Override
     public void onNewIntent(Intent intent) {
@@ -121,24 +129,63 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
             validationStatus = ValidationUtils.isValidLoginUserNamePassword(userNameInput, userPasswordInput);
 
             if (!validationStatus.isStatus()) {
-                playGifView.setVisibility(View.GONE);
+                hideLoderGifImage();
                 setErrorMessage(validationStatus.getMessage());
                 return;
             }
 
-
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
-              // TODO Service call
-                gotoHomeView();
-
+                callSignInResponse();
 
         }else {
 
-            playGifView.setVisibility(View.GONE);
+            hideLoderGifImage();
             setErrorMessage(getResources().getString(R.string.connection_check));
         }
     }
+
+
+    @Background
+    void callSignInResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callSignInResponse");
+        setSignInRequestRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        SignInResponse signInResponse = vposRestClient.getSignInResponse(signInRequest);
+        if(signInResponse != null){
+            if (LogFlag.bLogOn)Log.d(TAG, "signInResponse: " + signInResponse.toString());
+            if(signInResponse.getStatus().equals("ok")){
+                hideLoderGifImage();
+                gotoHomeView();
+            }else {
+                hideLoderGifImage();
+                setErrorMessage(signInResponse.getStatus());
+            }
+        }else {
+            hideLoderGifImage();
+            showToastErrorMsg("signInResponse is null");
+        }
+    }
+
+    @UiThread
+    public void hideLoderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+    void  setSignInRequestRequestData(){
+
+        signInRequest = new SignInRequest();
+        signInRequest.setUsername(userNameInput);
+        signInRequest.setPassword(userPasswordInput);
+
+    }
+
 
     void gotoHomeView(){
         Intent intent = new Intent(getApplicationContext(), HomeActivity_.class);
