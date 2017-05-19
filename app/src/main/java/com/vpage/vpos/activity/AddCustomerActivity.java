@@ -23,7 +23,6 @@ import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerRequest;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
-import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
@@ -366,7 +365,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     @Background
     void callAddCustomerResponse() {
         if (LogFlag.bLogOn)Log.d(TAG, "callAddCustomerResponse");
-        setAddCustomerData();
+        setAddCustomerRequestData();
 
         VPOSRestClient vposRestClient = new VPOSRestClient();
         vposRestClient.setAddCustomerParams(addCustomerRequest);
@@ -402,7 +401,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    void  setAddCustomerData(){
+    void  setAddCustomerRequestData(){
 
         addCustomerRequest = new AddCustomerRequest();
         addCustomerRequest.setFirst_name(firstNameInput);

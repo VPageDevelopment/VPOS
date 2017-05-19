@@ -3,7 +3,9 @@ package com.vpage.vpos.pojos.customer.addCustomer;
 
 public class AddCustomerResponse {
 
-    private String code;
+    private String status-code;
+
+    private String status;
 
     private String message;
 

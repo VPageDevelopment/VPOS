@@ -13,13 +13,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsRequest;
+import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
+import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @Fullscreen
@@ -46,13 +53,18 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.submitButton)
     Button submitButton;
 
+    @ViewById(R.id.viewGif)
+    PlayGifView playGifView;
+
     boolean isNetworkAvailable = false;
 
-    String giftCardNoInput="", valueInput ="";
+    String giftCardNoInput="", valueInput ="",customerInput="";
 
     String pageName = " ";
 
     Activity activity;
+
+    AddGiftCardsRequest addGiftCardsRequest;
 
     @AfterViews
 
@@ -109,20 +121,20 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
             // TODO Data update from service call
             giftCardNoInput = giftCardNo.getText().toString();
             valueInput = value.getText().toString();
-            customer.getText().toString();
+            customerInput = customer.getText().toString();
 
             if (!giftCardNoInput.isEmpty()&& !valueInput.isEmpty()) {
 
                 textError.setVisibility(View.GONE);
-
-                // TODO Service call
-                gotoGiftCardView();
+                playGifView.setVisibility(View.VISIBLE);
+                callAddGiftCardsResponse();
 
             } else {
+                hideLoaderGifImage();
                 setErrorMessage("Fill all Required Input");
             }
         }else {
-
+            hideLoaderGifImage();
             setErrorMessage("Check Network Connection");
         }
 
@@ -191,6 +203,48 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
                 break;
         }
         if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
+
+    }
+    @Background
+    void callAddGiftCardsResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callAddGiftCardsResponse");
+        setAddGiftCardsRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddGiftCardParams(addGiftCardsRequest);
+        AddGiftCardsResponse addGiftCardsResponse = vposRestClient.addGiftCard();
+        if (null != addGiftCardsResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "addGiftCardsResponse: " + addGiftCardsResponse.toString());
+            hideLoaderGifImage();
+            addGiftCardsResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("addGiftCardsResponse failed");
+        }
+    }
+
+    @UiThread
+    public void addGiftCardsResponseFinish(){
+        gotoGiftCardView();
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+
+    void  setAddGiftCardsRequestData(){
+
+        addGiftCardsRequest = new AddGiftCardsRequest();
+        addGiftCardsRequest.setGift_card_number(giftCardNoInput);
+        addGiftCardsRequest.setGc_value(valueInput);
+        addGiftCardsRequest.setCustomer_fk(customerInput);
 
     }
 

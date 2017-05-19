@@ -22,7 +22,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ExpListViewAdapter;
+import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeRequest;
+import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
@@ -31,8 +34,10 @@ import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,6 +129,9 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
     String firstNameInput = "", lastNameInput = "",phoneNumberInput="",genderSelected = "Male",
             userNameInput = "", passwordWordInput = "",confPasswordWordInput = "";
     ValidationStatus validationStatus,validationStatusUserName,validationStatusPassword,validationStatusPhoneNumber;
+    String emailInput="",addressLine1Input="",addressLine2Input="",cityInput="",stateInput="",zipInput="",
+            countryInput="",commentsInput="";
+
 
     int tabPosition;
 
@@ -138,6 +146,8 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
     ExpListViewAdapter listAdapter;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+
+    AddEmployeeRequest addEmployeeRequest;
 
     @AfterViews
     public void onInitView() {
@@ -316,14 +326,14 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
     void getInputs(){
 
-        email.getText().toString();
-        addressLine1.getText().toString();
-        addressLine2.getText().toString();
-        city.getText().toString();
-        state.getText().toString();
-        zip.getText().toString();
-        country.getText().toString();
-        comments.getText().toString();
+        emailInput = email.getText().toString();
+        addressLine1Input = addressLine1.getText().toString();
+        addressLine2Input = addressLine2.getText().toString();
+        cityInput = city.getText().toString();
+        stateInput = state.getText().toString();
+        zipInput = zip.getText().toString();
+        countryInput = country.getText().toString();
+        commentsInput = comments.getText().toString();
 
     }
 
@@ -406,8 +416,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                // To Do service call
-                gotoEmployeeView();
+                callAddEmployeeResponse();
 
         }else {
 
@@ -565,6 +574,60 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
         listDataChild.put(listDataHeader.get(1), nowShowing);
         listDataChild.put(listDataHeader.get(2), comingSoon);
+    }
+
+
+    @Background
+    void callAddEmployeeResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callAddEmployeeResponse");
+        setAddEmployeeRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddEmployeeParams(addEmployeeRequest);
+        AddEmployeeResponse addEmployeeResponse = vposRestClient.addEmployee();
+        if (null != addEmployeeResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "addEmployeeResponse: " + addEmployeeResponse.toString());
+            hideLoaderGifImage();
+            addEmployeeResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("addEmployeeResponse failed");
+        }
+    }
+
+    @UiThread
+    public void addEmployeeResponseFinish(){
+        gotoEmployeeView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+
+    void  setAddEmployeeRequestData(){
+
+        addEmployeeRequest = new AddEmployeeRequest();
+        addEmployeeRequest.setFirst_name(firstNameInput);
+        addEmployeeRequest.setLast_name(lastNameInput);
+        addEmployeeRequest.setGender(genderSelected);
+        addEmployeeRequest.setEmail(emailInput);
+        addEmployeeRequest.setPhone_number(phoneNumberInput);
+        addEmployeeRequest.setAddress_one(addressLine1Input);
+        addEmployeeRequest.setAddress_two(addressLine2Input);
+        addEmployeeRequest.setCity(cityInput);
+        addEmployeeRequest.setState(stateInput);
+        addEmployeeRequest.setZip(zipInput);
+        addEmployeeRequest.setCountry(countryInput);
+        addEmployeeRequest.setComments(commentsInput);
+
     }
 
     private void gotoEmployeeView(){

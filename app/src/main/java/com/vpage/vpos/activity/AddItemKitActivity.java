@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsRequest;
+import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
@@ -22,8 +25,10 @@ import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_additemkit)
@@ -52,7 +57,7 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
-    String itemKitNameInput = "";
+    String itemKitNameInput = "",itemKitDescInput="",itemKitItemInput="";
 
     boolean isNetworkAvailable = false;
 
@@ -61,6 +66,8 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
     String pageName = "";
 
     Activity activity;
+
+    AddItemKitsRequest addItemKitsRequest;
 
     @AfterViews
     public void onInitView() {
@@ -139,15 +146,26 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == EditorInfo.IME_ACTION_GO ||
+                keyCode == EditorInfo.IME_ACTION_DONE ||
+                event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
 
+            validateInput();
+
+        }
+        return false;
+    }
 
 
     void validateInput(){
 
         if(isNetworkAvailable){
 
-            addItem.getText().toString();
-            description.getText().toString();
+            itemKitItemInput = addItem.getText().toString();
+            itemKitDescInput = description.getText().toString();
             itemKitNameInput = itemKitName.getText().toString();
             if (itemKitNameInput.isEmpty()) {
                 setErrorMessage("Fill all Required Input");
@@ -157,9 +175,7 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                // TODO Service call
-                gotoItemKitView();
-
+                callAddItemKitResponse();
         }else {
             setErrorMessage("Check Network Connection");
         }
@@ -208,22 +224,53 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
     }
 
 
+    @Background
+    void callAddItemKitResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callAddItemKitResponse");
+        setAddItemKitRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddItemKitsParams(addItemKitsRequest);
+        AddItemKitsResponse addItemKitsResponse = vposRestClient.addItemKits();
+        if (null != addItemKitsResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "addItemKitsResponse: " + addItemKitsResponse.toString());
+            hideLoaderGifImage();
+            addCustomerResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("addItemKitsResponse failed");
+        }
+    }
+
+    @UiThread
+    public void addCustomerResponseFinish(){
+        gotoItemKitView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+    void  setAddItemKitRequestData(){
+
+        addItemKitsRequest = new AddItemKitsRequest();
+        addItemKitsRequest.setItem_kit_name(itemKitNameInput);
+        addItemKitsRequest.setItem_kit_desc(itemKitDescInput);
+        addItemKitsRequest.setItem_fk(itemKitItemInput);
+    }
+
+
     private void gotoItemKitView(){
         Intent intent = new Intent(getApplicationContext(), ItemKitActivity_.class);
         startActivity(intent);
         finish();
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (keyCode == EditorInfo.IME_ACTION_GO ||
-                keyCode == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-
-                    validateInput();
-
-        }
-        return false;
-    }
 }

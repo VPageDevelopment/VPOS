@@ -18,7 +18,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
+import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierRequest;
+import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
@@ -28,8 +32,10 @@ import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_addsupplier)
@@ -101,6 +107,10 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
     PlayGifView playGifView;
 
     String firstNameInput = "", lastNameInput = "",companyNameInput="",genderSelected = "Male",phoneNumberInput ="";
+
+    String emailInput="",addressLine1Input="",addressLine2Input="",cityInput="",stateInput="",zipInput="",
+            countryInput="",commentsInput="",accountInput="",agencyInput="";
+
     ValidationStatus validationStatusPhoneNumber;
 
     boolean isNetworkAvailable = false;
@@ -110,6 +120,8 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
     String pageName = " ";
 
     Activity activity;
+
+    AddSupplierRequest addSupplierRequest;
 
     @AfterViews
     public void onInitView() {
@@ -243,16 +255,17 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
 
     void getInputs(){
 
-        email.getText().toString();
-        addressLine1.getText().toString();
-        addressLine2.getText().toString();
-        city.getText().toString();
-        state.getText().toString();
-        zip.getText().toString();
-        country.getText().toString();
-        comments.getText().toString();
-        account.getText().toString();
-        agencyName.getText().toString();
+
+        emailInput = email.getText().toString();
+        addressLine1Input = addressLine1.getText().toString();
+        addressLine2Input = addressLine2.getText().toString();
+        cityInput = city.getText().toString();
+        stateInput = state.getText().toString();
+        zipInput = zip.getText().toString();
+        countryInput = country.getText().toString();
+        commentsInput = comments.getText().toString();
+        accountInput = account.getText().toString();
+        agencyInput = agencyName.getText().toString();
 
     }
 
@@ -283,10 +296,7 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-               // TODO Service call
-                gotoSupplierView();
-
-
+                callAddSupplierResponse();
 
         }else {
 
@@ -334,6 +344,61 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
         if (LogFlag.bLogOn)Log.d(TAG, "isNetworkAvailable: "+isNetworkAvailable);
 
     }
+
+    @Background
+    void callAddSupplierResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callAddSupplierResponse");
+        setAddSupplierRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddSupplierParams(addSupplierRequest);
+        AddSupplierResponse addSupplierResponse = vposRestClient.addSupplier();
+        if (null != addSupplierResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "addSupplierResponse: " + addSupplierResponse.toString());
+            hideLoaderGifImage();
+            addSupplierResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("addSupplierResponse failed");
+        }
+    }
+
+    @UiThread
+    public void addSupplierResponseFinish(){
+        gotoSupplierView();
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+
+    void  setAddSupplierRequestData(){
+
+        addSupplierRequest = new AddSupplierRequest();
+        addSupplierRequest.setCompany_name(companyNameInput);
+        addSupplierRequest.setAgency_name(agencyInput);
+        addSupplierRequest.setFirst_name(firstNameInput);
+        addSupplierRequest.setLast_name(lastNameInput);
+        addSupplierRequest.setGender(genderSelected);
+        addSupplierRequest.setEmail(emailInput);
+        addSupplierRequest.setPhone_number(phoneNumberInput);
+        addSupplierRequest.setAddress_one(addressLine1Input);
+        addSupplierRequest.setAddress_two(addressLine2Input);
+        addSupplierRequest.setCity(cityInput);
+        addSupplierRequest.setState(stateInput);
+        addSupplierRequest.setZip(zipInput);
+        addSupplierRequest.setCountry(countryInput);
+        addSupplierRequest.setComments(commentsInput);
+        addSupplierRequest.setAccount(accountInput);
+    }
+
 
     private void gotoSupplierView(){
         Intent intent = new Intent(getApplicationContext(), SupplierActivity_.class);
