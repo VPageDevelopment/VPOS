@@ -4,8 +4,27 @@ import java.util.Arrays;
 
 public class SaleResponse {
 
+    private String status;
+
+    private String status_code;
+
     private Sales[] items;
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus_code() {
+        return status_code;
+    }
+
+    public void setStatus_code(String status_code) {
+        this.status_code = status_code;
+    }
 
     public Sales[] getItems() {
         return items;
@@ -18,7 +37,9 @@ public class SaleResponse {
     @Override
     public String toString() {
         return "SaleResponse{" +
-                "items=" + Arrays.toString(items) +
+                "status='" + status + '\'' +
+                ", status_code='" + status_code + '\'' +
+                ", items=" + Arrays.toString(items) +
                 '}';
     }
 }

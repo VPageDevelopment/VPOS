@@ -124,6 +124,10 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarSupport();
 
+        checkInternetStatus();
+        NetworkUtil.setOnNetworkChangeListener(this);
+
+
         int customerCount = 1; // to test placed static data replaced by server response count
         customerCountCheck(customerCount);
 
@@ -269,7 +273,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
         deleteFAB.setColorPressedResId(R.color.colorPrimary);
         deleteFAB.setLabelText("Delete");
-        deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
+        deleteFAB.setImageResource(R.drawable.delete_white);
 
         emailFAB = new FloatingActionButton(activity);
         emailFAB.setButtonSize(FloatingActionButton.SIZE_MINI);
@@ -626,7 +630,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         smsPopUp = VTools.createPopUp(popUpView);
         Button submitButton = (Button) popUpView.findViewById(R.id.submitButton);
         final ImageButton btnClose = (ImageButton) popUpView.findViewById(R.id.btnClose);
-        checkInternetStatus();
 
         firstNameText = (TextView) popUpView.findViewById(R.id.firstNameText);
         lastNameText = (TextView) popUpView.findViewById(R.id.lastNameText);

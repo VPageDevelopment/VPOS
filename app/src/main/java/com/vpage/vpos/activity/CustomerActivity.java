@@ -234,7 +234,7 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
          deleteFAB.setColorNormalResId(R.color.colorPrimaryDark);
          deleteFAB.setColorPressedResId(R.color.colorPrimary);
          deleteFAB.setLabelText("Delete");
-         deleteFAB.setImageResource(android.R.drawable.ic_menu_delete);
+         deleteFAB.setImageResource(R.drawable.delete_white);
 
          addFabButton();
 

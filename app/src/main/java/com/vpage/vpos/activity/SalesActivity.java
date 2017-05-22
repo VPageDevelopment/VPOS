@@ -27,12 +27,19 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ItemListAdapter;
+import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ItemResponse;
+import com.vpage.vpos.pojos.sale.addSale.AddSaleRequest;
+import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
+import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -70,6 +77,11 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
     @ViewById(R.id.autocompleteEditTextView)
     AutoCompleteTextView autoTextView ;
 
+    @ViewById(R.id.viewGif)
+    PlayGifView playGifView;
+
+    AddSaleRequest addSaleRequest;
+
     AutoCompleteTextView autoTextCustomer;
 
     AlertDialog alertDialog;
@@ -94,11 +106,9 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         Intent callingIntent=getIntent();
 
         setActionBarSupport();
-        setSpinnerView();
         setView();
-        setAutoTextView();
-       // addRecyclerView();
-        addFabView();
+
+        callAddSaleResponse();
 
     }
 
@@ -362,7 +372,7 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         switch (v.getId()) {
 
             case R.id.takingButton:
-                // TODO
+                gotoSaleTakeView();
                 break;
 
             case R.id.itemButton:
@@ -385,6 +395,59 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         }
     }
 
+
+
+    @Background
+    void callAddSaleResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callAddSaleResponse");
+        setAddSaleRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddSaleParams(addSaleRequest);
+        AddSaleResponse addSaleResponse = vposRestClient.addSale();
+        if (null != addSaleResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "addSaleResponse: " + addSaleResponse.toString());
+            hideLoaderGifImage();
+            addSaleResponseFinish(addSaleResponse);
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("addSaleResponse failed");
+        }
+    }
+
+    @UiThread
+    public void addSaleResponseFinish( AddSaleResponse addSaleResponse){
+
+        setSpinnerView();
+        setAutoTextView();
+        // addRecyclerView();
+        addFabView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+    void  setAddSaleRequestData(){
+
+        addSaleRequest = new AddSaleRequest();
+        addSaleRequest.setCustomer_fk("");
+        addSaleRequest.setItem_fk("");
+        addSaleRequest.setAmount_due("");
+        addSaleRequest.setAmount_tendered("");
+        addSaleRequest.setChange_due("");
+        addSaleRequest.setType("");
+        addSaleRequest.setInvoice("");
+
+    }
+
     private void gotoAddCustomerView(){
         Intent intent = new Intent(getApplicationContext(), AddCustomerActivity_.class);
         intent.putExtra("PageName","New Sales Customer");
@@ -394,6 +457,12 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
     private void gotoAddItemView(){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);
         intent.putExtra("PageName","New Sales Item");
+        startActivity(intent);
+    }
+
+
+    private void gotoSaleTakeView(){
+        Intent intent = new Intent(getApplicationContext(), SaleTakeActivity_.class);
         startActivity(intent);
     }
 

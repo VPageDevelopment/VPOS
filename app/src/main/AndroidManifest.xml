@@ -19,6 +19,7 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label=""
+
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
@@ -85,6 +86,10 @@
             />
         <activity
             android:name=".activity.SalesActivity_"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name=".activity.SaleTakeActivity_"
             android:screenOrientation="portrait"
             />
         <activity

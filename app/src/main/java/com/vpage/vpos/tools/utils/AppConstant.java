@@ -15,6 +15,9 @@ public class AppConstant {
 
     public  static String TAG_AName = "Agency Name";
 
+    public  static String TAG_Time = "Time",TAG_Customer = "Customer",TAG_Amount_due = "Amount Due",TAG_Amount_ten= "Amount Tendered",
+                    TAG_Change_due= "Change Due",TAG_Type= "Type",TAG_Invoice= "Invoice #";
+
     public  static String cFilterPreference = "Customer_CHECKBOX_DATA";
 
     public  static String iFilterPreference = "Item_CHECKBOX_DATA";
@@ -26,6 +29,8 @@ public class AppConstant {
     public  static String eFilterPreference = "Employee_CHECKBOX_DATA";
 
     public  static String gFilterPreference = "GiftCard_CHECKBOX_DATA";
+
+    public  static String saFilterPreference = "Sales_CHECKBOX_DATA";
 
     public static int PICK_IMAGE_REQUEST = 1;
 }

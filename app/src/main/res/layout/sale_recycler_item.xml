@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="260dp"
+            android:background="@drawable/square_gray_corners">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/contentLayout">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/IdText"
+                    android:text="ID:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/timeText"
+                    android:text="Time:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/customerText"
+                    android:text="Customer:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/amountDueText"
+                    android:text="Amount Due:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/amountTenText"
+                    android:text="Amount Tendered:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/changeDueText"
+                    android:text="Change Due:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/typeText"
+                    android:text="Type:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:padding="10dp"
+                    android:id="@+id/invoiceText"
+                    android:text="Invoice #:"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:ignore="RtlHardcoded"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@+id/contentLayout"
+                android:layout_toEndOf="@+id/contentLayout">
+                <CheckBox
+                    android:id="@+id/itemCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/box"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentRight="true"/>
+
+                <!--            <CheckBox
+                                android:id="@+id/itemCheckBox"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:layout_margin="10dp"
+                                android:layout_alignParentRight="true" />-->
+
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
