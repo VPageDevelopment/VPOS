@@ -1,6 +1,6 @@
 package com.vpage.vpos.pojos;
 
-public class ItemResponse {
+public class ItemResponseTest {
 
     private String Id;
     private String barcode;

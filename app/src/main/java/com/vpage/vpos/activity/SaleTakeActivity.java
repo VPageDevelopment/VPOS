@@ -794,9 +794,6 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
         VTools.showToast(error);
     }
 
-
-
-
     private void addFabButton(){
 
         floatingActionMenu.addMenuButton(printFAB);

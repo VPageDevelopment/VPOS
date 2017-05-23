@@ -31,15 +31,21 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.SupplierFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.SupplierListAdapter;
-import com.vpage.vpos.pojos.SupplierResponse;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.SupplierResponseTest;
+import com.vpage.vpos.pojos.supplier.SupplierResponse;
+import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +81,9 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
+    @ViewById(R.id.viewGif)
+    PlayGifView playGifView;
+
 
     FloatingActionButton deleteFAB,emailFAB;
 
@@ -86,13 +95,15 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     private Handler mUiHandler = new Handler();
 
-    List<SupplierResponse> list;
+    List<SupplierResponseTest> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
     Activity activity;
+
+    SupplierResponse supplierResponse;
 
     @AfterViews
     public void onInitView() {
@@ -127,9 +138,8 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
             SupplierContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addSupplierButton.setOnClickListener(this);
-            addItemsOnSpinner();
-            addFabView();
-            addRecyclerView();
+
+            callSupplierResponse();
         }
     }
 
@@ -169,7 +179,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
         // To be replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            SupplierResponse supplierResponse = new SupplierResponse();
+            SupplierResponseTest supplierResponse = new SupplierResponseTest();
             supplierResponse.setId(String.valueOf(i));
             if((i/2) == 0){
                 supplierResponse.setCompanyName("Vpage");
@@ -192,7 +202,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        supplierListAdapter = new SupplierListAdapter(activity,list);
+        supplierListAdapter = new SupplierListAdapter(activity,supplierResponse);
         supplierListAdapter.setEditCallBack(this);
         supplierListAdapter.setCheckedCallBack(this);
         recyclerView.setAdapter(supplierListAdapter);
@@ -415,7 +425,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            supplierListAdapter = new SupplierListAdapter(activity,list);
+            supplierListAdapter = new SupplierListAdapter(activity,supplierResponse);
             supplierListAdapter.setEditCallBack(this);
             supplierListAdapter.setCheckedCallBack(this);
             recyclerView.setAdapter(supplierListAdapter);
@@ -511,6 +521,42 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         this.checkedPositionArrayList = checkedPositionArrayList;
 
     }
+
+    @Background
+    void callSupplierResponse() {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callSupplierResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        supplierResponse = vposRestClient.getSuppliers();
+        if (supplierResponse.getStatus().equals("true") && null != supplierResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "supplierResponse: " + supplierResponse.toString());
+            hideLoaderGifImage();
+            supplierResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("supplierResponse failed");
+        }
+    }
+
+    @UiThread
+    public void supplierResponseFinish(){
+
+        addItemsOnSpinner();
+        addFabView();
+        addRecyclerView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
 
     private void gotoAddSupplierView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddSupplierActivity_.class);

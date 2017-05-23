@@ -20,7 +20,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -28,7 +27,7 @@ import com.github.clans.fab.FloatingActionButton;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ItemListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
-import com.vpage.vpos.pojos.ItemResponse;
+import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleRequest;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
 import com.vpage.vpos.tools.PlayGifView;
@@ -92,11 +91,13 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private Handler mUiHandler = new Handler();
     private int mScrollOffset = 4;
-    List<ItemResponse> list;
+    List<ItemResponseTest> list;
     ItemListAdapter itemListAdapter;
     ArrayAdapter<String> customerArrayAdapter;
 
     Activity activity;
+
+    AddSaleResponse addSaleResponse;
 
     @AfterViews
     public void init() {
@@ -180,7 +181,7 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
 
         // TODO replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            ItemResponse itemResponse = new ItemResponse();
+            ItemResponseTest itemResponse = new ItemResponseTest();
             itemResponse.setId(String.valueOf(i));
             if((i/2) == 0){
                 itemResponse.setBarcode("JHJKK4656");
@@ -404,11 +405,11 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
 
         VPOSRestClient vposRestClient = new VPOSRestClient();
         vposRestClient.setAddSaleParams(addSaleRequest);
-        AddSaleResponse addSaleResponse = vposRestClient.addSale();
-        if (null != addSaleResponse) {
+        addSaleResponse = vposRestClient.addSale();
+        if (null != addSaleResponse && addSaleResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "addSaleResponse: " + addSaleResponse.toString());
             hideLoaderGifImage();
-            addSaleResponseFinish(addSaleResponse);
+            addSaleResponseFinish();
         } else {
             hideLoaderGifImage();
             showToastErrorMsg("addSaleResponse failed");
@@ -416,7 +417,7 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     @UiThread
-    public void addSaleResponseFinish( AddSaleResponse addSaleResponse){
+    public void addSaleResponseFinish( ){
 
         setSpinnerView();
         setAutoTextView();

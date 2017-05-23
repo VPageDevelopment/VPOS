@@ -39,7 +39,10 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ItemFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ItemListAdapter;
-import com.vpage.vpos.pojos.ItemResponse;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.ItemResponseTest;
+import com.vpage.vpos.pojos.item.ItemResponse;
+import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
@@ -48,7 +51,9 @@ import com.vpage.vpos.tools.callBack.ItemCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -89,6 +94,9 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
+    @ViewById(R.id.viewGif)
+    PlayGifView playGifView;
+
     EditText fromDate,toDate;
 
     FloatingActionButton deleteFAB,bulkEditFAB,generateBarcodeFAB;
@@ -102,7 +110,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     private Handler mUiHandler = new Handler();
 
-    List<ItemResponse> list;
+    List<ItemResponseTest> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -113,6 +121,8 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     TextWatcher textWatcherFromDate,textWatcherToDate;
 
     Activity activity;
+
+    ItemResponse itemResponse;
 
     @AfterViews
     public void onInitView() {
@@ -184,9 +194,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 }
             };
 
-            addItemsOnSpinner();
-            addFabView();
-            addRecyclerView();
+            callItemResponse();
         }
     }
 
@@ -225,7 +233,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
         // TODO replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            ItemResponse itemResponse = new ItemResponse();
+            ItemResponseTest itemResponse = new ItemResponseTest();
             itemResponse.setId(String.valueOf(i));
             if((i/2) == 0){
                 itemResponse.setBarcode("JHJKK4656");
@@ -255,7 +263,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        itemListAdapter = new ItemListAdapter(activity,list);
+        itemListAdapter = new ItemListAdapter(activity,itemResponse);
         itemListAdapter.setItemCallBack(this);
         itemListAdapter.setCheckedCallBack(this);
         recyclerView.setAdapter(itemListAdapter);
@@ -482,7 +490,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            itemListAdapter = new ItemListAdapter(activity,list);
+            itemListAdapter = new ItemListAdapter(activity,itemResponse);
             itemListAdapter.setItemCallBack(this);
             itemListAdapter.setCheckedCallBack(this);
             recyclerView.setAdapter(itemListAdapter);
@@ -813,6 +821,40 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         PopUp.dismiss();
     }
 
+    @Background
+    void callItemResponse() {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        itemResponse = vposRestClient.getItem();
+        if (itemResponse.getStatus().equals("true") && null != itemResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "itemResponse: " + itemResponse.toString());
+            hideLoaderGifImage();
+            itemResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("itemResponse failed");
+        }
+    }
+
+    @UiThread
+    public void itemResponseFinish(){
+
+        addItemsOnSpinner();
+        addFabView();
+        addRecyclerView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
 
     private void gotoAddItemView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);

@@ -17,7 +17,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.SupplierResponse;
+import com.vpage.vpos.pojos.SupplierResponseTest;
+import com.vpage.vpos.pojos.supplier.SupplierResponse;
+import com.vpage.vpos.pojos.supplier.Suppliers;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
@@ -50,14 +52,22 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
     Boolean ID = false,CName = false,AName = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    private List<SupplierResponse> supplierResponseList;
-    private List<SupplierResponse> responseList;
+    private List<Suppliers> supplierResponseList;
+    private List<Suppliers> responseList;
 
-    public SupplierListAdapter(Activity activity,List<SupplierResponse> supplierResponseList) {
+    SupplierResponse supplierResponse;
+
+
+    public SupplierListAdapter(Activity activity,SupplierResponse supplierResponse) {
         this.activity = activity;
-        this.supplierResponseList = supplierResponseList;
+        this.supplierResponse = supplierResponse;
+
+        for(int i=0 ;i < supplierResponse.getItems().length;i++){
+            supplierResponseList.add(this.supplierResponse.getItems()[i]);
+        }
+
         responseList = new ArrayList<>();
-        responseList.addAll( this.supplierResponseList );
+        responseList.addAll(supplierResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
 
@@ -81,7 +91,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = supplierResponseList.get(position).getFirstName();
+        final String name = supplierResponseList.get(position).getFirst_name();
 
         jsonObjectData = VPOSPreferences.get(AppConstant.sFilterPreference);
         if (null != jsonObjectData) {
@@ -98,13 +108,13 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
         }
 
 
-        holder.IdText.setText("ID: " +supplierResponseList.get(position).getId());
-        holder.companyText.setText("Company Name: " +supplierResponseList.get(position).getCompanyName());
-        holder.agencyText.setText("Agency Name: " + supplierResponseList.get(position).getAgencyName());
-        holder.firstText.setText("First Name: " +supplierResponseList.get(position).getFirstName());
-        holder.lastText.setText("Last Name: " + supplierResponseList.get(position).getLastName());
+        holder.IdText.setText("ID: " +supplierResponseList.get(position).getSupplier_id());
+        holder.companyText.setText("Company Name: " +supplierResponseList.get(position).getCompany_name());
+        holder.agencyText.setText("Agency Name: " + supplierResponseList.get(position).getAgency_name());
+        holder.firstText.setText("First Name: " +supplierResponseList.get(position).getFirst_name());
+        holder.lastText.setText("Last Name: " + supplierResponseList.get(position).getLast_name());
         holder.emailText.setText("IKCPrice: " + supplierResponseList.get(position).getEmail());
-        holder.phoneNumberText.setText("Phone Number: " + supplierResponseList.get(position).getPhoneNumber());
+        holder.phoneNumberText.setText("Phone Number: " + supplierResponseList.get(position).getPhone_number());
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,7 +265,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
     }
 
 
-    public void add(int position, SupplierResponse item) {
+    public void add(int position, Suppliers item) {
         supplierResponseList.add(position, item);
         notifyItemInserted(position);
     }
@@ -298,11 +308,11 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
             supplierResponseList.addAll(responseList);
 
         } else {
-            for (SupplierResponse supplierResponse : responseList) {
-                if (charText.length() != 0 && supplierResponse.getCompanyName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    supplierResponseList.add(supplierResponse);
-                } else if (charText.length() != 0 && supplierResponse.getAgencyName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    supplierResponseList.add(supplierResponse);
+            for (Suppliers suppliers : responseList) {
+                if (charText.length() != 0 && suppliers.getCompany_name().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    supplierResponseList.add(suppliers);
+                } else if (charText.length() != 0 && suppliers.getAgency_name().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    supplierResponseList.add(suppliers);
                 }
             }
         }

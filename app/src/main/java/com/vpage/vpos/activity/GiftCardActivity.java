@@ -26,22 +26,27 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GiftCardFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.GiftCardListAdapter;
-import com.vpage.vpos.pojos.GiftCardResponse;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.GiftCardResponseTest;
+import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
+import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +84,9 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
+    @ViewById(R.id.viewGif)
+    PlayGifView playGifView;
+
     FloatingActionButton deleteFAB;
 
     String spinnerFormatData = "";
@@ -89,13 +97,15 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
     private Handler mUiHandler = new Handler();
 
-    List<GiftCardResponse> list;
+    List<GiftCardResponseTest> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
     Activity activity;
+
+    GiftCardResponse giftCardResponse;
 
     @AfterViews
     public void onInitView() {
@@ -130,9 +140,8 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
             giftCardContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addGiftCardButton.setOnClickListener(this);
-            addItemsOnSpinner();
-            addFabView();
-            addRecyclerView();
+
+            callGiftCardResponse();
         }
     }
 
@@ -170,7 +179,7 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
         // To be replaced by server data after service call Response
         for(int i=0 ;i < 5;i++){
-            GiftCardResponse giftCardResponse = new GiftCardResponse();
+            GiftCardResponseTest giftCardResponse = new GiftCardResponseTest();
             giftCardResponse.setId(String.valueOf(i));
             if((i/2) == 0){
                 giftCardResponse.setFirstName("Ram");
@@ -189,7 +198,7 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        listAdapter = new GiftCardListAdapter(activity,list);
+        listAdapter = new GiftCardListAdapter(activity,giftCardResponse);
         listAdapter.setEditCallBack(this);
         listAdapter.setCheckedCallBack(this);
         recyclerView.setAdapter(listAdapter);
@@ -352,7 +361,7 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            listAdapter = new GiftCardListAdapter(activity,list);
+            listAdapter = new GiftCardListAdapter(activity,giftCardResponse);
             listAdapter.setEditCallBack(this);
             listAdapter.setCheckedCallBack(this);
             recyclerView.setAdapter(listAdapter);
@@ -448,15 +457,45 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    @Background
+    void callGiftCardResponse() {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callGiftCardResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        giftCardResponse = vposRestClient.getGiftCards();
+        if (giftCardResponse.getStatus().equals("true") && null != giftCardResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "giftCardResponse: " + giftCardResponse.toString());
+            hideLoaderGifImage();
+            giftCardResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("giftCardResponse failed");
+        }
+    }
+
+    @UiThread
+    public void giftCardResponseFinish(){
+
+        addItemsOnSpinner();
+        addFabView();
+        addRecyclerView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
     private void gotoAddGiftCardView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddGiftCardActivity_.class);
         intent.putExtra("PageName",pageName);
         startActivity(intent);
     }
 
-    private void gotoEmailView(String [] emailArray){
-        Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
-        intent.putExtra("EmailId",emailArray);
-        startActivity(intent);
-    }
 }

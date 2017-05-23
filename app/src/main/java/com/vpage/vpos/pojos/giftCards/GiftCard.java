@@ -1,6 +1,6 @@
 package com.vpage.vpos.pojos.giftCards;
 
-public class GiftCardRequest {
+public class GiftCard {
 
     private String updated_at;
 

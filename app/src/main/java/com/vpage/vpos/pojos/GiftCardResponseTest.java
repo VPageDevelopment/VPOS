@@ -1,7 +1,7 @@
 package com.vpage.vpos.pojos;
 
 
-public class GiftCardResponse {
+public class GiftCardResponseTest {
 
     private String Id;
     private String firstName;
@@ -51,7 +51,7 @@ public class GiftCardResponse {
 
     @Override
     public String toString() {
-        return "GiftCardResponse{" +
+        return "GiftCardResponseTest{" +
                 "Id='" + Id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

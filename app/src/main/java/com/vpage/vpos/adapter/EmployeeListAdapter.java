@@ -1,6 +1,5 @@
 package com.vpage.vpos.adapter;
 
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,15 +14,14 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.ItemResponseTest;
-import com.vpage.vpos.pojos.item.ItemResponse;
-import com.vpage.vpos.pojos.item.Items;
+import com.vpage.vpos.pojos.employee.EmployeeResponse;
+import com.vpage.vpos.pojos.employee.Employees;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
-import com.vpage.vpos.tools.callBack.ItemCallBack;
+import com.vpage.vpos.tools.callBack.EditCallBack;
+import com.vpage.vpos.tools.callBack.SendSmsCallBack;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.json.JSONArray;
@@ -33,15 +31,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
+public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapter.ViewHolder> {
 
-    private static final String TAG = ItemListAdapter.class.getName();
+    private static final String TAG = EmployeeListAdapter.class.getName();
 
     private SparseBooleanArray mChecked = new SparseBooleanArray();
 
-    private ItemCallBack itemCallBack;
+    private EditCallBack editCallBack;
 
     private CheckedCallBack checkedCallBack;
+
+    private SendSmsCallBack sendSmsCallBack;
 
     private Activity activity;
 
@@ -50,47 +50,44 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     private CheckBox checkBox_header;
 
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
-    Boolean id = false,barCode = false,IName = false,category = false,cName = false,cPrice = false,rPrice = false,
-            quantity = false,taxPer = false,avatar = false;
+    Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    private List<Items> itemResponseList;
-    private List<Items> responseList;
+    private List<Employees> employeeResponseList;
+    private List<Employees> responseList;
 
-    ItemResponse itemResponse;
+    EmployeeResponse employeeResponse;
 
-    public ItemListAdapter(Activity activity,List<ItemResponseTest> itemResponseList) {
+
+    public EmployeeListAdapter(Activity activity,EmployeeResponse employeeResponse) {
         this.activity = activity;
+        this.employeeResponse = employeeResponse;
 
-    }
-
-    public ItemListAdapter(Activity activity,ItemResponse itemResponse) {
-        this.activity = activity;
-        this.itemResponse = itemResponse;
-
-        for(int i=0 ;i < itemResponse.getItems().length;i++){
-            itemResponseList.add(this.itemResponse.getItems()[i]);
+        for(int i=0 ;i < employeeResponse.getEmployees().length;i++){
+            employeeResponseList.add(this.employeeResponse.getEmployees()[i]);
         }
 
         responseList = new ArrayList<>();
-        responseList.addAll(itemResponseList);
+        responseList.addAll(employeeResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
 
-
-    public void setItemCallBack(ItemCallBack itemCallBack) {
-        this.itemCallBack = itemCallBack;
+    public void setEditCallBack(EditCallBack editCallBack) {
+        this.editCallBack = editCallBack;
     }
 
     public void setCheckedCallBack(CheckedCallBack checkedCallBack) {
         this.checkedCallBack = checkedCallBack;
     }
 
+    public void setSendSmsCallBack(SendSmsCallBack sendSmsCallBack) {
+        this.sendSmsCallBack = sendSmsCallBack;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_customer, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
@@ -98,61 +95,44 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = itemResponseList.get(position).getItem_name();
+        final String name = employeeResponseList.get(position).getFirst_name();
 
-        jsonObjectData = VPOSPreferences.get(AppConstant.iFilterPreference);
+
+            jsonObjectData = VPOSPreferences.get(AppConstant.eFilterPreference);
+            holder.smsButton.setVisibility(View.VISIBLE);
+
+
         if (null != jsonObjectData) {
             if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
             getJSONData(jsonObjectData,holder);
         }else {
             holder.IdText.setVisibility(View.VISIBLE);
-            holder.barcodeText.setVisibility(View.VISIBLE);
-            holder.itemNameText.setVisibility(View.VISIBLE);
-            holder.categoryText.setVisibility(View.VISIBLE);
-            holder.companyNameText.setVisibility(View.VISIBLE);
-            holder.costPriceText.setVisibility(View.VISIBLE);
-            holder.retailPriceText.setVisibility(View.VISIBLE);
-            holder.quantityText.setVisibility(View.VISIBLE);
-            holder.taxPercentText.setVisibility(View.VISIBLE);
-            holder.avatarImage.setVisibility(View.VISIBLE);
+            holder.firstText.setVisibility(View.VISIBLE);
+            holder.lastText.setVisibility(View.VISIBLE);
+            holder.emailText.setVisibility(View.VISIBLE);
+            holder.phoneNumberText.setVisibility(View.VISIBLE);
         }
 
 
-        holder.IdText.setText("ID: " + itemResponseList.get(position).getItem_id());
-        holder.barcodeText.setText("UPC/EAN/ISBN: " + itemResponseList.get(position).getUpc_ean_isbn());
-        holder.itemNameText.setText("Item Name: " + itemResponseList.get(position).getItem_name());
-        holder.categoryText.setText("Category: " + itemResponseList.get(position).getCategory());
-        holder.companyNameText.setText("Company Name: " + itemResponseList.get(position).getSupplier_fk());
-        holder.costPriceText.setText("Cost Price: " + itemResponseList.get(position).getCost_price());
-        holder.retailPriceText.setText("Retail Price: " + itemResponseList.get(position).getRetail_price());
-        holder.quantityText.setText("Quantity: " + itemResponseList.get(position).getQuantity_stock());
-        holder.taxPercentText.setText("Tax Percent(s): " + itemResponseList.get(position).getTax_one());
-       // Picasso.with(activity).load(itemResponseList.get(position).getAvatarUrl()).into( holder.avatarImage); // To do update image from server response
+        holder.IdText.setText("ID: " + employeeResponseList.get(position).getEmployee_id());
+        holder.firstText.setText("First Name: " + employeeResponseList.get(position).getFirst_name());
+        holder.lastText.setText("Last Name: " + employeeResponseList.get(position).getLast_name());
+        holder.emailText.setText("Email: " + employeeResponseList.get(position).getEmail());
+        holder.phoneNumberText.setText("Phone Number: " + employeeResponseList.get(position).getPhone_number());
 
+        holder.smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendSmsCallBack.onSendSMSSelected(position);
+            }
+        });
 
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // call back to customer view
-                itemCallBack.onEditSelected(position);
-            }
-        });
-
-
-        holder.updateInventoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // call back to customer view
-                itemCallBack.onUpdateInventory(position);
-            }
-        });
-
-        holder.countDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // call back to customer view
-                itemCallBack.onCountInventory(position);
+                editCallBack.onEditSelected(position);
             }
         });
 
@@ -262,8 +242,8 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
         // Set CheckBox "TRUE" or "FALSE" if mChecked == true
         holder.itemCheckBox.setChecked((mChecked.get(position) == true ? true : false));
-    }
 
+    }
 
     protected boolean isAllValuesChecked() {
 
@@ -292,49 +272,40 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        count = itemResponseList.size();
+        count = employeeResponseList.size();
         return count;
     }
 
 
-    public void add(int position, Items item) {
-        itemResponseList.add(position, item);
+    public void add(int position, Employees item) {
+        employeeResponseList.add(position, item);
         notifyItemInserted(position);
     }
 
     void remove(String item) {
-        int position = itemResponseList.indexOf(item);
-        itemResponseList.remove(position);
+        int position = employeeResponseList.indexOf(item);
+        employeeResponseList.remove(position);
         notifyItemRemoved(position);
     }
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView IdText,barcodeText,itemNameText,categoryText,companyNameText,costPriceText,retailPriceText,quantityText,
-                taxPercentText;
-        ImageView avatarImage;
+        TextView IdText,firstText,lastText,emailText,phoneNumberText;
         CheckBox itemCheckBox;
-        ImageButton editButton,deleteButton,updateInventoryButton,countDetailsButton;
+        ImageButton editButton,deleteButton,smsButton;
 
         ViewHolder(View v) {
             super(v);
             IdText = (TextView) v.findViewById(R.id.IdText);
-            barcodeText = (TextView) v.findViewById(R.id.barcodeText);
-            itemNameText = (TextView) v.findViewById(R.id.itemNameText);
-            categoryText = (TextView) v.findViewById(R.id.categoryText);
-            companyNameText = (TextView) v.findViewById(R.id.companyNameText);
-            costPriceText = (TextView) v.findViewById(R.id.costPriceText);
-            retailPriceText = (TextView) v.findViewById(R.id.retailPriceText);
-            quantityText = (TextView) v.findViewById(R.id.quantityText);
-            taxPercentText = (TextView) v.findViewById(R.id.taxPercentText);
-            avatarImage = (ImageView) v.findViewById(R.id.avatarImage);
-
+            firstText = (TextView) v.findViewById(R.id.firstText);
+            lastText = (TextView) v.findViewById(R.id.lastText);
+            emailText = (TextView) v.findViewById(R.id.emailText);
+            phoneNumberText = (TextView) v.findViewById(R.id.phoneNumberText);
             itemCheckBox = (CheckBox) v.findViewById(R.id.itemCheckBox);
-            updateInventoryButton = (ImageButton) v.findViewById(R.id.updateInventoryButton);
-            countDetailsButton = (ImageButton) v.findViewById(R.id.countDetailsButton);
             editButton = (ImageButton) v.findViewById(R.id.editButton);
             deleteButton = (ImageButton) v.findViewById(R.id.deleteButton);
+            smsButton = (ImageButton) v.findViewById(R.id.smsButton);
         }
     }
 
@@ -343,16 +314,16 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
         charText = charText.toLowerCase(Locale.getDefault());
 
-        itemResponseList.clear();
+        employeeResponseList.clear();
         if (charText.length() == 0) {
-            itemResponseList.addAll(responseList);
+            employeeResponseList.addAll(responseList);
 
         } else {
-            for (Items items : responseList) {
-                if (charText.length() != 0 && items.getItem_name().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    itemResponseList.add(items);
-                } else if (charText.length() != 0 && items.getCategory().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    itemResponseList.add(items);
+            for (Employees employees : responseList) {
+                if (charText.length() != 0 && employees.getFirst_name().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    employeeResponseList.add(employees);
+                } else if (charText.length() != 0 && employees.getLast_name().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    employeeResponseList.add(employees);
                 }
             }
         }
@@ -367,16 +338,11 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             JSONArray jsonArrayData = new JSONArray(setting);
             for (int i = 0; i < jsonArrayData.length(); i++) {
                 JSONObject jsonObject = jsonArrayData.getJSONObject(i);
-                id = jsonObject.getBoolean(AppConstant.TAG_ID);
-                barCode = jsonObject.getBoolean(AppConstant.TAG_Barcode);
-                IName = jsonObject.getBoolean(AppConstant.TAG_IName);
-                category = jsonObject.getBoolean(AppConstant.TAG_Category);
-                cName = jsonObject.getBoolean(AppConstant.TAG_CName);
-                cPrice = jsonObject.getBoolean(AppConstant.TAG_CPrice);
-                rPrice = jsonObject.getBoolean(AppConstant.TAG_RPrice);
-                quantity = jsonObject.getBoolean(AppConstant.TAG_Quantity);
-                taxPer = jsonObject.getBoolean(AppConstant.TAG_TaxPer);
-                avatar = jsonObject.getBoolean(AppConstant.TAG_Avatar);
+                ID = jsonObject.getBoolean(AppConstant.TAG_ID);
+                FName = jsonObject.getBoolean(AppConstant.TAG_FName);
+                LName = jsonObject.getBoolean(AppConstant.TAG_LName);
+                Email = jsonObject.getBoolean(AppConstant.TAG_Email);
+                PhoneNumber = jsonObject.getBoolean(AppConstant.TAG_PhoneNumber);
 
             }
 
@@ -384,68 +350,35 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
         }
 
-        if(id){
+        if(ID){
             holder.IdText.setVisibility(View.VISIBLE);
         }else {
             holder.IdText.setVisibility(View.GONE);
         }
 
-        if(barCode){
-            holder.barcodeText.setVisibility(View.VISIBLE);
+        if(FName){
+            holder.firstText.setVisibility(View.VISIBLE);
         }else {
-            holder.barcodeText.setVisibility(View.GONE);
+            holder.firstText.setVisibility(View.GONE);
         }
 
-        if(IName){
-            holder.itemNameText.setVisibility(View.VISIBLE);
+        if(LName){
+            holder.lastText.setVisibility(View.VISIBLE);
         }else {
-            holder.itemNameText.setVisibility(View.GONE);
+            holder.lastText.setVisibility(View.GONE);
         }
 
-        if(category){
-            holder.categoryText.setVisibility(View.VISIBLE);
+        if(Email){
+            holder.emailText.setVisibility(View.VISIBLE);
         }else {
-            holder.categoryText.setVisibility(View.GONE);
+            holder.emailText.setVisibility(View.GONE);
         }
 
-        if(cName){
-            holder.companyNameText.setVisibility(View.VISIBLE);
+        if(PhoneNumber){
+            holder.phoneNumberText.setVisibility(View.VISIBLE);
         }else {
-            holder.companyNameText.setVisibility(View.GONE);
+            holder.phoneNumberText.setVisibility(View.GONE);
         }
-
-
-        if(cPrice){
-            holder.costPriceText.setVisibility(View.VISIBLE);
-        }else {
-            holder.costPriceText.setVisibility(View.GONE);
-        }
-
-        if(rPrice){
-            holder.retailPriceText.setVisibility(View.VISIBLE);
-        }else {
-            holder.retailPriceText.setVisibility(View.GONE);
-        }
-
-
-        if(quantity){
-            holder.quantityText.setVisibility(View.VISIBLE);
-        }else {
-            holder.quantityText.setVisibility(View.GONE);
-        }
-
-        if(taxPer){
-            holder.taxPercentText.setVisibility(View.VISIBLE);
-        }else {
-            holder.taxPercentText.setVisibility(View.GONE);
-        }
-
-        if(avatar){
-            holder.avatarImage.setVisibility(View.VISIBLE);
-        }else {
-            holder.avatarImage.setVisibility(View.GONE);
-        }
-
 
     }
 }

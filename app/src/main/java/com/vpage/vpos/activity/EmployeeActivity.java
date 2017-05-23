@@ -35,11 +35,15 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
+import com.vpage.vpos.adapter.EmployeeListAdapter;
 import com.vpage.vpos.adapter.FieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ListAdapter;
+import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.pojos.employee.EmployeeResponse;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
+import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
@@ -51,8 +55,10 @@ import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,12 +95,15 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
+    @ViewById(R.id.viewGif)
+    PlayGifView playGifView;
+
     FloatingActionButton deleteFAB,emailFAB;
 
     String spinnerFormatData = "";
     private int mScrollOffset = 4;
 
-    ListAdapter listAdapter;
+    EmployeeListAdapter listAdapter;
     FieldSpinnerAdapter fieldSpinnerAdapter;
 
     private Handler mUiHandler = new Handler();
@@ -116,6 +125,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     boolean isNetworkAvailable = false;
     ValidationStatus validationStatusPhoneNumber;
 
+    EmployeeResponse employeeResponse;
 
     @AfterViews
     public void onInitView() {
@@ -154,9 +164,8 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
             employeeContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addEmployeeButton.setOnClickListener(this);
-            addItemsOnSpinner();
-            addFabView();
-            addRecyclerView();
+
+            callEmployeeResponse();
         }
     }
 
@@ -231,7 +240,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        listAdapter = new ListAdapter(activity,list,pageName);
+        listAdapter = new EmployeeListAdapter(activity,employeeResponse);
         listAdapter.setEditCallBack(this);
         listAdapter.setCheckedCallBack(this);
         listAdapter.setSendSmsCallBack(this);
@@ -369,7 +378,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            listAdapter = new ListAdapter(activity,list,pageName);
+            listAdapter = new EmployeeListAdapter(activity,employeeResponse);
             listAdapter.setEditCallBack(this);
             listAdapter.setCheckedCallBack(this);
             listAdapter.setSendSmsCallBack(this);
@@ -685,6 +694,43 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
+
+
+    @Background
+    void callEmployeeResponse() {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callEmployeeResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        employeeResponse = vposRestClient.getEmployee();
+        if (employeeResponse.getStatus().equals("true") && null != employeeResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "employeeResponse: " + employeeResponse.toString());
+            hideLoaderGifImage();
+            employeeResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("employeeResponse failed");
+        }
+    }
+
+    @UiThread
+    public void employeeResponseFinish(){
+
+        addItemsOnSpinner();
+        addFabView();
+        addRecyclerView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
 
     public  void checkInternetStatus(){
         String status = NetworkUtil.getConnectivityStatusString(getApplicationContext());

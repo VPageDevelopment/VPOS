@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.ItemKitResponse;
+import com.vpage.vpos.pojos.itemkits.ItemKits;
+import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
@@ -49,16 +51,25 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
     Boolean ID = false, IKName = false, IKDes = false, IKCPrice = false, IKRPrice = false;
     String jsonObjectData = null;
 
-    private List<ItemKitResponse> itemKitResponseList;
-    private List<ItemKitResponse> responseList;
+    private List<ItemKits> itemKitResponseList;
+    private List<ItemKits> responseList;
 
-    public ItemKitListAdapter(Activity activity,List<ItemKitResponse> itemKitResponseList) {
+    ItemKitsResponse itemKitsResponse;
+
+
+    public ItemKitListAdapter(Activity activity,ItemKitsResponse itemKitsResponse) {
         this.activity = activity;
-        this.itemKitResponseList = itemKitResponseList;
+        this.itemKitsResponse = itemKitsResponse;
+
+        for(int i=0 ;i < itemKitsResponse.getItems().length;i++){
+            itemKitResponseList.add(this.itemKitsResponse.getItems()[i]);
+        }
+
         responseList = new ArrayList<>();
-        responseList.addAll( this.itemKitResponseList);
+        responseList.addAll(itemKitResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
+
 
     public void setEditCallBack(EditCallBack editCallBack) {
         this.editCallBack = editCallBack;
@@ -80,7 +91,7 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = itemKitResponseList.get(position).getItemKitName();
+        final String name = itemKitResponseList.get(position).getItem_kit_name();
 
         jsonObjectData = VPOSPreferences.get(AppConstant.iKFilterPreference);
         if (null != jsonObjectData) {
@@ -95,11 +106,11 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
         }
 
 
-        holder.IdText.setText("Kit Id: " + itemKitResponseList.get(position).getId());
-        holder.itemKitName.setText("Item Kit Name: " + itemKitResponseList.get(position).getItemKitName());
-        holder.itemKitDescription.setText("Item Kit Description: " + itemKitResponseList.get(position).getItemKitDescription());
-        holder.costPrice.setText("Cost Price: " + itemKitResponseList.get(position).getCostPrice());
-        holder.retailPrice.setText("Retail Price: " + itemKitResponseList.get(position).getRetailPrice());
+        holder.IdText.setText("Kit Id: " + itemKitResponseList.get(position).getItem_kit_id());
+        holder.itemKitName.setText("Item Kit Name: " + itemKitResponseList.get(position).getItem_kit_name());
+        holder.itemKitDescription.setText("Item Kit Description: " + itemKitResponseList.get(position).getItem_kit_desc());
+       // holder.costPrice.setText("Cost Price: " + itemKitResponseList.get(position).g());
+       // holder.retailPrice.setText("Retail Price: " + itemKitResponseList.get(position).g());
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,7 +261,7 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
     }
 
 
-    public void add(int position, ItemKitResponse item) {
+    public void add(int position, ItemKits item) {
         itemKitResponseList.add(position, item);
         notifyItemInserted(position);
     }
@@ -290,11 +301,11 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
             itemKitResponseList.addAll(responseList);
 
         } else {
-            for (ItemKitResponse itemKitResponse : responseList) {
-                if (charText.length() != 0 && itemKitResponse.getItemKitName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    itemKitResponseList.add(itemKitResponse);
-                } else if (charText.length() != 0 && itemKitResponse.getItemKitDescription().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    itemKitResponseList.add(itemKitResponse);
+            for (ItemKits itemKits : responseList) {
+                if (charText.length() != 0 && itemKits.getItem_kit_name().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    itemKitResponseList.add(itemKits);
+                } else if (charText.length() != 0 && itemKits.getItem_kit_desc().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    itemKitResponseList.add(itemKits);
                 }
             }
         }

@@ -1,7 +1,7 @@
 package com.vpage.vpos.pojos;
 
 
-public class SupplierResponse {
+public class SupplierResponseTest {
 
     private String Id;
     private String companyName;

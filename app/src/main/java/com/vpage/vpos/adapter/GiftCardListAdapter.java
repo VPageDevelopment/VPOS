@@ -16,7 +16,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.GiftCardResponse;
+import com.vpage.vpos.pojos.GiftCardResponseTest;
+import com.vpage.vpos.pojos.giftCards.GiftCard;
+import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
@@ -49,15 +51,22 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     Boolean ID = false,FName = false,LName = false,GC_No= false,GCValue = false;
     String jsonObjectData = null;
 
-    private List<GiftCardResponse> giftCardResponseList;
-    private List<GiftCardResponse> responseList;
+    private List<GiftCard> giftCardResponseList;
+    private List<GiftCard> responseList;
+
+    GiftCardResponse giftCardResponse;
 
 
-    public GiftCardListAdapter(Activity activity, List<GiftCardResponse> giftCardResponseList) {
+    public GiftCardListAdapter(Activity activity,GiftCardResponse giftCardResponse) {
         this.activity = activity;
-        this.giftCardResponseList = giftCardResponseList;
+        this.giftCardResponse = giftCardResponse;
+
+        for(int i=0 ;i < giftCardResponse.getGiftCards().length;i++){
+            giftCardResponseList.add(this.giftCardResponse.getGiftCards()[i]);
+        }
+
         responseList = new ArrayList<>();
-        responseList.addAll( this.giftCardResponseList);
+        responseList.addAll(giftCardResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
 
@@ -81,7 +90,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = giftCardResponseList.get(position).getFirstName();
+        final String name = giftCardResponseList.get(position).getCustomer_fk();
 
         jsonObjectData = VPOSPreferences.get(AppConstant.gFilterPreference);
 
@@ -97,11 +106,11 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
         }
 
 
-        holder.IdText.setText("ID: " + giftCardResponseList.get(position).getId());
-        holder.firstText.setText("First Name: " + giftCardResponseList.get(position).getFirstName());
-        holder.lastText.setText("Last Name: " + giftCardResponseList.get(position).getLastName());
-        holder.giftCardNoText.setText("GiftCard Number: " + giftCardResponseList.get(position).getGiftCardNumber());
-        holder.giftCardValueText.setText("GiftCard Value: " + giftCardResponseList.get(position).getGiftCardValue());
+        holder.IdText.setText("ID: " + giftCardResponseList.get(position).getGift_card_id());
+        holder.firstText.setText("First Name: " + giftCardResponseList.get(position).getCustomer_fk());
+        holder.lastText.setText("Last Name: " + giftCardResponseList.get(position).getCustomer_fk());
+        holder.giftCardNoText.setText("GiftCard Number: " + giftCardResponseList.get(position).getGift_card_number());
+        holder.giftCardValueText.setText("GiftCard Value: " + giftCardResponseList.get(position).getGc_value());
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,7 +261,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     }
 
 
-    public void add(int position, GiftCardResponse item) {
+    public void add(int position, GiftCard item) {
         giftCardResponseList.add(position, item);
         notifyItemInserted(position);
     }
@@ -293,11 +302,11 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
             giftCardResponseList.addAll(responseList);
 
         } else {
-            for (GiftCardResponse giftCardResponse : responseList) {
-                if (charText.length() != 0 && giftCardResponse.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    giftCardResponseList.add(giftCardResponse);
-                } else if (charText.length() != 0 && giftCardResponse.getLastName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    giftCardResponseList.add(giftCardResponse);
+            for (GiftCard giftCard : responseList) {
+                if (charText.length() != 0 && giftCard.getCustomer_fk().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    giftCardResponseList.add(giftCard);
+                } else if (charText.length() != 0 && giftCard.getGift_card_number().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    giftCardResponseList.add(giftCard);
                 }
             }
         }

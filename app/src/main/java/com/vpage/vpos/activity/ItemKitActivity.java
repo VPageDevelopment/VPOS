@@ -31,15 +31,21 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ItemKitFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ItemKitListAdapter;
+import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ItemKitResponse;
+import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
+import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.callBack.FilterCallBack;
 import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +82,9 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @ViewById(R.id.fabMenu)
     FloatingActionMenu floatingActionMenu;
 
+    @ViewById(R.id.viewGif)
+    PlayGifView playGifView;
+
     FloatingActionButton deleteFAB,generateBarcodeFAB;
 
     String spinnerFormatData = "";
@@ -93,6 +102,8 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     private List<Boolean> checkedPositionArrayList = new ArrayList<>();
 
     Activity activity;
+
+    ItemKitsResponse itemKitsResponse;
 
     @AfterViews
     public void onInitView() {
@@ -127,9 +138,8 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
             itemKitContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addItemKitButton.setOnClickListener(this);
-            addItemsOnSpinner();
-            addFabView();
-            addRecyclerView();
+
+            callItemKitResponse();
         }
     }
 
@@ -186,7 +196,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        itemKitListAdapter = new ItemKitListAdapter(activity,list);
+        itemKitListAdapter = new ItemKitListAdapter(activity,itemKitsResponse);
         itemKitListAdapter.setEditCallBack(this);
         itemKitListAdapter.setCheckedCallBack(this);
         recyclerView.setAdapter(itemKitListAdapter);
@@ -372,7 +382,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onFilterStatus(Boolean filterStatus) {
         if(filterStatus){
-            itemKitListAdapter = new ItemKitListAdapter(activity,list);
+            itemKitListAdapter = new ItemKitListAdapter(activity,itemKitsResponse);
             itemKitListAdapter.setEditCallBack(this);
             itemKitListAdapter.setCheckedCallBack(this);
             recyclerView.setAdapter(itemKitListAdapter);
@@ -467,6 +477,41 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         if (LogFlag.bLogOn)Log.d(TAG, "checkedPositionArrayList: " + checkedPositionArrayList);
         this.checkedPositionArrayList = checkedPositionArrayList;
 
+    }
+
+    @Background
+    void callItemKitResponse() {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemKitResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        itemKitsResponse = vposRestClient.getItemKits();
+        if (itemKitsResponse.getStatus().equals("true") && null != itemKitsResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "itemKitsResponse: " + itemKitsResponse.toString());
+            hideLoaderGifImage();
+            itemKitResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("itemKitsResponse failed");
+        }
+    }
+
+    @UiThread
+    public void itemKitResponseFinish(){
+
+        addItemsOnSpinner();
+        addFabView();
+        addRecyclerView();
+
+    }
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
     }
 
     private void gotoAddItemKitView(String pageName){

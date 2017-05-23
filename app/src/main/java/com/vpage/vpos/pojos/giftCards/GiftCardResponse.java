@@ -1,12 +1,14 @@
 package com.vpage.vpos.pojos.giftCards;
 
+import java.util.Arrays;
+
 public class GiftCardResponse {
 
     private String status;
 
     private String status_code;
 
-    private String message;
+    private GiftCard[] giftCards;
 
     public String getStatus() {
         return status;
@@ -24,12 +26,12 @@ public class GiftCardResponse {
         this.status_code = status_code;
     }
 
-    public String getMessage() {
-        return message;
+    public GiftCard[] getGiftCards() {
+        return giftCards;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setGiftCards(GiftCard[] giftCards) {
+        this.giftCards = giftCards;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class GiftCardResponse {
         return "GiftCardResponse{" +
                 "status='" + status + '\'' +
                 ", status_code='" + status_code + '\'' +
-                ", message='" + message + '\'' +
+                ", giftCards=" + Arrays.toString(giftCards) +
                 '}';
     }
 }
