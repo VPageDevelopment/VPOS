@@ -21,11 +21,14 @@ import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.pojos.customer.Customers;
+import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerRequest;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
@@ -128,6 +131,8 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     AddCustomerRequest addCustomerRequest;
 
+    Customers customers;
+
     @AfterViews
     public void onInitView() {
 
@@ -141,6 +146,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
+
         lastName.setOnKeyListener(this);
 
         taxableCheckBox.setChecked(false);
@@ -149,6 +155,15 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         radioButtonMale.setOnClickListener(this);
         radioButtonFemale.setOnClickListener(this);
         submitButton.setOnClickListener(this);
+
+
+        if(pageName.equals("Update Customer")){
+
+            String customerResponseString = callingIntent.getStringExtra("customerData");
+
+            customers = VPOSRestTools.getInstance().getCustomerData(customerResponseString);
+            setInputs();
+        }
 
         setView();
     }
@@ -286,6 +301,48 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     }
 
+
+    void setInputs(){
+
+        firstName.setText(customers.getFirst_name());
+        lastName.setText(customers.getLast_name());
+        phoneNumber.setText(customers.getPhone_number());
+
+        email.setText(customers.getEmail());
+        addressLine1.setText(customers.getAddress_one());
+        addressLine2.setText(customers.getAddress_two());
+        city.setText(customers.getCity());
+        state.setText(customers.getState());
+        zip.setText(customers.getZip());
+        country.setText(customers.getCountry());
+        comments.setText(customers.getComments());
+        company.setText(customers.getCompany());
+        account.setText(customers.getAccount());
+        total.setText(customers.getTotal());
+        discount.setText(customers.getDiscount());
+        String genderSelectedData = customers.getGender();
+        if(genderSelectedData.equals("M")){
+            genderSelected = "Male";
+            radioButtonMale.setChecked(true);
+            radioButtonFemale.setChecked(false);
+        }else {
+
+            genderSelected = "Female";
+            radioButtonMale.setChecked(false);
+            radioButtonFemale.setChecked(true);
+        }
+
+        String taxableData = customers.getTaxable();
+        if(taxableData.equals("Y")){
+            taxableCheckBox.setChecked(true);
+            taxableMode = "Y";
+        }else {
+            taxableCheckBox.setChecked(false);
+            taxableMode = "N";
+        }
+
+    }
+
     void validateInput(){
 
         if(isNetworkAvailable){
@@ -313,8 +370,11 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-               callAddCustomerResponse();
-
+            if(pageName.equals("Update Customer")){
+                callCustomerUpdateResponse(customers.getCustomer_id());
+            }else {
+                callAddCustomerResponse();
+            }
         }else {
 
             setErrorMessage("Check Network Connection");
@@ -380,6 +440,25 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+
+    @Background
+    void callCustomerUpdateResponse(String customerId) {
+        if (LogFlag.bLogOn)Log.d(TAG, "callCustomerUpdateResponse");
+        setAddCustomerRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddCustomerParams(addCustomerRequest);
+        UpdateCustomersResponse updateCustomersResponse = vposRestClient.updateCustomer(customerId);
+        if (null != updateCustomersResponse && updateCustomersResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateCustomersResponse: " + updateCustomersResponse.toString());
+            hideLoaderGifImage();
+            addCustomerResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateCustomersResponse failed");
+        }
+    }
+
     @UiThread
     public void addCustomerResponseFinish(){
         if(pageName.equals("New Sales Customer")){
@@ -387,7 +466,6 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         }else {
             gotoCustomerView();
         }
-
     }
 
     @UiThread

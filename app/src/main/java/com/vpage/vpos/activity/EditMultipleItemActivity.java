@@ -15,15 +15,22 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.item.ItemResponse;
+import com.vpage.vpos.pojos.item.UpdateItemResponse;
+import com.vpage.vpos.pojos.item.addItem.AddItemRequest;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_editmultipleitem)
@@ -85,18 +92,23 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
     String itemNameInput = "", categoryInput = "", costPriceInput = "", retailPriceInput = "", spinnerSupplierData = "",
             reorderLevelInput = "",spinnerAllowAltData = "",spinnerSerialNoData="";
 
+    String descriptionData="",taxOne="",taxTwo="";
+
     boolean isNetworkAvailable = false;
 
     TextWatcher textDescription;
 
     Activity activity;
 
+    ItemResponse itemResponse;
+    AddItemRequest addItemRequest;
+
+    int[] selectedPosition;
+
     @AfterViews
     public void onInitView() {
 
         activity = EditMultipleItemActivity.this;
-
-        Intent callingIntent = getIntent();
 
         setActionBarSupport();
 
@@ -108,6 +120,13 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
         spinnerSupplier.setOnItemSelectedListener(this);
         spinnerAllowAlt.setOnItemSelectedListener(this);
         spinnerSerialNo.setOnItemSelectedListener(this);
+
+        Intent callingIntent=getIntent();
+
+        String ItemResponseString = callingIntent.getStringExtra("ItemResponse");
+        selectedPosition = callingIntent.getIntArrayExtra("SelectedPosition");
+
+        itemResponse = VPOSRestTools.getInstance().getItemResponseData(ItemResponseString);
 
         setView();
     }
@@ -175,11 +194,11 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
 
     void getInputs() {
 
-        tax1.getText().toString();
+        taxOne = tax1.getText().toString();
         tax1Percent.getText().toString();
-        tax2.getText().toString();
+        taxTwo = tax2.getText().toString();
         tax2Percent.getText().toString();
-        description.getText().toString();
+        descriptionData = description.getText().toString();
         spinnerSupplierData = spinnerSupplier.getSelectedItem().toString();
         spinnerAllowAltData = spinnerAllowAlt.getSelectedItem().toString();
         spinnerSerialNoData = spinnerSerialNo.getSelectedItem().toString();
@@ -204,8 +223,9 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                // TODO Service call
-                gotoItemView();
+                for(int i =0; i< selectedPosition.length;i++){
+                    callItemUpdateResponse(itemResponse.getItems()[selectedPosition[i]].getItem_id());
+                }
 
             } else {
 
@@ -301,6 +321,61 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
+    @Background
+    void callItemUpdateResponse(String itemId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemUpdateResponse");
+        setAddItemRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddItemParams(addItemRequest);
+        UpdateItemResponse updateItemResponse = vposRestClient.updateItem(itemId);
+        if (null != updateItemResponse && updateItemResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponse: " + updateItemResponse.toString());
+            hideLoaderGifImage();
+            addItemResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateItemResponse failed");
+        }
+    }
+
+
+    @UiThread
+    public void addItemResponseFinish(){
+        gotoItemView();
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+
+    void  setAddItemRequestData(){
+
+        addItemRequest = new AddItemRequest();
+
+        addItemRequest.setItem_name(itemNameInput);
+        addItemRequest.setCategory(categoryInput);
+        addItemRequest.setSupplier_fk(spinnerSupplierData);
+        addItemRequest.setCost_price(costPriceInput);
+        addItemRequest.setRetail_price(retailPriceInput);
+        addItemRequest.setDescription(descriptionData);
+        addItemRequest.setTax_one(taxOne);
+        addItemRequest.setTax_two(taxTwo);
+        addItemRequest.setAllow_alt_description(spinnerAllowAltData);
+        addItemRequest.setItem_has_serial_number(spinnerSerialNoData);
 
     }
 }

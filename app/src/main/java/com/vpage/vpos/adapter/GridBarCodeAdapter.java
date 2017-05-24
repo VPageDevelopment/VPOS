@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.item.ItemResponse;
+import com.vpage.vpos.pojos.item.Items;
 import com.vpage.vpos.tools.BarcodeView;
 
 public class GridBarCodeAdapter extends BaseAdapter {
@@ -21,20 +22,26 @@ public class GridBarCodeAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     ItemResponse itemResponse;
 
+    int[] selectedPosition;
 
-    public GridBarCodeAdapter(Activity activity, ItemResponse itemResponse) {
+    Items[] items;
+
+    public GridBarCodeAdapter(Activity activity, ItemResponse itemResponse, int[] selectedPosition) {
         this.activity = activity;
         this.itemResponse = itemResponse;
+        this.selectedPosition = selectedPosition;
         mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        items = new Items[selectedPosition.length];
+        for(int i =0; i< selectedPosition.length;i++){
+            items[i] = itemResponse.getItems()[selectedPosition[i]];
+        }
 
     }
 
 
     @Override
     public int getCount() {
-
-        return itemResponse.getItems().length;
+        return items.length;
     }
 
     @Override
@@ -58,8 +65,10 @@ public class GridBarCodeAdapter extends BaseAdapter {
         TextView retailPrice = (TextView) convertView.findViewById(R.id.retailPrice);
 
 
-        categoryName.setText(itemResponse.getItems()[position].getCategory());
-        retailPrice.setText(itemResponse.getItems()[position].getRetail_price());
+
+
+        categoryName.setText(items[position].getCategory());
+        retailPrice.setText(items[position].getRetail_price());
 
         linearLayout.setVisibility(View.VISIBLE);
         BarcodeView view = new BarcodeView(activity);

@@ -37,6 +37,8 @@ public class BarcodeGenerateActivity extends Activity{
 
     ItemResponse itemResponse;
 
+    int[] selectedPosition;
+
     @AfterViews
     public void onInitView() {
 
@@ -45,6 +47,7 @@ public class BarcodeGenerateActivity extends Activity{
         Intent callingIntent=getIntent();
 
         String ItemResponseString = callingIntent.getStringExtra("ItemResponse");
+        selectedPosition = callingIntent.getIntArrayExtra("SelectedPosition");
 
         itemResponse = VPOSRestTools.getInstance().getItemResponseData(ItemResponseString);
 
@@ -54,7 +57,7 @@ public class BarcodeGenerateActivity extends Activity{
 
     private void setGridView(){
 
-        gridBarCodeAdapter = new GridBarCodeAdapter(activity,itemResponse);
+        gridBarCodeAdapter = new GridBarCodeAdapter(activity,itemResponse,selectedPosition);
         gridView.setAdapter(gridBarCodeAdapter);
 
     }

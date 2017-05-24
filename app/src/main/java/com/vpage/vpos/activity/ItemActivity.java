@@ -381,14 +381,25 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 bulkEditFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                 floatingActionMenu.toggle(true);
-                // TODO carry out checked position response list
-              /*  for(int i = 0;i <checkedPositionArrayList.size();i++){
+
+
+                 int[] selectedPositionsArray = new int[checkedPositionArrayList.size()];
+                int arrayPosition =0;
+                for(int i = 0;i<checkedPositionArrayList.size();i++){
+
                     if(checkedPositionArrayList.get(i)){
 
+                        selectedPositionsArray[arrayPosition] = i;
+                        arrayPosition++;
                     }
-                }*/
+                }
 
-                gotoEditMultipleItemView();
+                if(0 != selectedPositionsArray[0]){
+
+                    gotoEditMultipleItemView(selectedPositionsArray);
+                }
+
+
 
             }
         });
@@ -403,14 +414,22 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                 generateBarcodeFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                 floatingActionMenu.toggle(true);
-                // TODO carry out checked position response list
-              /*  for(int i = 0;i <checkedPositionArrayList.size();i++){
+
+                int[] selectedPositionsArray = new int[checkedPositionArrayList.size()];
+                int arrayPosition =0;
+                for(int i = 0;i<checkedPositionArrayList.size();i++){
+
                     if(checkedPositionArrayList.get(i)){
 
+                        selectedPositionsArray[arrayPosition] = i;
+                        arrayPosition++;
                     }
-                }*/
+                }
 
-                gotoBarcodeGenerateView();
+                if(0 != selectedPositionsArray[0]){
+
+                    gotoBarcodeGenerateView(selectedPositionsArray);
+                }
 
             }
         });
@@ -580,9 +599,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onEditSelected(int position) {
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
-        // TODO service response data to pass
-        callItemUpdateResponse(itemResponse.getItems()[position].getItem_id());
-        gotoAddItemView("Update Item");
+        gotoUpdateItemView("Update Item",position);
     }
 
     @Override
@@ -826,7 +843,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         if (LogFlag.bLogOn)Log.d(TAG, "callItemResponse");
         VPOSRestClient vposRestClient = new VPOSRestClient();
         itemResponse = vposRestClient.getItem();
-        if (itemResponse.getStatus().equals("true") && null != itemResponse) {
+        if (null != itemResponse && itemResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "itemResponse: " + itemResponse.toString());
             hideLoaderGifImage();
             itemResponseFinish();
@@ -839,7 +856,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @UiThread
     public void itemResponseFinish(){
 
-
         itemCount = itemResponse.getItems().length;
         itemCountCheck();
 
@@ -850,34 +866,18 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Background
-    void callItemUpdateResponse(String itemId) {
-
-        if (LogFlag.bLogOn)Log.d(TAG, "callItemUpdateResponse");
-        VPOSRestClient vposRestClient = new VPOSRestClient();
-        UpdateItemResponse updateItemResponse = vposRestClient.updateItem(itemId);
-        if (updateItemResponse.getStatus().equals("true") && null != updateItemResponse) {
-            if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponse: " + updateItemResponse.toString());
-            hideLoaderGifImage();
-            callItemResponse();
-        } else {
-            hideLoaderGifImage();
-            showToastErrorMsg("itemResponse failed");
-        }
-    }
-
-    @Background
     void callItemDeleteResponse(String itemId) {
 
-        if (LogFlag.bLogOn)Log.d(TAG, "callItemUpdateResponse");
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemDeleteResponse");
         VPOSRestClient vposRestClient = new VPOSRestClient();
         UpdateItemResponse updateItemResponse = vposRestClient.deleteItem(itemId);
-        if (updateItemResponse.getStatus().equals("true") && null != updateItemResponse) {
+        if (null != updateItemResponse && updateItemResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponse: " + updateItemResponse.toString());
             hideLoaderGifImage();
             callItemResponse();
         } else {
             hideLoaderGifImage();
-            showToastErrorMsg("itemResponse failed");
+            showToastErrorMsg("updateItemResponse failed");
         }
     }
 
@@ -897,6 +897,13 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
+    private void gotoUpdateItemView(String pageName,int itemPosition){
+        Gson gson = new GsonBuilder().create();
+        Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);
+        intent.putExtra("PageName",pageName);
+        intent.putExtra("ItemData",gson.toJson(itemResponse.getItems()[itemPosition]));
+        startActivity(intent);
+    }
 
     private void gotoUpdateInventoryView(){
         Intent intent = new Intent(getApplicationContext(), UpdateInventoryActivity_.class);
@@ -909,16 +916,19 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void gotoEditMultipleItemView(){
-
+    private void gotoEditMultipleItemView(int [] selectedPositionsArray){
+        Gson gson = new GsonBuilder().create();
         Intent intent = new Intent(getApplicationContext(), EditMultipleItemActivity_.class);
+        intent.putExtra("SelectedPosition",selectedPositionsArray);
+        intent.putExtra("ItemResponse",gson.toJson(itemResponse));
         startActivity(intent);
     }
 
 
-    private void gotoBarcodeGenerateView(){
+    private void gotoBarcodeGenerateView(int [] selectedPositionsArray){
         Gson gson = new GsonBuilder().create();
         Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+        intent.putExtra("SelectedPosition",selectedPositionsArray);
         intent.putExtra("ItemResponse",gson.toJson(itemResponse));
         startActivity(intent);
     }

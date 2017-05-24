@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.SignInResponse;
+import com.vpage.vpos.pojos.customer.Customers;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
 import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
@@ -15,6 +16,7 @@ import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
 import com.vpage.vpos.pojos.giftCards.UpdateGiftCardResponse;
 import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsResponse;
 import com.vpage.vpos.pojos.item.ItemResponse;
+import com.vpage.vpos.pojos.item.Items;
 import com.vpage.vpos.pojos.item.UpdateItemResponse;
 import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
 import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
@@ -67,6 +69,12 @@ public class VPOSRestTools {
         return gson.fromJson(jsonString, UpdateCustomersResponse.class);
     }
 
+    public Customers getCustomerData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, Customers.class);
+    }
+
+
     public EmployeeResponse getEmployeeResponseData(String jsonString) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, EmployeeResponse.class);
@@ -100,6 +108,11 @@ public class VPOSRestTools {
     public UpdateItemResponse updateItemResponseData(String jsonString) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, UpdateItemResponse.class);
+    }
+
+    public Items getItemData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, Items.class);
     }
 
     public ItemKitsResponse getItemKitsResponseData(String jsonString) {

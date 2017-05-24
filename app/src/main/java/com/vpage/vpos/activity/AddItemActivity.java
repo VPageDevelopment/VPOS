@@ -27,11 +27,14 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.item.Items;
+import com.vpage.vpos.pojos.item.UpdateItemResponse;
 import com.vpage.vpos.pojos.item.addItem.AddItemRequest;
 import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
@@ -149,22 +152,30 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     private ProgressDialog dialog;
     Bitmap bitmap;
 
-
+    Items items;
     AddItemRequest addItemRequest;
 
     @AfterViews
     public void onInitView() {
 
         activity = AddItemActivity.this;
+        setActionBarSupport();
+
+        checkInternetStatus();
+        NetworkUtil.setOnNetworkChangeListener(this);
 
         Intent callingIntent=getIntent();
 
         pageName = callingIntent.getStringExtra("PageName");
 
-        setActionBarSupport();
+        if(pageName.equals("Update Item")){
 
-        checkInternetStatus();
-        NetworkUtil.setOnNetworkChangeListener(this);
+            String itemResponseString = callingIntent.getStringExtra("ItemData");
+
+            items = VPOSRestTools.getInstance().getItemData(itemResponseString);
+            setInputs();
+        }
+
         submitButton.setOnClickListener(this);
         selectButton.setOnClickListener(this);
         newButton.setOnClickListener(this);
@@ -180,6 +191,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         spinnerSupplier.setOnItemSelectedListener(this);
 
         setView();
+
+
     }
 
     private void setActionBarSupport() {
@@ -276,6 +289,26 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    void setInputs(){
+
+        UPC.setText(items.getUpc_ean_isbn());
+        tax1.setText(items.getTax_one());
+
+        tax1Percent.setText(items.getTax_one());
+        tax2.setText(items.getTax_two());
+        tax2Percent.setText(items.getTax_two());
+        description.setText(items.getDescription());
+        spinnerSupplier.setPrompt(items.getSupplier_fk());
+        itemName.setText(items.getItem_name());
+        category.setText(items.getCategory());
+        costPrice.setText(items.getCost_price());
+        retailPrice.setText(items.getRetail_price());
+        quantityStock.setText(items.getQuantity_stock());
+        receivingQuantity.setText(items.getReceiving_quantity());
+        reorderLevel.setText("");
+
+    }
+
     void clearAllInputs(){
 
         UPC.setText("");
@@ -320,16 +353,17 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                callAddItemResponse();
+                if(pageName.equals("Update Item")){
+                    callItemUpdateResponse(items.getItem_id());
+                }else {
+                    callAddItemResponse();
+                }
 
             } else {
-
                 setErrorMessage("Fill all Required Input");
             }
 
         }else {
-
-
             setErrorMessage("Check Network Connection");
         }
     }
@@ -356,7 +390,11 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                 textError.setVisibility(View.GONE);
                 
                 clearAllInputs();
-                // TODO Service call
+                if(pageName.equals("Update Item")){
+                    callItemUpdateResponse(items.getItem_id());
+                }else {
+                    callAddItemResponse();
+                }
 
             } else {
                 setErrorMessage("Fill all Required Input");
@@ -498,13 +536,34 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         AddItemResponse addItemResponse = vposRestClient.addItem();
         if (null != addItemResponse) {
             if (LogFlag.bLogOn)Log.d(TAG, "addItemResponse: " + addItemResponse.toString());
-              hideLoderGifImage();
-              addItemResponseFinish();
+               hideLoaderGifImage();
+               addItemResponseFinish();
             } else {
-                hideLoderGifImage();
+                hideLoaderGifImage();
                 showToastErrorMsg("addItemResponse failed");
             }
     }
+
+
+    @Background
+    void callItemUpdateResponse(String itemId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemUpdateResponse");
+        setAddItemRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddItemParams(addItemRequest);
+        UpdateItemResponse updateItemResponse = vposRestClient.updateItem(itemId);
+        if (null != updateItemResponse && updateItemResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponse: " + updateItemResponse.toString());
+            hideLoaderGifImage();
+            addItemResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateItemResponse failed");
+        }
+    }
+
 
     @UiThread
     public void addItemResponseFinish(){
@@ -516,14 +575,16 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @UiThread
-    public void hideLoderGifImage(){
-        playGifView.setVisibility(View.GONE);
-    }
-
-    @UiThread
     public void showToastErrorMsg(String error) {
         VTools.showToast(error);
     }
+
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
 
 
     void  setAddItemRequestData(){
