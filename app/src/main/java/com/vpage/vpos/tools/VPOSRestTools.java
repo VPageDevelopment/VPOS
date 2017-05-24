@@ -7,6 +7,7 @@ import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
 import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
+import com.vpage.vpos.pojos.employee.EmployeeLoginResponse;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
 import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
@@ -69,6 +70,11 @@ public class VPOSRestTools {
     public EmployeeResponse getEmployeeResponseData(String jsonString) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, EmployeeResponse.class);
+    }
+
+    public EmployeeLoginResponse getEmployeeLoginResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, EmployeeLoginResponse.class);
     }
 
     public AddEmployeeResponse addEmployeeResponseData(String jsonString) {

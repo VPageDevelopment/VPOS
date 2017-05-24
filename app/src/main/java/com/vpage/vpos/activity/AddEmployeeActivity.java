@@ -128,7 +128,8 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
     String firstNameInput = "", lastNameInput = "",phoneNumberInput="",genderSelected = "Male",
             userNameInput = "", passwordWordInput = "",confPasswordWordInput = "";
-    ValidationStatus validationStatus,validationStatusUserName,validationStatusPassword,validationStatusPhoneNumber;
+    ValidationStatus validationStatus,validationStatusUserName,validationStatusPassword,
+            validationStatusPhoneNumber,validationStatusUserNameAndPassword;
     String emailInput="",addressLine1Input="",addressLine2Input="",cityInput="",stateInput="",zipInput="",
             countryInput="",commentsInput="";
 
@@ -343,86 +344,68 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
             firstNameInput = firstName.getText().toString();
             lastNameInput = lastName.getText().toString();
+            phoneNumberInput= phoneNumber.getText().toString();
+
+            userNameInput = userName.getText().toString();
+            passwordWordInput = password.getText().toString();
+            confPasswordWordInput = confPassword.getText().toString();
 
             validationStatus = ValidationUtils.isValidName(firstNameInput,lastNameInput);
 
+            validationStatusPhoneNumber =  ValidationUtils.isValidUserPhoneNumber(phoneNumberInput);
+
+            validationStatusUserName =  ValidationUtils.isValidUserUserName(userNameInput);
+
+            validationStatusPassword =  ValidationUtils.isValidPassword(passwordWordInput);
+
+            validationStatusUserNameAndPassword = ValidationUtils.isValidLoginUserNamePassword(userNameInput, passwordWordInput);
 
             if (!validationStatus.isStatus()) {
                 setErrorMessage(validationStatus.getMessage());
                 return;
             }
 
-            phoneNumberInput= phoneNumber.getText().toString();
-            if(!phoneNumberInput.isEmpty()){
-                validationStatusPhoneNumber =  ValidationUtils.isValidUserPhoneNumber(phoneNumberInput);
-                if (!validationStatusPhoneNumber.isStatus()) {
-                    if (LogFlag.bLogOn)Log.d(TAG, validationStatusPhoneNumber.getMessage());
-                    setErrorMessage(validationStatusPhoneNumber.getMessage());
-                    return;
-                }
-            }
-
-                playGifView.setVisibility(View.VISIBLE);
-                textError.setVisibility(View.GONE);
-
-            // TODO Service call
-                gotoEmployeeView();
-
-
-        }else {
-
-            setErrorMessage("Check Network Connection");
-        }
-    }
-
-    void validateLoginInput(){
-
-        if(isNetworkAvailable){
-
-            userNameInput = userName.getText().toString();
-            passwordWordInput = password.getText().toString();
-            confPasswordWordInput = confPassword.getText().toString();
-
-            validationStatus = ValidationUtils.isValidLoginUserNamePassword(userNameInput, passwordWordInput);
-
-            validationStatusUserName =  ValidationUtils.isValidUserUserName(userNameInput);
-
-            validationStatusPassword =  ValidationUtils.isValidPassword(passwordWordInput);
-
-            if (validationStatus.isStatus() == false) {
-                setErrorMessage(validationStatus.getMessage());
+            if (!validationStatusPhoneNumber.isStatus()) {
+                if (LogFlag.bLogOn)Log.d(TAG, validationStatusPhoneNumber.getMessage());
+                setErrorMessage(validationStatusPhoneNumber.getMessage());
                 return;
             }
 
-            if (validationStatusUserName.isStatus() == false) {
+            if (!validationStatusUserName.isStatus()) {
                 if (LogFlag.bLogOn)Log.d(TAG, validationStatusUserName.getMessage());
                 setErrorMessage(validationStatusUserName.getMessage());
                 return;
             }
 
-            if (validationStatusPassword.isStatus() == false) {
+            if (!validationStatusPassword.isStatus()) {
                 if (LogFlag.bLogOn)Log.d(TAG, validationStatusPassword.getMessage());
                 setErrorMessage(validationStatusPassword.getMessage());
                 return;
             }
 
+            if (!validationStatusUserNameAndPassword.isStatus()) {
+                setErrorMessage(validationStatusUserNameAndPassword.getMessage());
+                return;
+            }
 
             if (!passwordWordInput.equals(confPasswordWordInput)) {
                 setErrorMessage("Password doesn’t match");
                 return;
             }
 
-
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
-                callAddEmployeeResponse();
+               callAddEmployeeResponse();
+
 
         }else {
 
             setErrorMessage("Check Network Connection");
         }
     }
+
+
 
     void setErrorMessage(String errorMessage) {
         playGifView.setVisibility(View.GONE);
@@ -434,10 +417,9 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         if(tabPosition == 0){
             getInputs();
             validateInput();
-        }else if(tabPosition == 1){
-            validateLoginInput();
-
         }else if(tabPosition == 2){
+
+            // TO DO UI to fix one check box selected
             collapseAll();
         }
     }
@@ -585,7 +567,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         VPOSRestClient vposRestClient = new VPOSRestClient();
         vposRestClient.setAddEmployeeParams(addEmployeeRequest);
         AddEmployeeResponse addEmployeeResponse = vposRestClient.addEmployee();
-        if (null != addEmployeeResponse) {
+        if (null != addEmployeeResponse && addEmployeeResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "addEmployeeResponse: " + addEmployeeResponse.toString());
             hideLoaderGifImage();
             addEmployeeResponseFinish();

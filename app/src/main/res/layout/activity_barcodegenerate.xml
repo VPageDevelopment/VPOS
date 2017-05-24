@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="50dp"
+        android:layout_margin="15dp"
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
         <TextView
@@ -22,30 +22,14 @@
             android:gravity="center|center_horizontal"
             android:text="Generated Bar Code"/>
 
-        <ImageView
-            android:id="@+id/barcodeImage"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center|center_horizontal"/>
-        <TextView
-            android:id="@+id/barcodeDigit"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/Black"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:gravity="center|center_horizontal" />
-
-        <LinearLayout
+        <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center|center_horizontal"
-            android:visibility="visible"
-            android:id="@+id/barcodeView"
-            android:orientation="vertical" />
+            android:drawSelectorOnTop="true"
+            android:id="@+id/gridView"
+            android:numColumns="3"
+            android:verticalSpacing="8dp"
+            android:horizontalSpacing="8dp"/>
 
     </LinearLayout>
 

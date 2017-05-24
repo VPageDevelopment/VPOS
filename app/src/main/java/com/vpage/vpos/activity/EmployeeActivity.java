@@ -611,19 +611,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         deleteFAB.setVisibility(View.GONE);
     }
 
-
-    private void gotoAddEmployeeView(String pageName){
-        Intent intent = new Intent(getApplicationContext(), AddEmployeeActivity_.class);
-        intent.putExtra("PageName",pageName);
-        startActivity(intent);
-    }
-
-    private void gotoEmailView(String [] emailArray){
-        Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
-        intent.putExtra("EmailId",emailArray);
-        startActivity(intent);
-    }
-
     public void sendSMS(String phoneNo, String message) {
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -749,5 +736,16 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    private void gotoAddEmployeeView(String pageName){
+        Intent intent = new Intent(getApplicationContext(), AddEmployeeActivity_.class);
+        intent.putExtra("PageName",pageName);
+        startActivity(intent);
+    }
+
+    private void gotoEmailView(String [] emailArray){
+        Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);
+        intent.putExtra("EmailId",emailArray);
+        startActivity(intent);
+    }
 
 }

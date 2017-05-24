@@ -36,12 +36,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ItemFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ItemListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.item.ItemResponse;
+import com.vpage.vpos.pojos.item.UpdateItemResponse;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
@@ -124,6 +127,10 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     ItemResponse itemResponse;
 
+
+
+    int itemCount=0;
+
     @AfterViews
     public void onInitView() {
 
@@ -131,9 +138,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
         setActionBarSupport();
 
-        int itemCount = 1; // TODO test placed static data replaced by server response count
-        itemCountCheck(itemCount);
-
+        callItemResponse();
     }
 
     private void setActionBarSupport() {
@@ -146,7 +151,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    void itemCountCheck(int itemCount){
+    void itemCountCheck(){
 
         if(itemCount == 0){
             noItemContentLayout.setVisibility(View.VISIBLE);
@@ -193,8 +198,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
                     datePickerButton.setText(fromDateString +" - "+charSequence.toString());
                 }
             };
-
-            callItemResponse();
         }
     }
 
@@ -433,20 +436,15 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                itemCountCheck(0);
-
-                // TODO after Server Response update
-              /*  try {
+                try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                            list.remove(i);
+                            callItemDeleteResponse(itemResponse.getItems()[i].getItem_id());
                         }
                     }
-                     itemCountCheck(0);
                 }catch (IndexOutOfBoundsException e){
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
-*/
                 itemListAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
@@ -583,6 +581,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     public void onEditSelected(int position) {
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // TODO service response data to pass
+        callItemUpdateResponse(itemResponse.getItems()[position].getItem_id());
         gotoAddItemView("Update Item");
     }
 
@@ -840,10 +839,46 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @UiThread
     public void itemResponseFinish(){
 
+
+        itemCount = itemResponse.getItems().length;
+        itemCountCheck();
+
         addItemsOnSpinner();
         addFabView();
         addRecyclerView();
 
+    }
+
+    @Background
+    void callItemUpdateResponse(String itemId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemUpdateResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        UpdateItemResponse updateItemResponse = vposRestClient.updateItem(itemId);
+        if (updateItemResponse.getStatus().equals("true") && null != updateItemResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponse: " + updateItemResponse.toString());
+            hideLoaderGifImage();
+            callItemResponse();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("itemResponse failed");
+        }
+    }
+
+    @Background
+    void callItemDeleteResponse(String itemId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemUpdateResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        UpdateItemResponse updateItemResponse = vposRestClient.deleteItem(itemId);
+        if (updateItemResponse.getStatus().equals("true") && null != updateItemResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponse: " + updateItemResponse.toString());
+            hideLoaderGifImage();
+            callItemResponse();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("itemResponse failed");
+        }
     }
 
     @UiThread
@@ -882,8 +917,9 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void gotoBarcodeGenerateView(){
-
+        Gson gson = new GsonBuilder().create();
         Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+        intent.putExtra("ItemResponse",gson.toJson(itemResponse));
         startActivity(intent);
     }
 

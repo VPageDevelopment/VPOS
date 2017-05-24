@@ -12,8 +12,10 @@ import com.vpage.vpos.pojos.customer.CustomersResponse;
 import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerRequest;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
+import com.vpage.vpos.pojos.employee.EmployeeLoginResponse;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
 import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
+import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeLoginRequest;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeRequest;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
 import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
@@ -296,6 +298,34 @@ public class VPOSRestClient {
     }
 
 
+    public EmployeeLoginResponse getEmployeeLogin() {
+
+        String employeeUrl = VPOSApplication.getContext().getResources().getString(R.string.employee_login);
+
+        final EmployeeLoginResponse[] employeeResponses = {null};
+        HttpManager.get(employeeUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                employeeResponses[0] = VPOSRestTools.getInstance().getEmployeeLoginResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "EmployeeLoginResponse: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "EmployeeLoginResponse: "+employeeResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                employeeResponses[0] = null;
+
+            }
+        });
+        return employeeResponses[0];
+    }
+
+
     public void setAddEmployeeParams(AddEmployeeRequest addEmployeeRequest) {
 
         try {
@@ -310,6 +340,20 @@ public class VPOSRestClient {
         }
     }
 
+
+    public void setAddEmployeeLoginParams(AddEmployeeLoginRequest addEmployeeLoginRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(addEmployeeLoginRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
 
     public AddEmployeeResponse addEmployee() {
         String employeeUrl = VPOSApplication.getContext().getResources().getString(R.string.add_employee);
