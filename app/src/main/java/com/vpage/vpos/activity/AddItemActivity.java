@@ -139,7 +139,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     String itemNameInput = "", categoryInput = "",costPriceInput = "",retailPriceInput = "",spinnerSupplierData="",
             quantityStockInput = "",receivingQuantityInput = "",reorderLevelInput = "",imagePath = "";
 
-    String serialCheckBoxData="F",altCheckBoxData="F",deleteCheckBoxData="F",upcCode="",taxOne="",taxTwo="";
+    String serialCheckBoxData="F",altCheckBoxData="F",deleteCheckBoxData="F",upcCode="",taxOne="",taxTwo="",descriptionInput="";
 
     boolean isNetworkAvailable = false;
 
@@ -284,7 +284,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         tax1Percent.getText().toString();
         taxTwo = tax2.getText().toString();
         tax2Percent.getText().toString();
-        description.getText().toString();
+        descriptionInput = description.getText().toString();
         spinnerSupplierData = spinnerSupplier.getSelectedItem().toString();
 
     }
@@ -604,6 +604,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         addItemRequest.setAllow_alt_description(altCheckBoxData);
         addItemRequest.setItem_has_serial_number(serialCheckBoxData);
         addItemRequest.setDeleted(deleteCheckBoxData);
+        addItemRequest.setDescription(descriptionInput);
 
     }
 

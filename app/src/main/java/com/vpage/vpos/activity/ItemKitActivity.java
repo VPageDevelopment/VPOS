@@ -28,12 +28,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ItemKitFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ItemKitListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ItemKitResponse;
 import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
+import com.vpage.vpos.pojos.itemkits.UpdateItemKitsResponse;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
@@ -303,7 +306,22 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
                 generateBarcodeFAB.setLabelTextColor(ContextCompat.getColor(activity, R.color.Black));
 
                 floatingActionMenu.toggle(true);
-                gotoBarcodeGenerateView();
+
+                int[] selectedPositionsArray = new int[checkedPositionArrayList.size()];
+                int arrayPosition =0;
+                for(int i = 0;i<checkedPositionArrayList.size();i++){
+
+                    if(checkedPositionArrayList.get(i)){
+
+                        selectedPositionsArray[arrayPosition] = i;
+                        arrayPosition++;
+                    }
+                }
+
+                if(0 != selectedPositionsArray[0]){
+
+                    gotoBarcodeGenerateView(selectedPositionsArray);
+                }
 
             }
         });
@@ -331,18 +349,16 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
                 itemCountCheck(0);
 
-                // To Do after Server Response update
-              /*  try {
+                try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                            list.remove(i);
+                            callItemKitDeleteResponse(itemKitsResponse.getItems()[i].getItem_kit_id());
                         }
                     }
-                    customerCountCheck(0);
                 }catch (IndexOutOfBoundsException e){
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
-*/
+
                 itemKitListAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
@@ -461,7 +477,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // To Do service response data to pass
-        gotoAddItemKitView("Update Item Kit");
+        gotoUpdateItemView("Update Item Kit",position);
     }
 
     @Override
@@ -485,7 +501,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         if (LogFlag.bLogOn)Log.d(TAG, "callItemKitResponse");
         VPOSRestClient vposRestClient = new VPOSRestClient();
         itemKitsResponse = vposRestClient.getItemKits();
-        if (itemKitsResponse.getStatus().equals("true") && null != itemKitsResponse) {
+        if (null != itemKitsResponse && itemKitsResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "itemKitsResponse: " + itemKitsResponse.toString());
             hideLoaderGifImage();
             itemKitResponseFinish();
@@ -504,6 +520,22 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    @Background
+    void callItemKitDeleteResponse(String itemKitId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemKitDeleteResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        UpdateItemKitsResponse updateItemKitsResponse = vposRestClient.deleteItemKit(itemKitId);
+        if (null != updateItemKitsResponse && updateItemKitsResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateItemKitsResponse: " + updateItemKitsResponse.toString());
+            hideLoaderGifImage();
+            callItemKitResponse();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateItemKitsResponse failed");
+        }
+    }
+
     @UiThread
     public void hideLoaderGifImage(){
         playGifView.setVisibility(View.GONE);
@@ -520,10 +552,22 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         startActivity(intent);
     }
 
-    private void gotoBarcodeGenerateView(){
-
-        Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+    private void gotoUpdateItemView(String pageName,int itemPosition){
+        Gson gson = new GsonBuilder().create();
+        Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);
+        intent.putExtra("PageName",pageName);
+        intent.putExtra("ItemKitData",gson.toJson(itemKitsResponse.getItems()[itemPosition]));
         startActivity(intent);
     }
+
+    private void gotoBarcodeGenerateView(int [] selectedPositionsArray){
+        Gson gson = new GsonBuilder().create();
+        Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+        intent.putExtra("PageTag","ItemKit");
+        intent.putExtra("SelectedPosition",selectedPositionsArray);
+        intent.putExtra("ItemKitResponse",gson.toJson(itemKitsResponse));
+        startActivity(intent);
+    }
+
 }
 

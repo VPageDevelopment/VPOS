@@ -15,14 +15,21 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.item.Items;
+import com.vpage.vpos.pojos.item.UpdateItemResponse;
+import com.vpage.vpos.pojos.item.addItem.AddItemRequest;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_updateinventory)
@@ -63,13 +70,16 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
     @ViewById(R.id.spinnerStock)
     Spinner spinnerStock;
 
-    String inventoryInput = "",spinnerStockData="";
+    String inventoryInput = "",spinnerStockData="",commentsInput;
 
     TextWatcher textComments;
 
     Activity activity;
 
     boolean isNetworkAvailable = false;
+
+    Items items;
+    AddItemRequest addItemRequest;
 
     @AfterViews
     public void onInitView() {
@@ -83,6 +93,14 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
         spinnerStock.setOnItemSelectedListener(this);
 
         submitButton.setOnClickListener(this);
+
+        Intent callingIntent=getIntent();
+
+        String itemResponseString = callingIntent.getStringExtra("ItemData");
+
+        items = VPOSRestTools.getInstance().getItemData(itemResponseString);
+        setInputs();
+
     }
 
     private void setActionBarSupport() {
@@ -117,14 +135,26 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
 
     void getInputs(){
 
-        barcodeText.setText("");  // To do data from server response
-        itemNameText.setText("");  // To do data from server response
-        categoryText.setText("");  // To do data from server response
-        currentQuantityText.setText("");  // To do data from server response
-        comments.getText().toString();
+        barcodeText.getText().toString();
+        itemNameText.getText().toString();
+        categoryText.getText().toString();
+        currentQuantityText.getText().toString();
+        commentsInput = comments.getText().toString();
         spinnerStockData = spinnerStock.getSelectedItem().toString();
 
     }
+
+    void setInputs(){
+
+        barcodeText.setText(items.getUpc_ean_isbn());
+        itemNameText.setText(items.getItem_name());
+        categoryText.setText(items.getCategory());
+        currentQuantityText.setText(items.getQuantity_stock());
+        comments.setText(items.getDescription());
+        spinnerStock.setPrompt(items.getSupplier_fk());
+
+    }
+
 
     void validateInput(){
 
@@ -139,8 +169,7 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
             playGifView.setVisibility(View.VISIBLE);
             textError.setVisibility(View.GONE);
 
-            // TODO Service call
-            gotoItemView();
+            callItemUpdateResponse(items.getItem_id());
 
         }else {
 
@@ -159,12 +188,6 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
     public void onClick(View v) {
         getInputs();
         validateInput();
-    }
-
-    private void gotoItemView(){
-        Intent intent = new Intent(getApplicationContext(), ItemActivity_.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -225,4 +248,59 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Background
+    void callItemUpdateResponse(String itemId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemUpdateResponse");
+        setAddItemRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddItemParams(addItemRequest);
+        UpdateItemResponse updateItemResponse = vposRestClient.updateItem(itemId);
+        if (null != updateItemResponse && updateItemResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateItemResponse: " + updateItemResponse.toString());
+            hideLoaderGifImage();
+            addItemResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateItemResponse failed");
+        }
+    }
+
+
+    @UiThread
+    public void addItemResponseFinish(){
+
+            gotoItemView();
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
+    }
+
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        playGifView.setVisibility(View.GONE);
+    }
+
+
+
+    void  setAddItemRequestData(){
+
+        addItemRequest = new AddItemRequest();
+
+        addItemRequest.setSupplier_fk(spinnerStockData);
+        addItemRequest.setDescription(commentsInput);
+
+    }
+
+    private void gotoItemView(){
+        Intent intent = new Intent(getApplicationContext(), ItemActivity_.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

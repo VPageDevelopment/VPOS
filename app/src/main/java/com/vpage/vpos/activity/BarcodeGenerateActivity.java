@@ -10,7 +10,9 @@ import android.widget.LinearLayout;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GridBarCodeAdapter;
 import com.vpage.vpos.adapter.GridImageAdapter;
+import com.vpage.vpos.pojos.ItemKitResponse;
 import com.vpage.vpos.pojos.item.ItemResponse;
+import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
 import com.vpage.vpos.tools.BarcodeView;
 import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
@@ -37,7 +39,11 @@ public class BarcodeGenerateActivity extends Activity{
 
     ItemResponse itemResponse;
 
+    ItemKitsResponse itemKitResponse;
+
     int[] selectedPosition;
+
+    String pageTag;
 
     @AfterViews
     public void onInitView() {
@@ -46,10 +52,24 @@ public class BarcodeGenerateActivity extends Activity{
 
         Intent callingIntent=getIntent();
 
-        String ItemResponseString = callingIntent.getStringExtra("ItemResponse");
-        selectedPosition = callingIntent.getIntArrayExtra("SelectedPosition");
+        pageTag = callingIntent.getStringExtra("PageTag");
 
-        itemResponse = VPOSRestTools.getInstance().getItemResponseData(ItemResponseString);
+        if(pageTag.equals("Item")){
+
+            String ItemResponseString = callingIntent.getStringExtra("ItemResponse");
+            selectedPosition = callingIntent.getIntArrayExtra("SelectedPosition");
+
+            itemResponse = VPOSRestTools.getInstance().getItemResponseData(ItemResponseString);
+
+        }else if(pageTag.equals("ItemKit")){
+
+            String ItemKitResponseString = callingIntent.getStringExtra("ItemKitResponse");
+            selectedPosition = callingIntent.getIntArrayExtra("SelectedPosition");
+
+            itemKitResponse = VPOSRestTools.getInstance().getItemKitsResponseData(ItemKitResponseString);
+        }
+
+
 
         setGridView();
     }
@@ -57,8 +77,18 @@ public class BarcodeGenerateActivity extends Activity{
 
     private void setGridView(){
 
-        gridBarCodeAdapter = new GridBarCodeAdapter(activity,itemResponse,selectedPosition);
-        gridView.setAdapter(gridBarCodeAdapter);
+        if(pageTag.equals("Item")){
+
+            gridBarCodeAdapter = new GridBarCodeAdapter(activity,itemResponse,selectedPosition);
+            gridView.setAdapter(gridBarCodeAdapter);
+
+        }else if(pageTag.equals("ItemKit")){
+
+            gridBarCodeAdapter = new GridBarCodeAdapter(activity,itemKitResponse,selectedPosition);
+            gridView.setAdapter(gridBarCodeAdapter);
+        }
+
+
 
     }
 

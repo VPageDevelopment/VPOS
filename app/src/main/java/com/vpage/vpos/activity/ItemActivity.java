@@ -606,7 +606,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     public void onUpdateInventory(int position) {
         if (LogFlag.bLogOn)Log.d(TAG, "onUpdateInventory: " + position);
         // TODO service response data to pass
-         gotoUpdateInventoryView();
+         gotoUpdateInventoryView(position);
     }
 
     @Override
@@ -905,8 +905,10 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void gotoUpdateInventoryView(){
+    private void gotoUpdateInventoryView(int itemPosition){
+        Gson gson = new GsonBuilder().create();
         Intent intent = new Intent(getApplicationContext(), UpdateInventoryActivity_.class);
+        intent.putExtra("ItemData",gson.toJson(itemResponse.getItems()[itemPosition]));
         startActivity(intent);
     }
 
@@ -928,6 +930,7 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     private void gotoBarcodeGenerateView(int [] selectedPositionsArray){
         Gson gson = new GsonBuilder().create();
         Intent intent = new Intent(getApplicationContext(), BarcodeGenerateActivity_.class);
+        intent.putExtra("PageTag","Item");
         intent.putExtra("SelectedPosition",selectedPositionsArray);
         intent.putExtra("ItemResponse",gson.toJson(itemResponse));
         startActivity(intent);

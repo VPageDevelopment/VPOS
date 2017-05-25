@@ -16,11 +16,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.itemkits.ItemKits;
+import com.vpage.vpos.pojos.itemkits.UpdateItemKitsResponse;
 import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsRequest;
 import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
@@ -67,6 +70,7 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
 
     Activity activity;
 
+    ItemKits itemKits;
     AddItemKitsRequest addItemKitsRequest;
 
     @AfterViews
@@ -77,6 +81,14 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
         Intent callingIntent=getIntent();
 
         pageName = callingIntent.getStringExtra("PageName");
+
+        if(pageName.equals("Update Item")){
+
+            String itemKitResponseString = callingIntent.getStringExtra("ItemKitData");
+
+            itemKits = VPOSRestTools.getInstance().getItemKitData(itemKitResponseString);
+            setInputs();
+        }
 
         setActionBarSupport();
 
@@ -159,6 +171,13 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
         return false;
     }
 
+    void setInputs(){
+
+        addItem.setText(itemKits.getItem_fk());
+        description.setText(itemKits.getItem_kit_desc());
+        itemKitName.setText(itemKits.getItem_kit_name());
+    }
+
 
     void validateInput(){
 
@@ -175,7 +194,13 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
+            if(pageName.equals("Update Item Kit")){
+                callItemKitUpdateResponse(itemKits.getItem_kit_id());
+            }else {
                 callAddItemKitResponse();
+            }
+
+
         }else {
             setErrorMessage("Check Network Connection");
         }
@@ -232,7 +257,7 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
         VPOSRestClient vposRestClient = new VPOSRestClient();
         vposRestClient.setAddItemKitsParams(addItemKitsRequest);
         AddItemKitsResponse addItemKitsResponse = vposRestClient.addItemKits();
-        if (null != addItemKitsResponse) {
+        if (null != addItemKitsResponse && addItemKitsResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "addItemKitsResponse: " + addItemKitsResponse.toString());
             hideLoaderGifImage();
             addCustomerResponseFinish();
@@ -242,10 +267,29 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    @Background
+    void callItemKitUpdateResponse(String itemKitId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callItemKitUpdateResponse");
+        setAddItemKitRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddItemKitsParams(addItemKitsRequest);
+        UpdateItemKitsResponse updateItemKitsResponse = vposRestClient.updateItemKits(itemKitId);
+        if (null != updateItemKitsResponse && updateItemKitsResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateItemKitsResponse: " + updateItemKitsResponse.toString());
+            hideLoaderGifImage();
+            addCustomerResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateItemKitsResponse failed");
+        }
+    }
+
+
     @UiThread
     public void addCustomerResponseFinish(){
         gotoItemKitView();
-
     }
 
     @UiThread

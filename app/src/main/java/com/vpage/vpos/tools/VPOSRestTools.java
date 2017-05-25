@@ -19,6 +19,7 @@ import com.vpage.vpos.pojos.item.ItemResponse;
 import com.vpage.vpos.pojos.item.Items;
 import com.vpage.vpos.pojos.item.UpdateItemResponse;
 import com.vpage.vpos.pojos.item.addItem.AddItemResponse;
+import com.vpage.vpos.pojos.itemkits.ItemKits;
 import com.vpage.vpos.pojos.itemkits.ItemKitsResponse;
 import com.vpage.vpos.pojos.itemkits.UpdateItemKitsResponse;
 import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
@@ -128,6 +129,11 @@ public class VPOSRestTools {
     public UpdateItemKitsResponse updateItemKitsResponseData(String jsonString) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, UpdateItemKitsResponse.class);
+    }
+
+    public ItemKits getItemKitData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, ItemKits.class);
     }
 
     public SaleResponse getSaleResponseData(String jsonString) {
