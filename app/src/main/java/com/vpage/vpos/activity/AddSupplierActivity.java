@@ -21,11 +21,14 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
+import com.vpage.vpos.pojos.supplier.Suppliers;
+import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
 import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierRequest;
 import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
@@ -122,6 +125,7 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
     Activity activity;
 
     AddSupplierRequest addSupplierRequest;
+    Suppliers suppliers;
 
     @AfterViews
     public void onInitView() {
@@ -131,6 +135,14 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
         Intent callingIntent=getIntent();
 
         pageName = callingIntent.getStringExtra("PageName");
+
+        if(pageName.equals("Update Supplier")){
+
+            String supplierResponseString = callingIntent.getStringExtra("SupplierData");
+
+            suppliers = VPOSRestTools.getInstance().getSuppliersData(supplierResponseString);
+            setInputs();
+        }
 
         setActionBarSupport();
 
@@ -269,6 +281,32 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
 
     }
 
+    void setInputs(){
+
+        email.setText(suppliers.getEmail());
+        addressLine1.setText(suppliers.getAddress_one());
+        addressLine2.setText(suppliers.getAddress_two());
+        city.setText(suppliers.getCity());
+        state.setText(suppliers.getState());
+        zip.setText(suppliers.getZip());
+        country.setText(suppliers.getCountry());
+        comments.setText(suppliers.getComments());
+        account.setText(suppliers.getAccount());
+        agencyName.setText(suppliers.getAgency_name());
+
+        String genderSelectedData = suppliers.getGender();
+        if(genderSelectedData.equals("M")){
+            genderSelected = "Male";
+            radioButtonMale.setChecked(true);
+            radioButtonFemale.setChecked(false);
+        }else {
+
+            genderSelected = "Female";
+            radioButtonMale.setChecked(false);
+            radioButtonFemale.setChecked(true);
+        }
+    }
+
     void validateInput(){
 
         if(isNetworkAvailable){
@@ -296,7 +334,11 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
                 playGifView.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
+            if(pageName.equals("Update Supplier")){
+                callSupplierUpdateResponse(suppliers.getSupplier_id());
+            }else {
                 callAddSupplierResponse();
+            }
 
         }else {
 
@@ -362,6 +404,26 @@ public class AddSupplierActivity extends AppCompatActivity implements View.OnCli
             showToastErrorMsg("addSupplierResponse failed");
         }
     }
+
+
+    @Background
+    void callSupplierUpdateResponse(String supplierId) {
+        if (LogFlag.bLogOn)Log.d(TAG, "callSupplierUpdateResponse");
+        setAddSupplierRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddSupplierParams(addSupplierRequest);
+        UpdateSuppliersResponse updateSuppliersResponse = vposRestClient.updateSupplier(supplierId);
+        if (null != updateSuppliersResponse && updateSuppliersResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateSuppliersResponse: " + updateSuppliersResponse.toString());
+            hideLoaderGifImage();
+            addSupplierResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateSuppliersResponse failed");
+        }
+    }
+
 
     @UiThread
     public void addSupplierResponseFinish(){

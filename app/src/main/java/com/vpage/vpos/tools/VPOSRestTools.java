@@ -12,6 +12,7 @@ import com.vpage.vpos.pojos.employee.EmployeeLoginResponse;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
 import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
+import com.vpage.vpos.pojos.giftCards.GiftCard;
 import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
 import com.vpage.vpos.pojos.giftCards.UpdateGiftCardResponse;
 import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsResponse;
@@ -27,6 +28,7 @@ import com.vpage.vpos.pojos.sale.SaleResponse;
 import com.vpage.vpos.pojos.sale.UpdateSaleResponse;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
 import com.vpage.vpos.pojos.supplier.SupplierResponse;
+import com.vpage.vpos.pojos.supplier.Suppliers;
 import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
 import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierResponse;
 
@@ -166,6 +168,12 @@ public class VPOSRestTools {
         return gson.fromJson(jsonString, UpdateSuppliersResponse.class);
     }
 
+    public Suppliers getSuppliersData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, Suppliers.class);
+    }
+
+
     public GiftCardResponse getGiftCardResponseData(String jsonString) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, GiftCardResponse.class);
@@ -180,5 +188,10 @@ public class VPOSRestTools {
     public UpdateGiftCardResponse updateGiftCardResponseData(String jsonString) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, UpdateGiftCardResponse.class);
+    }
+
+    public GiftCard getGiftCardData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, GiftCard.class);
     }
 }

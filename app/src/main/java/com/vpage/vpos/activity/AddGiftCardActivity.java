@@ -14,11 +14,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
+import com.vpage.vpos.pojos.giftCards.GiftCard;
+import com.vpage.vpos.pojos.giftCards.UpdateGiftCardResponse;
 import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsRequest;
 import com.vpage.vpos.pojos.giftCards.addGiftCards.AddGiftCardsResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
@@ -66,14 +69,13 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
 
     AddGiftCardsRequest addGiftCardsRequest;
 
+    GiftCard giftCard;
+
     @AfterViews
 
     public void init() {
 
         activity = AddGiftCardActivity.this;
-
-        Intent callingIntent=getIntent();
-        pageName = callingIntent.getStringExtra("PageName");
 
         setActionBarSupport();
         checkInternetStatus();
@@ -85,6 +87,18 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
         value.setOnFocusChangeListener(this);
         giftCardNo.setOnFocusChangeListener(this);
         customer.setOnFocusChangeListener(this);
+
+        Intent callingIntent=getIntent();
+        pageName = callingIntent.getStringExtra("PageName");
+
+        if(pageName.equals("Update Gift Card")){
+
+            String giftCardResponseString = callingIntent.getStringExtra("GiftCardData");
+
+            giftCard = VPOSRestTools.getInstance().getGiftCardData(giftCardResponseString);
+            setInputs();
+        }
+
 
     }
 
@@ -115,10 +129,19 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
         validateInput();
     }
 
+
+    void setInputs(){
+
+        giftCardNo.setText(giftCard.getGift_card_number());
+        value.setText(giftCard.getGc_value());
+        customer.setText(giftCard.getCustomer_fk());
+
+    }
+
+
     void validateInput(){
         if(isNetworkAvailable){
 
-            // TODO Data update from service call
             giftCardNoInput = giftCardNo.getText().toString();
             valueInput = value.getText().toString();
             customerInput = customer.getText().toString();
@@ -127,8 +150,12 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
 
                 textError.setVisibility(View.GONE);
                 playGifView.setVisibility(View.VISIBLE);
-                callAddGiftCardsResponse();
 
+                if(pageName.equals("Update Gift Card")){
+                    callGiftCardUpdateResponse(giftCard.getGift_card_id());
+                }else {
+                    callAddGiftCardsResponse();
+                }
             } else {
                 hideLoaderGifImage();
                 setErrorMessage("Fill all Required Input");
@@ -137,9 +164,6 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
             hideLoaderGifImage();
             setErrorMessage("Check Network Connection");
         }
-
-
-
     }
 
     void setErrorMessage(String errorMessage) {
@@ -147,9 +171,6 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
-
-
-
 
 
     @Override
@@ -220,6 +241,24 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
         } else {
             hideLoaderGifImage();
             showToastErrorMsg("addGiftCardsResponse failed");
+        }
+    }
+
+    @Background
+    void callGiftCardUpdateResponse(String giftCardId) {
+        if (LogFlag.bLogOn)Log.d(TAG, "callGiftCardUpdateResponse");
+        setAddGiftCardsRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddGiftCardParams(addGiftCardsRequest);
+        UpdateGiftCardResponse updateGiftCardResponse = vposRestClient.updateGiftCard(giftCardId);
+        if (null != updateGiftCardResponse && updateGiftCardResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateGiftCardResponse: " + updateGiftCardResponse.toString());
+            hideLoaderGifImage();
+            addGiftCardsResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateGiftCardResponse failed");
         }
     }
 

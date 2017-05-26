@@ -42,6 +42,7 @@ import com.vpage.vpos.adapter.SaleFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.SaleListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.sale.SaleResponse;
+import com.vpage.vpos.pojos.sale.UpdateSaleResponse;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
@@ -125,6 +126,8 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
     TextWatcher textWatcherFromDate,textWatcherToDate;
 
     SaleResponse saleResponse;
+    int saleCount = 0;
+
 
     @AfterViews
     public void onInitView() {
@@ -138,10 +141,7 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
 
-        int saleCount = 1; // to test placed static data replaced by server response count
-        saleCountCheck(saleCount);
-
-
+        callSaleResponse();
     }
 
     private void setActionBarSupport() {
@@ -202,7 +202,7 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    void saleCountCheck(int saleCount){
+    void saleCountCheck(){
 
         if(saleCount == 0){
             noSaleContentLayout.setVisibility(View.VISIBLE);
@@ -250,7 +250,6 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
                 }
             };
 
-            callSaleResponse();
         }
     }
 
@@ -736,20 +735,15 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                saleCountCheck(0);
-
-                // To Do after Server Response update
-              /*  try {
+                try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                            list.remove(i);
+                            callSaleDeleteResponse(saleResponse.getItems()[i].getSales_id());
                         }
                     }
-                    customerCountCheck(0);
                 }catch (IndexOutOfBoundsException e){
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
-*/
                 listAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
@@ -775,8 +769,27 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @Background
+    void callSaleDeleteResponse(String saleId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callSaleDeleteResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        UpdateSaleResponse updateSaleResponse = vposRestClient.deleteSale(saleId);
+        if (null != updateSaleResponse && updateSaleResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateSaleResponse: " + updateSaleResponse.toString());
+            hideLoaderGifImage();
+            callSaleResponse();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateSaleResponse failed");
+        }
+    }
+
     @UiThread
     public void saleResponseFinish(){
+
+        saleCount = saleResponse.getItems().length;
+        saleCountCheck();
 
         addItemsOnSpinner();
         addFabView();

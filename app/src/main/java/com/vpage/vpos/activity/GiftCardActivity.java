@@ -28,12 +28,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GiftCardFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.GiftCardListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.GiftCardResponseTest;
 import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
+import com.vpage.vpos.pojos.giftCards.UpdateGiftCardResponse;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
@@ -107,6 +110,8 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
     GiftCardResponse giftCardResponse;
 
+    int itemCount= 0;
+
     @AfterViews
     public void onInitView() {
 
@@ -114,9 +119,7 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarSupport();
 
-        int itemCount= 1; // to test placed static data replaced by server response count
-        itemCountCheck(itemCount);
-
+        callGiftCardResponse();
     }
 
     private void setActionBarSupport() {
@@ -128,7 +131,7 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    void itemCountCheck(int itemCount){
+    void itemCountCheck(){
 
         if(itemCount == 0){
             noGiftCardContentLayout.setVisibility(View.VISIBLE);
@@ -141,7 +144,6 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
             floatingActionMenu.setVisibility(View.VISIBLE);
             addGiftCardButton.setOnClickListener(this);
 
-            callGiftCardResponse();
         }
     }
 
@@ -309,20 +311,15 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                itemCountCheck(0);
-
-                // To Do after Server Response update
-              /*  try {
+                try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                            list.remove(i);
+                            callGiftCardDeleteResponse(giftCardResponse.getGiftCards()[i].getGift_card_id());
                         }
                     }
-                    customerCountCheck(0);
                 }catch (IndexOutOfBoundsException e){
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
-*/
                 listAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
@@ -440,7 +437,7 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // To Do service response data to pass
-        gotoAddGiftCardView("Update Customer");
+        gotoUpdateGiftCardView("Update Gift Card",position);
     }
 
     @Override
@@ -473,8 +470,27 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @Background
+    void callGiftCardDeleteResponse(String giftCardId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callGiftCardDeleteResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        UpdateGiftCardResponse updateGiftCardResponse = vposRestClient.deleteGiftCard(giftCardId);
+        if (null != updateGiftCardResponse && updateGiftCardResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateGiftCardResponse: " + updateGiftCardResponse.toString());
+            hideLoaderGifImage();
+            callGiftCardResponse();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateGiftCardResponse failed");
+        }
+    }
+
     @UiThread
     public void giftCardResponseFinish(){
+
+        itemCount = giftCardResponse.getGiftCards().length;
+        itemCountCheck();
 
         addItemsOnSpinner();
         addFabView();
@@ -495,6 +511,14 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
     private void gotoAddGiftCardView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddGiftCardActivity_.class);
         intent.putExtra("PageName",pageName);
+        startActivity(intent);
+    }
+
+    private void gotoUpdateGiftCardView(String pageName,int itemPosition){
+        Gson gson = new GsonBuilder().create();
+        Intent intent = new Intent(getApplicationContext(), AddSupplierActivity_.class);
+        intent.putExtra("PageName",pageName);
+        intent.putExtra("GiftCardData",gson.toJson(giftCardResponse.getGiftCards()[itemPosition]));
         startActivity(intent);
     }
 

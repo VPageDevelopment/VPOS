@@ -28,12 +28,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.SupplierFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.SupplierListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.SupplierResponseTest;
 import com.vpage.vpos.pojos.supplier.SupplierResponse;
+import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
@@ -105,6 +108,8 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     SupplierResponse supplierResponse;
 
+    int itemCount= 0;
+
     @AfterViews
     public void onInitView() {
 
@@ -112,8 +117,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarSupport();
 
-        int itemCount = 1; // to test placed static data replaced by server response count
-        itemCountCheck(itemCount);
+        callSupplierResponse();
 
     }
 
@@ -126,7 +130,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    void itemCountCheck(int itemCount){
+    void itemCountCheck(){
 
         if(itemCount == 0){
             noSupplierContent.setVisibility(View.VISIBLE);
@@ -138,8 +142,6 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
             SupplierContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addSupplierButton.setOnClickListener(this);
-
-            callSupplierResponse();
         }
     }
 
@@ -335,20 +337,15 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                itemCountCheck(0);
-
-                // To Do after Server Response update
-              /*  try {
+                try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                            list.remove(i);
+                            callSupplierDeleteResponse(supplierResponse.getItems()[i].getSupplier_id());
                         }
                     }
-                    customerCountCheck(0);
                 }catch (IndexOutOfBoundsException e){
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
-*/
                 supplierListAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
@@ -504,7 +501,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         // call back from recycler  adapter for edit customer details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
         // To Do service response data to pass
-        gotoAddSupplierView("Update Supplier");
+        gotoUpdateSupplierView("Update Supplier",position);
     }
 
 
@@ -538,8 +535,28 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+
+    @Background
+    void callSupplierDeleteResponse(String supplierId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callSupplierDeleteResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        UpdateSuppliersResponse updateSuppliersResponse = vposRestClient.deleteSupplier(supplierId);
+        if (null != updateSuppliersResponse && updateSuppliersResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateSuppliersResponse: " + updateSuppliersResponse.toString());
+            hideLoaderGifImage();
+            callSupplierResponse();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateSuppliersResponse failed");
+        }
+    }
+
     @UiThread
     public void supplierResponseFinish(){
+
+        itemCount = supplierResponse.getItems().length;
+        itemCountCheck();
 
         addItemsOnSpinner();
         addFabView();
@@ -564,6 +581,13 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
         startActivity(intent);
     }
 
+    private void gotoUpdateSupplierView(String pageName,int itemPosition){
+        Gson gson = new GsonBuilder().create();
+        Intent intent = new Intent(getApplicationContext(), AddSupplierActivity_.class);
+        intent.putExtra("PageName",pageName);
+        intent.putExtra("SupplierData",gson.toJson(supplierResponse.getItems()[itemPosition]));
+        startActivity(intent);
+    }
 
     private void gotoEmailView(String [] emailArray){
         Intent intent = new Intent(getApplicationContext(), EmailActivity_.class);

@@ -108,6 +108,8 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     ItemKitsResponse itemKitsResponse;
 
+    int itemCount= 0;
+
     @AfterViews
     public void onInitView() {
 
@@ -115,8 +117,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
         setActionBarSupport();
 
-        int itemCount= 1; // to test placed static data replaced by server response count
-        itemCountCheck(itemCount);
+        callItemKitResponse();
 
     }
 
@@ -129,7 +130,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    void itemCountCheck(int itemCount){
+    void itemCountCheck(){
 
         if(itemCount == 0){
             noItemKitContent.setVisibility(View.VISIBLE);
@@ -141,8 +142,6 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
             itemKitContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addItemKitButton.setOnClickListener(this);
-
-            callItemKitResponse();
         }
     }
 
@@ -347,8 +346,6 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                itemCountCheck(0);
-
                 try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
@@ -513,6 +510,9 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
 
     @UiThread
     public void itemKitResponseFinish(){
+
+        itemCount = itemKitsResponse.getItems().length;
+        itemCountCheck();
 
         addItemsOnSpinner();
         addFabView();
