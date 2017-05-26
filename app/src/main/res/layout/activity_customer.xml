@@ -28,6 +28,17 @@
     android:background="@android:color/transparent"
     android:layout_marginTop="?attr/actionBarSize">
 
+    <com.vpage.vpos.tools.PlayGifView
+        android:id="@+id/viewGif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        android:visibility="gone" />
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
@@ -211,20 +222,29 @@
             android:button="@drawable/box"
            />
     </RelativeLayout>
-        <android.support.v7.widget.RecyclerView
+ <!--       <android.support.v7.widget.RecyclerView
             android:id="@+id/customerRecycleView"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/square_gray_corners"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />
-      <!--  <android.support.v4.view.ViewPager
-            android:id="@+id/customerViewPager"
+            android:layout_marginBottom="10dp" />-->
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:overScrollMode="never" />-->
+            android:background="#CCC">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/customerViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:overScrollMode="never" />
+
+        </RelativeLayout>
 
     </LinearLayout>
     <com.github.clans.fab.FloatingActionMenu
