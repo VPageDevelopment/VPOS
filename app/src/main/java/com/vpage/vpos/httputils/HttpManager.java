@@ -49,7 +49,7 @@ public class HttpManager {
         getClient().post(VPOSApplication.getContext(), getAbsoluteUrl(url), parsedJsonParams, CONTENT_TYPE_JSON, responseHandler);
     }
 
-    public static void putMethode(String url, StringEntity parsedJsonParams, AsyncHttpResponseHandler responseHandler) {
+    public static void putMethod(String url, StringEntity parsedJsonParams, AsyncHttpResponseHandler responseHandler) {
         getClient().put(VPOSApplication.getContext(), getAbsoluteUrl(url), parsedJsonParams, CONTENT_TYPE_JSON, responseHandler);
     }
 
@@ -57,7 +57,7 @@ public class HttpManager {
         getClient().put(VPOSApplication.getContext(), getAbsoluteUrl(url), params, responseHandler);
     }
 
-    public static void putwithEntity(String url, HttpEntity httpEntity, ResponseHandlerInterface responseHandler) {
+    public static void putWithEntity(String url, HttpEntity httpEntity, ResponseHandlerInterface responseHandler) {
         getClient().put(VPOSApplication.getContext(), getAbsoluteUrl(url), httpEntity, CONTENT_TYPE_JSON, responseHandler);
     }
 

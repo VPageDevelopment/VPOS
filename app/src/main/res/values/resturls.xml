@@ -72,4 +72,41 @@
     <string name="update_gift_cards">gift-card/update/{id}</string>
     <string name="delete_gift_cards">gift-card/delete/{id}</string>
 
+    <!-- store  config -->
+    <string name="store_config">store-config-info/view</string>
+    <string name="update_store_config">store-config-info/update</string>
+
+    <!-- store  config barcode -->
+    <string name="store_config_barcode">store-config-barcode</string>
+    <string name="update_store_config_barcode">store-config-barcode/update</string>
+
+    <!-- store  config general -->
+    <string name="store_config_general">store-config-general/view</string>
+    <string name="update_store_config_general">store-config-general/update</string>
+
+    <!-- store  config invoice -->
+    <string name="store_config_invoice">store-config-invoice/view</string>
+    <string name="update_store_config_invoice">store-config-invoice/update</string>
+
+    <!-- store  config local -->
+    <string name="store_config_local">store-config-local/view</string>
+    <string name="update_store_config_local">store-config-local/update</string>
+
+    <!-- store  config mail -->
+    <string name="store_config_mail">store-config-mail/view</string>
+    <string name="update_store_config_mail">store-config-mail/update</string>
+
+
+    <!-- store  config message -->
+    <string name="store_config_message">store-config-message/view</string>
+    <string name="update_store_config_message">store-config-message/update</string>
+
+    <!-- store  config receipt -->
+    <string name="store_config_receipt">store-config-receipt/view</string>
+    <string name="update_store_config_receipt">store-config-receipt/update</string>
+
+    <!-- store  config stock -->
+    <string name="store_config_stock">store-config-stock/view</string>
+    <string name="update_store_config_stock">store-config-stock/update</string>
+
 </resources>

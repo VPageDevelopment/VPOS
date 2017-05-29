@@ -2,7 +2,6 @@ package com.vpage.vpos.tools;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.customer.Customers;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
@@ -27,6 +26,11 @@ import com.vpage.vpos.pojos.itemkits.addItemKits.AddItemKitsResponse;
 import com.vpage.vpos.pojos.sale.SaleResponse;
 import com.vpage.vpos.pojos.sale.UpdateSaleResponse;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
+import com.vpage.vpos.pojos.storeConfig.StoreConfigResponse;
+import com.vpage.vpos.pojos.storeConfig.UpdateStoreConfigResponse;
+import com.vpage.vpos.pojos.storeConfigBarcode.StoreConfigBarcodeResponse;
+import com.vpage.vpos.pojos.storeConfigGeneral.StoreConfigGeneralResponse;
+import com.vpage.vpos.pojos.storeConfigInvoice.StoreConfigInvoiceResponse;
 import com.vpage.vpos.pojos.supplier.SupplierResponse;
 import com.vpage.vpos.pojos.supplier.Suppliers;
 import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
@@ -194,4 +198,32 @@ public class VPOSRestTools {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, GiftCard.class);
     }
+
+    public StoreConfigResponse getStoreConfigResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigResponse.class);
+    }
+
+    public UpdateStoreConfigResponse updateStoreConfigResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, UpdateStoreConfigResponse.class);
+    }
+
+
+    public StoreConfigBarcodeResponse getStoreConfigBarcodeResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigBarcodeResponse.class);
+    }
+
+    public StoreConfigGeneralResponse getStoreConfigGeneralResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigGeneralResponse.class);
+    }
+
+    public StoreConfigInvoiceResponse getStoreConfigInvoiceResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigInvoiceResponse.class);
+    }
+
+
 }

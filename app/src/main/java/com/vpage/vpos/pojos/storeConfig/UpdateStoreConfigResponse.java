@@ -1,6 +1,7 @@
-package com.vpage.vpos.pojos.supplier;
+package com.vpage.vpos.pojos.storeConfig;
 
-public class UpdateSuppliersResponse {
+
+public class UpdateStoreConfigResponse {
 
     private String status;
 
@@ -34,7 +35,7 @@ public class UpdateSuppliersResponse {
 
     @Override
     public String toString() {
-        return "UpdateSuppliersResponse{" +
+        return "UpdateStoreConfigResponse{" +
                 "status='" + status + '\'' +
                 ", status_code='" + status_code + '\'' +
                 ", message='" + message + '\'' +

@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.SignInRequest;
 import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
@@ -34,6 +33,15 @@ import com.vpage.vpos.pojos.sale.SaleResponse;
 import com.vpage.vpos.pojos.sale.UpdateSaleResponse;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleRequest;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
+import com.vpage.vpos.pojos.storeConfig.StoreConfigResponse;
+import com.vpage.vpos.pojos.storeConfig.UpdateStoreConfigRequest;
+import com.vpage.vpos.pojos.storeConfig.UpdateStoreConfigResponse;
+import com.vpage.vpos.pojos.storeConfigBarcode.StoreConfigBarcodeResponse;
+import com.vpage.vpos.pojos.storeConfigBarcode.UpdateStoreConfigBarcodeRequest;
+import com.vpage.vpos.pojos.storeConfigGeneral.StoreConfigGeneralResponse;
+import com.vpage.vpos.pojos.storeConfigGeneral.UpdateStoreConfigGeneralRequest;
+import com.vpage.vpos.pojos.storeConfigInvoice.StoreConfigInvoiceResponse;
+import com.vpage.vpos.pojos.storeConfigInvoice.UpdateStoreConfigInvoiceRequest;
 import com.vpage.vpos.pojos.supplier.SupplierResponse;
 import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
 import com.vpage.vpos.pojos.supplier.addSupplier.AddSupplierRequest;
@@ -234,7 +242,7 @@ public class VPOSRestClient {
         if (LogFlag.bLogOn)Log.d(TAG, customerUrl);
         final UpdateCustomersResponse[] updateCustomersResponses = {null};
 
-        HttpManager.putwithEntity(customerUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+        HttpManager.putWithEntity(customerUrl, parsedJsonParams, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
                 updateCustomersResponses[0] = VPOSRestTools.getInstance().updateCustomerResponseData(resultData.toString());
@@ -380,7 +388,7 @@ public class VPOSRestClient {
         if (LogFlag.bLogOn)Log.d(TAG, employeeUrl);
         final UpdateEmployeeResponse[] updateEmployeeResponses = {null};
 
-        HttpManager.putwithEntity(employeeUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+        HttpManager.putWithEntity(employeeUrl, parsedJsonParams, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
                 updateEmployeeResponses[0] = VPOSRestTools.getInstance().updateEmployeeResponseData(resultData.toString());
@@ -585,7 +593,7 @@ public class VPOSRestClient {
         if (LogFlag.bLogOn)Log.d(TAG, itemKitsUrl);
         final UpdateItemKitsResponse[] updateItemKitsResponses = {null};
 
-        HttpManager.putwithEntity(itemKitsUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+        HttpManager.putWithEntity(itemKitsUrl, parsedJsonParams, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
                 updateItemKitsResponses[0] = VPOSRestTools.getInstance().updateItemKitsResponseData(resultData.toString());
@@ -688,7 +696,7 @@ public class VPOSRestClient {
         if (LogFlag.bLogOn)Log.d(TAG, saleUrl);
         final UpdateSaleResponse[] updateItemKitsResponses = {null};
 
-        HttpManager.putwithEntity(saleUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+        HttpManager.putWithEntity(saleUrl, parsedJsonParams, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
                 updateItemKitsResponses[0] = VPOSRestTools.getInstance().updateSaleResponseData(resultData.toString());
@@ -787,7 +795,7 @@ public class VPOSRestClient {
         if (LogFlag.bLogOn)Log.d(TAG, supplierUrl);
         final UpdateSuppliersResponse[] updateSuppliersResponses = {null};
 
-        HttpManager.putwithEntity(supplierUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+        HttpManager.putWithEntity(supplierUrl, parsedJsonParams, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
                 updateSuppliersResponses[0] = VPOSRestTools.getInstance().updateSupplierResponseData(resultData.toString());
@@ -888,7 +896,7 @@ public class VPOSRestClient {
         if (LogFlag.bLogOn)Log.d(TAG, giftCardUrl);
         final UpdateGiftCardResponse[] updateGiftCardResponses = {null};
 
-        HttpManager.putwithEntity(giftCardId, parsedJsonParams, new JsonHttpResponseHandler() {
+        HttpManager.putWithEntity(giftCardUrl, parsedJsonParams, new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
                 updateGiftCardResponses[0] = VPOSRestTools.getInstance().updateGiftCardResponseData(resultData.toString());
@@ -921,5 +929,244 @@ public class VPOSRestClient {
         return updateGiftCardResponses[0];
     }
 
+
+    public StoreConfigResponse getStoreConfig() {
+
+        String storeConfigUrl = VPOSApplication.getContext().getResources().getString(R.string.store_config);
+
+        final StoreConfigResponse[] storeConfigResponses = {null};
+        HttpManager.get(storeConfigUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                storeConfigResponses[0] = VPOSRestTools.getInstance().getStoreConfigResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigResponses: "+storeConfigResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                storeConfigResponses[0] = null;
+
+            }
+        });
+        return storeConfigResponses[0];
+    }
+
+    public void setUpdateStoreConfigParams(UpdateStoreConfigRequest updateStoreConfigRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(updateStoreConfigRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+
+    public UpdateStoreConfigResponse updateStoreConfig() {
+        String storeConfigUrl = VPOSApplication.getContext().getResources().getString(R.string.update_store_config);
+        if (LogFlag.bLogOn)Log.d(TAG, storeConfigUrl);
+        final UpdateStoreConfigResponse[] updateStoreConfigResponses = {null};
+
+        HttpManager.putWithEntity(storeConfigUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateStoreConfigResponses[0] = VPOSRestTools.getInstance().updateStoreConfigResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "updateStoreConfigResponses: "+updateStoreConfigResponses[0].toString());
+            }
+
+        });
+        return updateStoreConfigResponses[0];
+    }
+
+
+    public StoreConfigBarcodeResponse getStoreConfigBarcode() {
+
+        String storeConfigBarcodeUrl = VPOSApplication.getContext().getResources().getString(R.string.store_config_barcode);
+
+        final StoreConfigBarcodeResponse[] storeConfigBarcodeResponses = {null};
+        HttpManager.get(storeConfigBarcodeUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                storeConfigBarcodeResponses[0] = VPOSRestTools.getInstance().getStoreConfigBarcodeResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigBarcodeResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigBarcodeResponses: "+storeConfigBarcodeResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                storeConfigBarcodeResponses[0] = null;
+
+            }
+        });
+        return storeConfigBarcodeResponses[0];
+    }
+
+
+    public void setUpdateStoreConfigBarcodeParams(UpdateStoreConfigBarcodeRequest updateStoreConfigBarcodeRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(updateStoreConfigBarcodeRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+
+
+    public UpdateStoreConfigResponse updateStoreConfigBarcode() {
+        String storeConfigBarcodeUrl = VPOSApplication.getContext().getResources().getString(R.string.update_store_config_barcode);
+        if (LogFlag.bLogOn)Log.d(TAG, storeConfigBarcodeUrl);
+        final UpdateStoreConfigResponse[] updateStoreConfigBarcodeResponses = {null};
+
+        HttpManager.putWithEntity(storeConfigBarcodeUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateStoreConfigBarcodeResponses[0] = VPOSRestTools.getInstance().updateStoreConfigResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "updateStoreConfigBarcodeResponses: "+updateStoreConfigBarcodeResponses[0].toString());
+            }
+
+        });
+        return updateStoreConfigBarcodeResponses[0];
+    }
+
+
+    public StoreConfigGeneralResponse getStoreConfigGeneral() {
+
+        String storeConfigGeneralUrl = VPOSApplication.getContext().getResources().getString(R.string.store_config_general);
+
+        final StoreConfigGeneralResponse[] storeConfigGeneralResponses = {null};
+        HttpManager.get(storeConfigGeneralUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                storeConfigGeneralResponses[0] = VPOSRestTools.getInstance().getStoreConfigGeneralResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigGeneralResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigGeneralResponses: "+storeConfigGeneralResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                storeConfigGeneralResponses[0] = null;
+
+            }
+        });
+        return storeConfigGeneralResponses[0];
+    }
+
+    public void setUpdateStoreConfigGeneralParams(UpdateStoreConfigGeneralRequest updateStoreConfigGeneralRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(updateStoreConfigGeneralRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+
+    public UpdateStoreConfigResponse updateStoreConfigGeneral() {
+        String storeConfigGeneralUrl = VPOSApplication.getContext().getResources().getString(R.string.update_store_config_general);
+        if (LogFlag.bLogOn)Log.d(TAG, storeConfigGeneralUrl);
+        final UpdateStoreConfigResponse[] updateStoreConfigGeneralResponses = {null};
+
+        HttpManager.putWithEntity(storeConfigGeneralUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateStoreConfigGeneralResponses[0] = VPOSRestTools.getInstance().updateStoreConfigResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "updateStoreConfigGeneralResponses: "+updateStoreConfigGeneralResponses[0].toString());
+            }
+
+        });
+        return updateStoreConfigGeneralResponses[0];
+    }
+
+    public StoreConfigInvoiceResponse getStoreConfigInvoice() {
+
+        String storeConfigInvoiceUrl = VPOSApplication.getContext().getResources().getString(R.string.store_config_invoice);
+
+        final StoreConfigInvoiceResponse[] storeConfigInvoiceResponses = {null};
+        HttpManager.get(storeConfigInvoiceUrl, null, new JsonHttpResponseHandler() {
+
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+
+                storeConfigInvoiceResponses[0] = VPOSRestTools.getInstance().getStoreConfigInvoiceResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigInvoiceResponses: "+resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "storeConfigInvoiceResponses: "+storeConfigInvoiceResponses[0].toString());
+            }
+
+
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + statusCode);
+                if (LogFlag.bLogOn)Log.d(TAG, "Error " + responseString);
+                storeConfigInvoiceResponses[0] = null;
+
+            }
+        });
+        return storeConfigInvoiceResponses[0];
+    }
+
+
+    public void setUpdateStoreConfigInvoiceParams(UpdateStoreConfigInvoiceRequest updateStoreConfigInvoiceRequest) {
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String jsonParams = gson.toJson(updateStoreConfigInvoiceRequest);
+            parsedJsonParams = new StringEntity(jsonParams);
+
+            if (LogFlag.bLogOn)Log.d(TAG, jsonParams);
+
+        } catch (UnsupportedEncodingException e) {
+            if (LogFlag.bLogOn)Log.e(TAG, "ERROR: ", e);
+        }
+    }
+
+
+    public UpdateStoreConfigResponse updateStoreConfigInvoice() {
+        String storeConfigInvoiceUrl = VPOSApplication.getContext().getResources().getString(R.string.update_store_config_invoice);
+        if (LogFlag.bLogOn)Log.d(TAG, storeConfigInvoiceUrl);
+        final UpdateStoreConfigResponse[] updateStoreConfigGeneralResponses = {null};
+
+        HttpManager.putWithEntity(storeConfigInvoiceUrl, parsedJsonParams, new JsonHttpResponseHandler() {
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
+                updateStoreConfigGeneralResponses[0] = VPOSRestTools.getInstance().updateStoreConfigResponseData(resultData.toString());
+                if (LogFlag.bLogOn)Log.d(TAG, "updateStoreConfigInvoiceResponses: "+updateStoreConfigGeneralResponses[0].toString());
+            }
+
+        });
+        return updateStoreConfigGeneralResponses[0];
+    }
+
 }
+
 
