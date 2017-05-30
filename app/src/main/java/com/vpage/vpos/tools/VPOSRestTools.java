@@ -31,6 +31,10 @@ import com.vpage.vpos.pojos.storeConfig.UpdateStoreConfigResponse;
 import com.vpage.vpos.pojos.storeConfigBarcode.StoreConfigBarcodeResponse;
 import com.vpage.vpos.pojos.storeConfigGeneral.StoreConfigGeneralResponse;
 import com.vpage.vpos.pojos.storeConfigInvoice.StoreConfigInvoiceResponse;
+import com.vpage.vpos.pojos.storeConfigLocal.StoreConfigLocalResponse;
+import com.vpage.vpos.pojos.storeConfigMail.StoreConfigMailResponse;
+import com.vpage.vpos.pojos.storeConfigMessage.StoreConfigMessageResponse;
+import com.vpage.vpos.pojos.storeConfigReceipt.StoreConfigReceiptResponse;
 import com.vpage.vpos.pojos.supplier.SupplierResponse;
 import com.vpage.vpos.pojos.supplier.Suppliers;
 import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
@@ -224,6 +228,31 @@ public class VPOSRestTools {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, StoreConfigInvoiceResponse.class);
     }
+
+
+    public StoreConfigLocalResponse getStoreConfigLocalResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigLocalResponse.class);
+    }
+
+
+    public StoreConfigMailResponse getStoreConfigMailResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigMailResponse.class);
+    }
+
+
+    public StoreConfigMessageResponse getStoreConfigMessageResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigMessageResponse.class);
+    }
+
+
+    public StoreConfigReceiptResponse getStoreConfigReceiptResponseData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, StoreConfigReceiptResponse.class);
+    }
+
 
 
 }
