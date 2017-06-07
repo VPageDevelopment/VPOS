@@ -51,7 +51,7 @@ public class GiftCardListAdapter extends RecyclerView.Adapter<GiftCardListAdapte
     Boolean ID = false,FName = false,LName = false,GC_No= false,GCValue = false;
     String jsonObjectData = null;
 
-    private List<GiftCard> giftCardResponseList;
+    private List<GiftCard> giftCardResponseList = new ArrayList<>();
     private List<GiftCard> responseList;
 
     GiftCardResponse giftCardResponse;

@@ -51,7 +51,7 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
     Boolean ID = false, IKName = false, IKDes = false, IKCPrice = false, IKRPrice = false;
     String jsonObjectData = null;
 
-    private List<ItemKits> itemKitResponseList;
+    private List<ItemKits> itemKitResponseList = new ArrayList<>();
     private List<ItemKits> responseList;
 
     ItemKitsResponse itemKitsResponse;

@@ -46,7 +46,7 @@ public class SaleListAdapter extends RecyclerView.Adapter<SaleListAdapter.ViewHo
             changeDue = false,type = false,invoice = false;
     String jsonObjectData = null;
 
-    private List<Sales> SalesResponseList;
+    private List<Sales> SalesResponseList = new ArrayList<>();
     private List<Sales> responseList;
 
     SaleResponse saleResponse;

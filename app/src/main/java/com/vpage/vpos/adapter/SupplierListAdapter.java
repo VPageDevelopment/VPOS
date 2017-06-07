@@ -52,7 +52,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
     Boolean ID = false,CName = false,AName = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    private List<Suppliers> supplierResponseList;
+    private List<Suppliers> supplierResponseList = new ArrayList<>();
     private List<Suppliers> responseList;
 
     SupplierResponse supplierResponse;

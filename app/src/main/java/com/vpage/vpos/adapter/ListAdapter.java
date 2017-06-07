@@ -54,7 +54,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    private List<CustomerResponse> customerResponseList;
+    private List<CustomerResponse> customerResponseList = new ArrayList<>();
     private List<CustomerResponse> responseList;
 
     String pageName;

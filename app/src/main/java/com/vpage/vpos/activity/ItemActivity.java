@@ -127,8 +127,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     ItemResponse itemResponse;
 
-
-
     int itemCount=0;
 
     @AfterViews
@@ -149,7 +147,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setTitle("Items");
 
     }
-
 
     void itemCountCheck(){
 

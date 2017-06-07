@@ -7,6 +7,8 @@ import com.vpage.vpos.tools.VPOSApplication;
 import com.loopj.android.http.RequestParams;
 import com.vpage.vpos.tools.utils.LogFlag;
 
+import java.security.KeyStore;
+
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
@@ -20,8 +22,8 @@ public class HttpManager {
     private static final String BASE_URL = "http://vpageinc.com/pos/public_html/api/v1/";*/
 
     // developer api
-    private static final String BASE_URL_SIGNIN = "http://localhost/vpos_restapi/public_html/";
-    private static final String BASE_URL = "http://localhost/vpos_restapi/public_html/api/v1/";
+    private static final String BASE_URL_SIGNIN = "http://vpageinc.com/pos/public_html/";
+    private static final String BASE_URL = "http://vpageinc.com/pos/public_html/api/v1/";
 
     private static final String CONTENT_TYPE_JSON = "application/json";
 
@@ -76,18 +78,18 @@ public class HttpManager {
             syncHttpClient.setConnectTimeout(DEFAULT_TIMEOUT);
             syncHttpClient.setResponseTimeout(DEFAULT_TIMEOUT);
 
-/*            // SSL
-            OustSSLSocketFactory oustSSLSocketFactory = null;
+         /*   // SSL
+            VPOSSSLSocketFactory vpossslSocketFactory = null;
             try {
 
                 KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 trustStore.load(null, null);
-                oustSSLSocketFactory = new OustSSLSocketFactory(trustStore);
-                oustSSLSocketFactory.setHostnameVerifier(OustSSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+                vpossslSocketFactory = new VPOSSSLSocketFactory(trustStore);
+                vpossslSocketFactory.setHostnameVerifier(VPOSSSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
             } catch (Exception ex) {
                 Log.e(TAG, ex.toString());
             }
-            syncHttpClient.setSSLSocketFactory(oustSSLSocketFactory);*/
+            syncHttpClient.setSSLSocketFactory(vpossslSocketFactory);*/
 
             return syncHttpClient;
         }
@@ -96,18 +98,18 @@ public class HttpManager {
         asyncHttpClient.setConnectTimeout(DEFAULT_TIMEOUT);
         asyncHttpClient.setResponseTimeout(DEFAULT_TIMEOUT);
 
-/*        // SSL
-        OustSSLSocketFactory oustSSLSocketFactory = null;
+      /*  // SSL
+        VPOSSSLSocketFactory vpossslSocketFactory = null;
         try {
 
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             trustStore.load(null, null);
-            oustSSLSocketFactory = new OustSSLSocketFactory(trustStore);
-            oustSSLSocketFactory.setHostnameVerifier(OustSSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            vpossslSocketFactory = new VPOSSSLSocketFactory(trustStore);
+            vpossslSocketFactory.setHostnameVerifier(VPOSSSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
         }
-        asyncHttpClient.setSSLSocketFactory(oustSSLSocketFactory);*/
+        asyncHttpClient.setSSLSocketFactory(vpossslSocketFactory);*/
 
         return asyncHttpClient;
     }

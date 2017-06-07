@@ -54,7 +54,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             quantity = false,taxPer = false,avatar = false;
     String jsonObjectData = null;
 
-    private List<Items> itemResponseList;
+    private List<Items> itemResponseList = new ArrayList<>();
     private List<Items> responseList;
 
     ItemResponse itemResponse;

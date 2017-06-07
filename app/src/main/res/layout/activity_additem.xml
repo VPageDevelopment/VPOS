@@ -411,6 +411,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:id="@+id/avatarImageView"
+                        android:scaleType="fitXY"
                         android:background="@drawable/square_gray_corners">
 
                     </ImageView>

@@ -53,7 +53,7 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
     Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    private List<Employees> employeeResponseList;
+    private List<Employees> employeeResponseList = new ArrayList<>();
     private List<Employees> responseList;
 
     EmployeeResponse employeeResponse;
