@@ -1,8 +1,11 @@
 package com.vpage.vpos.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
@@ -52,6 +55,8 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
 
     Activity activity;
 
+    private static final int PERMISSION_REQUEST_CODE = 1;
+
     @AfterViews
 
     public void init() {
@@ -66,6 +71,18 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         message.setOnKeyListener(this);
         smsPhoneNumber.setOnFocusChangeListener(this);
         message.setOnFocusChangeListener(this);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+            if (checkSelfPermission(Manifest.permission.SEND_SMS)
+                    == PackageManager.PERMISSION_DENIED) {
+
+                Log.d("permission", "permission denied to SEND_SMS - requesting it");
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},PERMISSION_REQUEST_CODE);
+
+            }
+        }
+
 
     }
 

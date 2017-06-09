@@ -8,7 +8,7 @@ public class SupplierResponse {
 
     private String status_code;
 
-    private Suppliers[] items;
+    private Suppliers[] suppliers;
 
     public String getStatus() {
         return status;
@@ -27,11 +27,11 @@ public class SupplierResponse {
     }
 
     public Suppliers[] getItems() {
-        return items;
+        return suppliers;
     }
 
     public void setItems(Suppliers[] items) {
-        this.items = items;
+        this.suppliers = items;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class SupplierResponse {
         return "SupplierResponse{" +
                 "status='" + status + '\'' +
                 ", status_code='" + status_code + '\'' +
-                ", items=" + Arrays.toString(items) +
+                ", suppliers=" + Arrays.toString(suppliers) +
                 '}';
     }
 }

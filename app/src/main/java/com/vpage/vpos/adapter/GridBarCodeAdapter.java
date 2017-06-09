@@ -51,7 +51,7 @@ public class GridBarCodeAdapter extends BaseAdapter {
         mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         itemKits = new ItemKits[selectedPosition.length];
         for(int i =0; i< selectedPosition.length;i++){
-            itemKits[i] = itemKitResponse.getItems()[selectedPosition[i]];
+            itemKits[i] = itemKitResponse.getItemKits()[selectedPosition[i]];
         }
 
     }

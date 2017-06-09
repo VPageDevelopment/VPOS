@@ -38,7 +38,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements OnPageChange
 	private MyLinearLayout prev = null;
 	private MyLinearLayout prevprev = null;
 	private MyLinearLayout nextnext = null;
-	private FragmentManager fm;
+	private FragmentManager fragmentManager;
 	private float scale;
 	private boolean IsBlured;
 	private static float minAlpha=0.6f;
@@ -69,21 +69,21 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements OnPageChange
 	String customerResponseData;
 	CustomersResponse customersResponse;
 	
-	public MyPagerAdapter(Activity activity, FragmentManager fm) {
-		super(fm);
-		this.fm = fm;
+	public MyPagerAdapter(Activity activity, FragmentManager fragmentManager) {
+		super(fragmentManager);
+		this.fragmentManager = fragmentManager;
 		this.activity = activity;
 	}
 	public MyPagerAdapter(Activity activity, FragmentManager fm,List<CustomerResponse> customerResponseList) {
 		super(fm);
-		this.fm = fm;
+		this.fragmentManager = fm;
 		this.activity = activity;
 		this.customerResponseList = customerResponseList;
 	}
 
-	public MyPagerAdapter(Activity activity, FragmentManager fm,String customerResponseData) {
-		super(fm);
-		this.fm = fm;
+	public MyPagerAdapter(Activity activity, FragmentManager fragmentManager,String customerResponseData) {
+		super(fragmentManager);
+		this.fragmentManager = fragmentManager;
 		this.activity = activity;
 		this.customerResponseData = customerResponseData;
 		customersResponse = VPOSRestTools.getInstance().getCustomerResponseData(this.customerResponseData);
@@ -214,18 +214,16 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements OnPageChange
 
 	private MyLinearLayout getRootView(int position)
 	{
-		MyLinearLayout ly;
+		MyLinearLayout linearLayout;
 		try {
-			ly = (MyLinearLayout) 
-					fm.findFragmentByTag(this.getFragmentTag(position))
+			linearLayout = (MyLinearLayout)
+					fragmentManager.findFragmentByTag(this.getFragmentTag(position))
 					.getView().findViewById(R.id.root);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
 			return null;
 		}
-		if(ly!=null)
-			return ly;
-		return null;
+	 return linearLayout;
 	}
 
 	private String getFragmentTag(int position)

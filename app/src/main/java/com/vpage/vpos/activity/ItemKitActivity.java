@@ -349,7 +349,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
                 try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                            callItemKitDeleteResponse(itemKitsResponse.getItems()[i].getItem_kit_id());
+                            callItemKitDeleteResponse(itemKitsResponse.getItemKits()[i].getItem_kit_id());
                         }
                     }
                 }catch (IndexOutOfBoundsException e){
@@ -511,7 +511,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
     @UiThread
     public void itemKitResponseFinish(){
 
-        itemCount = itemKitsResponse.getItems().length;
+        itemCount = itemKitsResponse.getItemKits().length;
         itemCountCheck();
 
         addItemsOnSpinner();
@@ -556,7 +556,7 @@ public class ItemKitActivity extends AppCompatActivity implements View.OnClickLi
         Gson gson = new GsonBuilder().create();
         Intent intent = new Intent(getApplicationContext(), AddItemActivity_.class);
         intent.putExtra("PageName",pageName);
-        intent.putExtra("ItemKitData",gson.toJson(itemKitsResponse.getItems()[itemPosition]));
+        intent.putExtra("ItemKitData",gson.toJson(itemKitsResponse.getItemKits()[itemPosition]));
         startActivity(intent);
     }
 

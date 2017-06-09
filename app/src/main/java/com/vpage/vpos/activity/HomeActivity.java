@@ -211,12 +211,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 gotoMessageView();
                 break;
 
+            case 10:
+                gotoStoreConfigView();
+                break;
+
         }
     }
 
 
     private void gotoCustomerView(){
-        Intent intent = new Intent(getApplicationContext(), CustomerActivity_.class);
+        Intent intent = new Intent(getApplicationContext(), TestActivity_.class);
         startActivity(intent);
     }
 
@@ -264,6 +268,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void gotoSettingsView(){
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoStoreConfigView(){
+        Intent intent = new Intent(getApplicationContext(), StoreConfigActivity_.class);
         startActivity(intent);
     }
 

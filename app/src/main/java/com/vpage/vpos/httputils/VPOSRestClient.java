@@ -545,7 +545,6 @@ public class VPOSRestClient {
             public void onSuccess(int statusCode, Header[] headers, JSONObject resultData) {
 
                 itemKitsResponses[0] = VPOSRestTools.getInstance().getItemKitsResponseData(resultData.toString());
-                if (LogFlag.bLogOn)Log.d(TAG, "itemKitsResponses: "+resultData.toString());
                 if (LogFlag.bLogOn)Log.d(TAG, "itemKitsResponses: "+itemKitsResponses[0].toString());
             }
 

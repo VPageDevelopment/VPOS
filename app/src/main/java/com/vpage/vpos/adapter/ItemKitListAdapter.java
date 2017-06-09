@@ -61,8 +61,8 @@ public class ItemKitListAdapter extends RecyclerView.Adapter<ItemKitListAdapter.
         this.activity = activity;
         this.itemKitsResponse = itemKitsResponse;
 
-        for(int i=0 ;i < itemKitsResponse.getItems().length;i++){
-            itemKitResponseList.add(this.itemKitsResponse.getItems()[i]);
+        for(int i=0 ;i < itemKitsResponse.getItemKits().length;i++){
+            itemKitResponseList.add(this.itemKitsResponse.getItemKits()[i]);
         }
 
         responseList = new ArrayList<>();

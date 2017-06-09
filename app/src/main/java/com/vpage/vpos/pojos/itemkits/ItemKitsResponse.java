@@ -9,7 +9,7 @@ public class ItemKitsResponse {
 
     private String status_code;
 
-    private ItemKits[] items;
+    private ItemKits[] itemKits;
 
     public String getStatus() {
         return status;
@@ -27,12 +27,12 @@ public class ItemKitsResponse {
         this.status_code = status_code;
     }
 
-    public ItemKits[] getItems() {
-        return items;
+    public ItemKits[] getItemKits() {
+        return itemKits;
     }
 
-    public void setItems(ItemKits[] items) {
-        this.items = items;
+    public void setItemKits(ItemKits[] itemKits) {
+        this.itemKits = itemKits;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ItemKitsResponse {
         return "ItemKitsResponse{" +
                 "status='" + status + '\'' +
                 ", status_code='" + status_code + '\'' +
-                ", items=" + Arrays.toString(items) +
+                ", itemKits=" + Arrays.toString(itemKits) +
                 '}';
     }
 }
