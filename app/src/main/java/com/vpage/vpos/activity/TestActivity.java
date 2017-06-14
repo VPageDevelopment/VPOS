@@ -246,8 +246,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     void  setSignInRequestRequestData(){
 
         signInRequest = new SignInRequest();
-        signInRequest.setUsername("admin");
-        signInRequest.setPassword("password");
+        signInRequest.setUsername(getResources().getString(R.string.userName));
+        signInRequest.setPassword(getResources().getString(R.string.password));
 
     }
 

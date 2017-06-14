@@ -114,7 +114,8 @@
     </string-array>
 
 
-
+    <string name="groupPos">GroupPos</string>
+    <string name="childPos">ChildPos</string>
 
     <string name="pagermargin">-340</string>
 

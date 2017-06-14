@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -62,21 +61,27 @@ public class StoreConfigGridImageAdapter extends BaseAdapter {
 		}
 
 		imageView.setImageBitmap(getThumb(moduleNameArray[position]));
-		imageView.setTag(position);
+    //    int imageTag = activity.getResources().getIdentifier(moduleNameArray[position], "drawable", activity.getPackageName());
+	//	Log.d(TAG,"imageTag: "+ imageTag);
+	//	imageView.setImageResource( imageTag );
+		//imageView.setTag(getThumb(moduleNameArray[position]));
 		imageView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				int id = (Integer) arg0.getTag();
-				Log.d(TAG,"TagValue: "+ id);
-				zoomImageFromThumb(arg0, id);
+				//int id = (Integer) arg0.getTag();
+			//	Log.d(TAG,"TagValue: "+ id);
+
+				Bitmap bitmapImage = getThumb(moduleNameArray[position]);
+				int pixel = bitmapImage.getPixel(5,5);
+				zoomImageFromThumb(arg0,getClickedImage(moduleNameArray[position],pixel));
 			}
 		});
 
 		return imageView;
 	}
 
-	private void zoomImageFromThumb(final View thumbView, int imageResId) {
+	private void zoomImageFromThumb(final View thumbView, Bitmap bitmap) {
 		// If there's an animation in progress, cancel it immediately and
 		// proceed with this one.
 		if (mCurrentAnimator != null) {
@@ -86,7 +91,10 @@ public class StoreConfigGridImageAdapter extends BaseAdapter {
 		// Load the high-resolution "zoomed-in" image.
 		final ImageView expandedImageView = (ImageView)activity
 				.findViewById(R.id.expanded_image);
-		expandedImageView.setImageResource(imageResId);
+		//expandedImageView.setImageResource(imageResId);
+
+
+		expandedImageView.setImageBitmap(bitmap);
 
 		// Calculate the starting and ending bounds for the zoomed-in image.
 		// This step
@@ -221,7 +229,7 @@ public class StoreConfigGridImageAdapter extends BaseAdapter {
 	}
 
 
-	private Bitmap getThumb(String s)
+	private Bitmap getThumb(String imageString)
 	{
 		Bitmap bmp = Bitmap.createBitmap(150, 150, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bmp);
@@ -233,8 +241,28 @@ public class StoreConfigGridImageAdapter extends BaseAdapter {
 		canvas.drawRect(new Rect(0, 0, 150, 150), paint);
 		paint.setColor(Color.WHITE);
 		paint.setTextAlign(Paint.Align.CENTER);
-		canvas.drawText(s, 75, 75, paint);
+		canvas.drawText(imageString, 75, 75, paint);
 
 		return bmp;
 	}
+
+
+	private Bitmap getClickedImage(String imageString,int pixel)
+	{
+		Bitmap bmp = Bitmap.createBitmap(150, 150, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bmp);
+		Paint paint = new Paint();
+		//paint.setColor(Color.rgb(random.nextInt(128), random.nextInt(128), random.nextInt(128)));
+		paint.setColor(pixel);
+		paint.setTextSize(24);
+		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		canvas.drawRect(new Rect(0, 0, 300, 300), paint);
+		paint.setColor(Color.WHITE);
+		paint.setTextAlign(Paint.Align.CENTER);
+		canvas.drawText(imageString, 75, 75, paint);
+
+		return bmp;
+	}
+
+
 }

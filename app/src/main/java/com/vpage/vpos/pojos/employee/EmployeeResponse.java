@@ -8,7 +8,7 @@ public class EmployeeResponse {
 
     private String status_code;
 
-    private Employees[] employees;
+    private Employees[] Employees;
 
     public String getStatus() {
         return status;
@@ -27,11 +27,11 @@ public class EmployeeResponse {
     }
 
     public Employees[] getEmployees() {
-        return employees;
+        return Employees;
     }
 
     public void setEmployees(Employees[] employees) {
-        this.employees = employees;
+        this.Employees = employees;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class EmployeeResponse {
         return "EmployeeResponse{" +
                 "status='" + status + '\'' +
                 ", status_code='" + status_code + '\'' +
-                ", employees=" + Arrays.toString(employees) +
+                ", employees=" + Arrays.toString(Employees) +
                 '}';
     }
 }

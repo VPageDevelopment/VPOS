@@ -3,6 +3,8 @@ package com.vpage.vpos.adapter;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -30,13 +32,13 @@ public class ExpListViewAdapter extends BaseExpandableListAdapter {
     private Activity activity;
     private List<String> listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> listDataChild;
+    private Map<String, List<String>> listDataChild = new HashMap<>();
 
     // Hashmap for keeping track of our checkbox check states
-    private HashMap<Integer, boolean[]> mChildCheckStates;
+    private Map<Integer, boolean[]> mChildCheckStates;
 
     // Hashmap for keeping track of our checkbox check states
-    private HashMap<Integer, boolean[]> mParentCheckStates;
+    private Map<Integer, boolean[]> mParentCheckStates;
 
     // Our getChildView & getGroupView use the viewholder patter
     // Here are the viewholders defined, the inner classes are
@@ -56,7 +58,8 @@ public class ExpListViewAdapter extends BaseExpandableListAdapter {
      *  activity's context, group items, and child items
     */
     public ExpListViewAdapter(Activity activity, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+                                 Map<String, List<String>> listChildData) {
+
         this.activity = activity;
         this.listDataHeader = listDataHeader;
         this.listDataChild = listChildData;

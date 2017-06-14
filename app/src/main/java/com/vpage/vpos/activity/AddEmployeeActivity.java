@@ -21,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.vpage.vpos.R;
+import com.vpage.vpos.adapter.EmpCheckBoxExpandableListAdapter;
 import com.vpage.vpos.adapter.ExpListViewAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
@@ -42,6 +43,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @EActivity(R.layout.activity_addemployee)
 public class AddEmployeeActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener {
@@ -146,7 +148,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
     ExpListViewAdapter listAdapter;
     List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    Map<String, List<String>> listDataChild;
 
     AddEmployeeRequest addEmployeeRequest;
 
@@ -239,7 +241,8 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
 
             case R.id.submitButton:
-                submitBasedOnTabChange();
+                getInputs();
+                validateInput();
                 break;
 
             case R.id.radioButtonMale:
@@ -352,8 +355,6 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
             validationStatus = ValidationUtils.isValidName(firstNameInput,lastNameInput);
 
-            validationStatusPhoneNumber =  ValidationUtils.isValidUserPhoneNumber(phoneNumberInput);
-
             validationStatusUserName =  ValidationUtils.isValidUserUserName(userNameInput);
 
             validationStatusPassword =  ValidationUtils.isValidPassword(passwordWordInput);
@@ -365,11 +366,19 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
                 return;
             }
 
-            if (!validationStatusPhoneNumber.isStatus()) {
-                if (LogFlag.bLogOn)Log.d(TAG, validationStatusPhoneNumber.getMessage());
-                setErrorMessage(validationStatusPhoneNumber.getMessage());
-                return;
+
+
+            if(!phoneNumberInput.equals("")){
+
+                validationStatusPhoneNumber =  ValidationUtils.isValidUserPhoneNumber(phoneNumberInput);
+
+                if (!validationStatusPhoneNumber.isStatus()) {
+                    if (LogFlag.bLogOn)Log.d(TAG, validationStatusPhoneNumber.getMessage());
+                    setErrorMessage(validationStatusPhoneNumber.getMessage());
+                    return;
+                }
             }
+
 
             if (!validationStatusUserName.isStatus()) {
                 if (LogFlag.bLogOn)Log.d(TAG, validationStatusUserName.getMessage());
@@ -433,13 +442,21 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
         // TODO Service data update
          // preparing list data
-        prepareListData();
+       // prepareListData();
 
-         listAdapter = new ExpListViewAdapter(this, listDataHeader, listDataChild);
+  /*       listAdapter = new ExpListViewAdapter(activity, listDataHeader, listDataChild);
 
         // setting list adapter
-        expListView.setAdapter(listAdapter);
-        expandAll();
+        expListView.setAdapter(listAdapter);*/
+
+        EmpCheckBoxExpandableListAdapter mAdapter = new EmpCheckBoxExpandableListAdapter(activity);
+        expListView.setAdapter(mAdapter);
+        expListView.setOnChildClickListener(mAdapter);
+        expListView.setOnGroupClickListener(mAdapter);
+        expListView.setGroupIndicator(null);
+
+
+        /*expandAll();
 
 
         // Listview Group expanded listener
@@ -447,9 +464,9 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onGroupExpand(int groupPosition) {
-           /* Toast.makeText(getApplicationContext(),
+           *//* Toast.makeText(getApplicationContext(),
                     listDataHeader.get(groupPosition) + " Expanded",
-                    Toast.LENGTH_SHORT).show(); */
+                    Toast.LENGTH_SHORT).show(); *//*
                 // if (LogFlag.bLogOn)Log.d(TAG, "mChildCheckStates: "+mParentCheckStates.get(groupPosition)[mChildPosition]);
 
             }
@@ -460,13 +477,13 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onGroupCollapse(int groupPosition) {
-           /* Toast.makeText(getApplicationContext(),
+           *//* Toast.makeText(getApplicationContext(),
                     listDataHeader.get(groupPosition) + " Collapsed",
-                    Toast.LENGTH_SHORT).show(); */
+                    Toast.LENGTH_SHORT).show(); *//*
                 expListView.expandGroup(groupPosition);
             }
         });
-
+*/
     }
 
     @Override

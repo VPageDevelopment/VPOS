@@ -2,8 +2,8 @@
 <resources>
 
     <!-- signIn -->
-    <string name="userName">admin</string>
-    <string name="password">password</string>
+    <string name="userName">emp1</string>
+    <string name="password">emp1</string>
     <string name="signIn">auth</string>
 
     <!-- customers -->
