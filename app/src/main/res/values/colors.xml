@@ -7,7 +7,7 @@
     <color name="White">#FFFFFF</color>
     <color name="Black">#000000</color>
     <color name="Red">#d9534f</color>
-    <color name="green">#4ae8c4</color>
+    <color name="greenLite">#4ae8c4</color>
     <color name="DarkGray">#777777</color>
     <color name="LiteGray">#cccccc</color>
     <color name="grey">#DDDDDD</color>
@@ -18,5 +18,10 @@
     <color name="common_button_color">@color/colorPrimary</color>
 
 
+
+    <color name="red">#FFC93437</color>
+    <color name="blue">#FF375BF1</color>
+    <color name="yellow">#FFF7D23E</color>
+    <color name="green">#FF34A350</color>
 
 </resources>

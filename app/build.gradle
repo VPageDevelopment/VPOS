@@ -63,6 +63,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.jakewharton:butterknife:6.1.0'
     compile files('src/main/java/OnBarcode.AndroidBarcode.jar')
     compile group: 'com.nineoldandroids', name: 'library', version: '2.4.0'
   /*  compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.0-alpha3'*/

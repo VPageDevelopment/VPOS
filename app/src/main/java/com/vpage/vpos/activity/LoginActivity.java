@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
@@ -27,6 +28,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends AppCompatActivity implements View.OnKeyListener,OnNetworkChangeListener {
@@ -47,6 +50,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
+
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
 
     @ViewById(R.id.textError)
     TextView textError;
