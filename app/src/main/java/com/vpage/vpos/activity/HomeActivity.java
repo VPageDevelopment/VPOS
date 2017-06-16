@@ -15,9 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
+
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GridImageAdapter;
+import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
+import com.vpage.vpos.tools.VPOSTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
@@ -36,10 +40,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @ViewById(R.id.gridView)
     GridView gridView;
 
+    @ViewById(R.id.nav_view)
+    NavigationView navigationView;
+
 
     int typedArrayImagePosition = -1;
     GridImageAdapter gridImageAdapter;
     TypedArray typedArrayImage;
+
+    SignInResponse signInResponse;
 
     Activity activity;
 
@@ -49,6 +58,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         activity = HomeActivity.this;
 
         setActionBarSupport();
+
+        Intent callingIntent=getIntent();
+
+        String userData = callingIntent.getStringExtra("ActiveUser");
+
+        signInResponse = VPOSTools.getInstance().getActiveUserData(userData);
 
         setGridView();
 
@@ -67,7 +82,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        View hView =  navigationView.inflateHeaderView(R.layout.nav_header_home);
+        TextView textViewName = (TextView)hView.findViewById(R.id.textViewName);
+        textViewName.setText(signInResponse.getUsername().toString());
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -135,15 +153,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            gotoSettingsView();
-            return true;
-        }
+        switch (id) {
 
-        if (id == android.R.id.home) {
-            if (LogFlag.bLogOn) Log.d(TAG, "Back Pressed ");
-            onBackPressed();
+            case R.id.action_settings:
+                gotoSettingsView();
+                break;
+
+            case R.id.action_print:
+                gotoPrintView();
+                break;
+
+            case android.R.id.home:
+                finish();
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -157,6 +180,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_logout) {
             VPOSPreferences.clearAll();
+            VPOSPreferences.save("isLoggedIn", "false");
             gotoLoginView();
 
         } else if (id == R.id.nav_manage) {
@@ -267,7 +291,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void gotoSettingsView(){
-        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(SettingsActivity.newInstance(this));
+    }
+
+    private void gotoPrintView(){
+        Intent intent = new Intent(getApplicationContext(), PrintActivity.class);
         startActivity(intent);
     }
 

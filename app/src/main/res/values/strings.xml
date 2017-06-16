@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_print">Print</string>
 
     <string name="connection_check">Check Network Connection</string>
     <string name="empty_check">Fill all information</string>
@@ -113,11 +114,24 @@
         <item>Licence</item>
     </string-array>
 
-
     <string name="groupPos">GroupPos</string>
     <string name="childPos">ChildPos</string>
 
     <string name="pagermargin">-340</string>
+
+
+
+    <string name="action_refresh">Refresh</string>
+    <string name="progressBar_pref_key">progressBar_pref_key</string>
+    <string name="progressBar_pref_defValue">0</string>
+    <string name="pref_colors_header_title">ProgressBar colors</string>
+    <string name="firstcolor_pref_key">firstcolor_pref_key</string>
+    <string name="secondcolor_pref_key">secondcolor_pref_key</string>
+    <string name="thirdcolor_pref_key">thirdcolor_pref_key</string>
+    <string name="fourthcolor_pref_key">fourthcolor_pref_key</string>
+
+    <bool name="isTablet">false</bool>
+
 
 
 </resources>

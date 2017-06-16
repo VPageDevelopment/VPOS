@@ -6,14 +6,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -22,17 +22,16 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.vpage.vpos.R;
 import com.vpage.vpos.tools.utils.LogFlag;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import googleprogressbar.ChromeFloatingCirclesDrawable;
+import googleprogressbar.FoldingCirclesDrawable;
+import googleprogressbar.GoogleMusicDicesDrawable;
+import googleprogressbar.NexusRotationCrossDrawable;
 
 
 public class VTools {
@@ -59,10 +58,14 @@ public class VTools {
         return chosenModuleImage;
     }
 
-    public static void setChosenModuleImage(String chosenModuleImage) {
-        chosenModuleImage = chosenModuleImage;
+    public static void setChosenModuleImage(String chosenImage) {
+        chosenModuleImage = chosenImage;
     }
 
+
+    public static void animation(Activity activity) {
+        activity.overridePendingTransition(R.anim.from_middle, R.anim.to_middle);
+    }
 
 
     @SuppressLint("NewApi")
@@ -312,7 +315,47 @@ public class VTools {
         } catch (Exception e) {
             if (LogFlag.bLogOn) Log.e(TAG, e.toString());
         }
+    }
 
+
+    public static Drawable getProgressDrawable(Activity activity) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        int value = Integer.parseInt(prefs.getString(activity.getString(R.string.progressBar_pref_key), activity.getString(R.string.progressBar_pref_defValue)));
+        Drawable progressDrawable = null;
+        switch (value) {
+            case 0:
+                progressDrawable = new FoldingCirclesDrawable.Builder(activity)
+                        .colors(getProgressDrawableColors(prefs))
+                        .build();
+                break;
+
+            case 1:
+                progressDrawable = new GoogleMusicDicesDrawable.Builder().build();
+                break;
+
+            case 2:
+                progressDrawable = new NexusRotationCrossDrawable.Builder(activity)
+                        .colors(getProgressDrawableColors(prefs))
+                        .build();
+                break;
+
+            case 3:
+                progressDrawable = new ChromeFloatingCirclesDrawable.Builder(activity)
+                        .colors(getProgressDrawableColors(prefs))
+                        .build();
+                break;
+        }
+
+        return progressDrawable;
+    }
+
+    public static int[] getProgressDrawableColors(SharedPreferences prefs) {
+        int[] colors = new int[4];
+        colors[0] = prefs.getInt(VPOSApplication.getContext().getString(R.string.firstcolor_pref_key),VPOSApplication.getContext().getResources().getColor(R.color.red));
+        colors[1] = prefs.getInt(VPOSApplication.getContext().getString(R.string.secondcolor_pref_key),VPOSApplication.getContext().getResources().getColor(R.color.blue));
+        colors[2] = prefs.getInt(VPOSApplication.getContext().getString(R.string.thirdcolor_pref_key),VPOSApplication.getContext().getResources().getColor(R.color.yellow));
+        colors[3] = prefs.getInt(VPOSApplication.getContext().getString(R.string.fourthcolor_pref_key), VPOSApplication.getContext().getResources().getColor(R.color.green));
+        return colors;
     }
 
 }

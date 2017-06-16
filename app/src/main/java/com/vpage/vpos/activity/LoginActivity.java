@@ -1,6 +1,8 @@
 package com.vpage.vpos.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.SignInRequest;
@@ -18,6 +22,8 @@ import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSPreferences;
+import com.vpage.vpos.tools.VPOSTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
@@ -28,7 +34,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 @EActivity(R.layout.activity_login)
@@ -64,14 +70,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
     SignInRequest signInRequest;
 
-    @Override
-    public void onNewIntent(Intent intent) {
-        this.setIntent(intent);
-    }
-
+    Activity activity;
 
     @AfterViews
     public void onInitView() {
+        ButterKnife.inject(this);
+
+        activity = LoginActivity.this;
 
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
             finish();
@@ -93,6 +98,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
 
@@ -118,8 +132,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
     public void focusChangedOnUser(View v, boolean hasFocus) {
         if (hasFocus) {
             textError.setVisibility(View.GONE);
-        } else {
-
         }
     }
 
@@ -140,7 +152,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
                 return;
             }
 
-                playGifView.setVisibility(View.VISIBLE);
+               // playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                loginButton.setVisibility(View.GONE);
                 textError.setVisibility(View.GONE);
                 callSignInResponse();
 
@@ -163,7 +177,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
             if (LogFlag.bLogOn)Log.d(TAG, "signInResponse: " + signInResponse.toString());
             if(signInResponse.getStatus().equals("ok")){
                 hideLoaderGifImage();
-                gotoHomeView();
+                gotoHomeView(signInResponse);
             }else {
                 hideLoaderGifImage();
                 setErrorMessage(signInResponse.getStatus());
@@ -176,7 +190,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        loginButton.setVisibility(View.VISIBLE);
     }
 
     @UiThread
@@ -193,9 +209,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
     }
 
 
-    void gotoHomeView(){
+
+    void gotoHomeView(SignInResponse signInResponse){
+
+        Gson gson = new GsonBuilder().create();
+        // Keep the login
+        VPOSPreferences.save("userdata", gson.toJson(VPOSTools.getInstance().getActiveUser(signInResponse)));
+        VPOSPreferences.save("isLoggedIn", "true");
+
         Intent intent = new Intent(getApplicationContext(), HomeActivity_.class);
+        intent.putExtra("ActiveUser", gson.toJson(VPOSTools.getInstance().getActiveUser(signInResponse)));
         startActivity(intent);
+        finish();
     }
 
 
