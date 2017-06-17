@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -39,6 +40,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_addcustomer)
 public class AddCustomerActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener, CompoundButton.OnCheckedChangeListener {
@@ -113,6 +116,9 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
+
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
 
     String firstNameInput = "", lastNameInput = "",genderSelected = "Male",phoneNumberInput="";
 

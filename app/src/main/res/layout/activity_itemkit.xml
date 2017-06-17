@@ -32,13 +32,16 @@
             android:id="@+id/viewGif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentStart="false"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:scaleType="fitXY"
             android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/google_progress"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:layout_width="match_parent"
