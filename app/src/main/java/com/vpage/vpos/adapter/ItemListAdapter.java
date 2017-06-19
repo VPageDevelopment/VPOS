@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.item.ItemResponse;
 import com.vpage.vpos.pojos.item.Items;
 import com.vpage.vpos.tools.VPOSPreferences;
@@ -58,11 +57,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     private List<Items> responseList;
 
     ItemResponse itemResponse;
-
-    public ItemListAdapter(Activity activity,List<ItemResponseTest> itemResponseList) {
-        this.activity = activity;
-
-    }
 
     public ItemListAdapter(Activity activity,ItemResponse itemResponse) {
         this.activity = activity;

@@ -20,14 +20,14 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.CustomerResponse;
+import com.vpage.vpos.pojos.customer.Customers;
+import com.vpage.vpos.pojos.customer.CustomersResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.callBack.SendSmsCallBack;
 import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,19 +54,25 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     Boolean ID = false,FName = false,LName = false,Email = false,PhoneNumber = false;
     String jsonObjectData = null;
 
-    private List<CustomerResponse> customerResponseList = new ArrayList<>();
-    private List<CustomerResponse> responseList;
+    private List<Customers> customerResponseList = new ArrayList<>();
+    private List<Customers> responseList;
 
-    String pageName;
+    CustomersResponse customerResponse;
 
-    public ListAdapter(Activity activity, List<CustomerResponse> customerResponseList, String pageName) {
+
+    public ListAdapter(Activity activity,CustomersResponse customerResponse) {
         this.activity = activity;
-        this.customerResponseList = customerResponseList;
-        this.pageName     = pageName;
+        this.customerResponse = customerResponse;
+
+        for(int i=0 ;i < customerResponse.getCustomers().length;i++){
+            customerResponseList.add(this.customerResponse.getCustomers()[i]);
+        }
+
         responseList = new ArrayList<>();
-        responseList.addAll( this.customerResponseList );
+        responseList.addAll(customerResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
     }
+
 
     public void setEditCallBack(EditCallBack editCallBack) {
         this.editCallBack = editCallBack;
@@ -91,15 +97,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final String name = customerResponseList.get(position).getFirstName();
 
-        if(pageName.equals("Customer")){
-            jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
-            holder.smsButton.setVisibility(View.GONE);
-        }else if(pageName.equals("Employee")){
-            jsonObjectData = VPOSPreferences.get(AppConstant.eFilterPreference);
-            holder.smsButton.setVisibility(View.VISIBLE);
-        }
+
+        final String name = customerResponseList.get(position).getFirst_name();
+
+        jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
+        holder.smsButton.setVisibility(View.GONE);
+
 
         if (null != jsonObjectData) {
             if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
@@ -113,11 +117,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         }
 
 
-        holder.IdText.setText("ID: " +customerResponseList.get(position).getId());
-        holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirstName());
-        holder.lastText.setText("Last Name: " + customerResponseList.get(position).getLastName());
+        holder.IdText.setText("ID: " +customerResponseList.get(position).getCustomer_id());
+        holder.firstText.setText("First Name: " +customerResponseList.get(position).getFirst_name());
+        holder.lastText.setText("Last Name: " + customerResponseList.get(position).getLast_name());
         holder.emailText.setText("Email: " + customerResponseList.get(position).getEmail());
-        holder.phoneNumberText.setText("Phone Number: " + customerResponseList.get(position).getPhoneNumber());
+        holder.phoneNumberText.setText("Phone Number: " + customerResponseList.get(position).getPhone_number());
 
         holder.smsButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -276,7 +280,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
 
-    public void add(int position, CustomerResponse item) {
+    public void add(int position, Customers item) {
         customerResponseList.add(position, item);
         notifyItemInserted(position);
     }
@@ -318,10 +322,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             customerResponseList.addAll(responseList);
 
         } else {
-            for (CustomerResponse customerResponse : responseList) {
-                if (charText.length() != 0 && customerResponse.getFirstName().toLowerCase(Locale.getDefault()).contains(charText)) {
+            for (Customers customerResponse : responseList) {
+                if (charText.length() != 0 && customerResponse.getFirst_name().toLowerCase(Locale.getDefault()).contains(charText)) {
                     customerResponseList.add(customerResponse);
-                } else if (charText.length() != 0 && customerResponse.getLastName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (charText.length() != 0 && customerResponse.getLast_name().toLowerCase(Locale.getDefault()).contains(charText)) {
                     customerResponseList.add(customerResponse);
                 }
             }

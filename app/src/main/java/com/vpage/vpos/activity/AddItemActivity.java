@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +60,9 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_additem)
 public class AddItemActivity extends AppCompatActivity implements View.OnClickListener, OnNetworkChangeListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
@@ -136,6 +141,9 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     String itemNameInput = "", categoryInput = "",costPriceInput = "",retailPriceInput = "",spinnerSupplierData="",
             quantityStockInput = "",receivingQuantityInput = "",reorderLevelInput = "",imagePath = "";
 
@@ -160,6 +168,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
         activity = AddItemActivity.this;
         setActionBarSupport();
+
+        ButterKnife.inject(this);
 
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
@@ -191,8 +201,6 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         spinnerSupplier.setOnItemSelectedListener(this);
 
         setView();
-
-
     }
 
     private void setActionBarSupport() {
@@ -206,10 +214,17 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         }else {
             getSupportActionBar().setTitle(pageName);
         }
-
-
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
+    }
 
     private void setView(){
 
@@ -350,7 +365,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                     !retailPriceInput.isEmpty()&&!quantityStockInput.isEmpty()&&
                     !receivingQuantityInput.isEmpty() &&!reorderLevelInput.isEmpty()) {
 
-                playGifView.setVisibility(View.VISIBLE);
+                //playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
                 if(pageName.equals("Update Item")){
@@ -386,7 +402,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                     !receivingQuantityInput.isEmpty() &&!reorderLevelInput.isEmpty()) {
 
 
-                playGifView.setVisibility(View.VISIBLE);
+               // playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
                 
                 clearAllInputs();
@@ -407,7 +424,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     void setErrorMessage(String errorMessage) {
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
@@ -582,7 +600,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
 

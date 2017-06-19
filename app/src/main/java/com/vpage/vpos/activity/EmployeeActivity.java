@@ -37,9 +37,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.EmployeeListAdapter;
 import com.vpage.vpos.adapter.FieldSpinnerAdapter;
-import com.vpage.vpos.adapter.ListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
-import com.vpage.vpos.pojos.CustomerResponse;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
@@ -108,7 +106,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     private Handler mUiHandler = new Handler();
 
-    List<CustomerResponse> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -125,6 +122,10 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     boolean isNetworkAvailable = false;
     ValidationStatus validationStatusPhoneNumber;
 
+    int smsToEmployeeAt = 0;
+
+    int itemCount=0;
+
     EmployeeResponse employeeResponse;
 
     @AfterViews
@@ -137,9 +138,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
 
-
-        int customerCount = 1; // to test placed static data replaced by server response count
-        customerCountCheck(customerCount);
+        callEmployeeResponse();
 
     }
 
@@ -150,23 +149,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Employees");
 
-    }
-
-    void customerCountCheck(int customerCount){
-
-        if(customerCount == 0){
-            noEmployeeContentLayout.setVisibility(View.VISIBLE);
-            employeeContent.setVisibility(View.GONE);
-            floatingActionMenu.setVisibility(View.GONE);
-            addNewEmployeeButton.setOnClickListener(this);
-        }else {
-            noEmployeeContentLayout.setVisibility(View.GONE);
-            employeeContent.setVisibility(View.VISIBLE);
-            floatingActionMenu.setVisibility(View.VISIBLE);
-            addEmployeeButton.setOnClickListener(this);
-
-            callEmployeeResponse();
-        }
     }
 
     @Override
@@ -216,26 +198,6 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void addRecyclerView(){
-
-        list = new ArrayList<>();
-
-        // To be replaced by server data after service call Response
-        for(int i=0 ;i < 5;i++){
-            CustomerResponse customerResponse = new CustomerResponse();
-            customerResponse.setId(String.valueOf(i));
-            if((i/2) == 0){
-                customerResponse.setFirstName("Ram");
-                customerResponse.setLastName("Kumar");
-                customerResponse.setEmail("ramkumar@gmail.com");
-            }else {
-                customerResponse.setFirstName("Sree");
-                customerResponse.setLastName("Kala");
-                customerResponse.setEmail("sreekala@gmail.com");
-            }
-            customerResponse.setPhoneNumber("93587210537");
-
-            list.add(customerResponse);
-        }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -520,7 +482,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onSendSMSSelected(int position) {
-        // TODO Update of phone number and message from service call
+        smsToEmployeeAt = position;
         goSMSPopup();
     }
 
@@ -543,20 +505,17 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
 
-                customerCountCheck(0);
-
                 // To Do after Server Response update
-              /*  try {
+                try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                            list.remove(i);
+                           // callCustomerDeleteResponse(employeeResponse.getEmployees()[i].getEmployee_id());
                         }
                     }
-                    customerCountCheck(0);
                 }catch (IndexOutOfBoundsException e){
                     if (LogFlag.bLogOn) Log.e(TAG, e.getMessage());
                 }
-*/
+
                 listAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();
 
@@ -589,7 +548,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
                     // get the content of selected customers and then email
                     if(checkedPositionArrayList.get(i)){
                         // To do server response of customer data contains email id
-                        emailArray = new String[]{list.get(i).getEmail()};
+                        emailArray = new String[]{employeeResponse.getEmployees()[i].getEmail()};
                     }
                 }
 
@@ -642,9 +601,8 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
         if(isNetworkAvailable){
 
-            // TODO Data update from service call
-            firstNameText.setText("First Name: ");
-            lastNameText.setText("Last Name: ");
+            firstNameText.setText("First Name: "+employeeResponse.getEmployees()[smsToEmployeeAt].getFirst_name());
+            lastNameText.setText("Last Name: "+employeeResponse.getEmployees()[smsToEmployeeAt].getLast_name());
 
             phoneNumberInput = smsPhoneNumber.getText().toString();
             commentsInput = smsComments.getText().toString();
@@ -702,10 +660,30 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     @UiThread
     public void employeeResponseFinish(){
 
+        itemCount= employeeResponse.getEmployees().length;
+        itemCountCheck();
+
         addItemsOnSpinner();
         addFabView();
         addRecyclerView();
 
+    }
+
+    void itemCountCheck(){
+
+        if(itemCount == 0){
+            noEmployeeContentLayout.setVisibility(View.VISIBLE);
+            employeeContent.setVisibility(View.GONE);
+            floatingActionMenu.setVisibility(View.GONE);
+            addNewEmployeeButton.setOnClickListener(this);
+        }else {
+            noEmployeeContentLayout.setVisibility(View.GONE);
+            employeeContent.setVisibility(View.VISIBLE);
+            floatingActionMenu.setVisibility(View.VISIBLE);
+            addEmployeeButton.setOnClickListener(this);
+
+            callEmployeeResponse();
+        }
     }
 
     @UiThread

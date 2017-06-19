@@ -41,7 +41,7 @@
             android:screenOrientation="portrait"
             />
         <activity
-            android:name=".activity.TestActivity_"
+            android:name=".activity.CustomerActivity_"
             android:screenOrientation="portrait"
             />
         <activity

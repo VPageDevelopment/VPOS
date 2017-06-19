@@ -1,29 +1,16 @@
 package com.vpage.vpos.CarouselView;
 
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.vpage.vpos.R;
-
-import com.vpage.vpos.pojos.CustomerResponse;
-
-import com.vpage.vpos.pojos.customer.Customers;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
 import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.utils.LogFlag;
-
-
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
-import android.widget.TextView;
-
 import java.util.List;
 
 public class MyPagerAdapter extends FragmentPagerAdapter implements OnPageChangeListener {
@@ -60,7 +47,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements OnPageChange
 	}
 
 	private Activity activity;
-	List<CustomerResponse> customerResponseList;
+	List<CustomersResponse> customerResponseList;
 
 	public final static float BIG_SCALE = 1.0f;
 	public final static float SMALL_SCALE = 0.8f;
@@ -74,7 +61,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements OnPageChange
 		this.fragmentManager = fragmentManager;
 		this.activity = activity;
 	}
-	public MyPagerAdapter(Activity activity, FragmentManager fm,List<CustomerResponse> customerResponseList) {
+	public MyPagerAdapter(Activity activity, FragmentManager fm,List<CustomersResponse> customerResponseList) {
 		super(fm);
 		this.fragmentManager = fm;
 		this.activity = activity;
@@ -228,6 +215,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter implements OnPageChange
 
 	private String getFragmentTag(int position)
 	{
-		return "android:switcher:" + activity.findViewById(R.id.customerViewPager).getId() + ":" + position;
+		//return "android:switcher:" + activity.findViewById(R.id.customerViewPager).getId() + ":" + position;
+		return null;
 	}
 }

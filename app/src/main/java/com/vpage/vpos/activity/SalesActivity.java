@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,27 +20,20 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.github.clans.fab.FloatingActionButton;
 import com.vpage.vpos.R;
-import com.vpage.vpos.adapter.ItemListAdapter;
+
 import com.vpage.vpos.httputils.VPOSRestClient;
-import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleRequest;
 import com.vpage.vpos.pojos.sale.addSale.AddSaleResponse;
 import com.vpage.vpos.tools.PlayGifView;
-import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
-import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @EActivity(R.layout.activity_sales)
 public class SalesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
@@ -90,9 +81,6 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
     String spinnerRegisterModeData="",spinnerStockLocationData="";
 
     private Handler mUiHandler = new Handler();
-    private int mScrollOffset = 4;
-    List<ItemResponseTest> list;
-    ItemListAdapter itemListAdapter;
     ArrayAdapter<String> customerArrayAdapter;
 
     Activity activity;
@@ -173,76 +161,6 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         spinnerStockLocation.setOnItemSelectedListener(this);
     }
 
-
-    private void addRecyclerView(){
-
-        list = new ArrayList<>();
-
-
-        // TODO replaced by server data after service call Response
-        for(int i=0 ;i < 5;i++){
-            ItemResponseTest itemResponse = new ItemResponseTest();
-            itemResponse.setId(String.valueOf(i));
-            if((i/2) == 0){
-                itemResponse.setBarcode("JHJKK4656");
-                itemResponse.setItemName("Soap");
-                itemResponse.setCategory("Cosmetic");
-                itemResponse.setCompanyName("Vpage");
-                itemResponse.setCostPrice("30");
-                itemResponse.setRetailPrice("25");
-                itemResponse.setQuantity("10");
-                itemResponse.setTaxPercent("5");
-                itemResponse.setAvatarUrl("");
-            }else {
-                itemResponse.setBarcode("1226VGJHS");
-                itemResponse.setItemName("Bag");
-                itemResponse.setCategory("Accessories");
-                itemResponse.setCompanyName("Vpage");
-                itemResponse.setCostPrice("40");
-                itemResponse.setRetailPrice("25");
-                itemResponse.setQuantity("15");
-                itemResponse.setTaxPercent("10");
-                itemResponse.setAvatarUrl("");
-            }
-
-            list.add(itemResponse);
-        }
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        itemListAdapter = new ItemListAdapter(activity,list);
-        recyclerView.setAdapter(itemListAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (Math.abs(dy) > mScrollOffset) {
-                    if (dy > 0) {
-                        fabButtonSelectCustomer.setVisibility(View.GONE);
-                        fabLabel.setVisibility(View.GONE);
-                    } else {
-                        fabButtonSelectCustomer.setVisibility(View.VISIBLE);
-                        fabLabel.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        });
-
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchCallBack() {
-            @Override
-            public void onClick(View view, int position) {
-
-                if (LogFlag.bLogOn)Log.d(TAG, "selected onClick: " + position);
-
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-                if (LogFlag.bLogOn)Log.d(TAG, "recyclerView onLongClick: " + position);
-            }
-        }));
-    }
 
     private void addFabView(){
 
@@ -421,7 +339,6 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
 
         setSpinnerView();
         setAutoTextView();
-        // addRecyclerView();
         addFabView();
 
     }

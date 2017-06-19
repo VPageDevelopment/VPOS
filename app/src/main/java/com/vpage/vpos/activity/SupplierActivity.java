@@ -34,7 +34,6 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.SupplierFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.SupplierListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
-import com.vpage.vpos.pojos.SupplierResponseTest;
 import com.vpage.vpos.pojos.supplier.SupplierResponse;
 import com.vpage.vpos.pojos.supplier.UpdateSuppliersResponse;
 import com.vpage.vpos.tools.PlayGifView;
@@ -98,7 +97,6 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
 
     private Handler mUiHandler = new Handler();
 
-    List<SupplierResponseTest> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -176,30 +174,6 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void addRecyclerView(){
-
-        list = new ArrayList<>();
-
-        // To be replaced by server data after service call Response
-        for(int i=0 ;i < 5;i++){
-            SupplierResponseTest supplierResponse = new SupplierResponseTest();
-            supplierResponse.setId(String.valueOf(i));
-            if((i/2) == 0){
-                supplierResponse.setCompanyName("Vpage");
-                supplierResponse.setAgencyName("Vpage");
-                supplierResponse.setFirstName("Ram");
-                supplierResponse.setLastName("Kumar");
-                supplierResponse.setEmail("ramkumar@gmail.com");
-            }else {
-                supplierResponse.setCompanyName("Vpage");
-                supplierResponse.setAgencyName("Vpage");
-                supplierResponse.setFirstName("Sree");
-                supplierResponse.setLastName("Kala");
-                supplierResponse.setEmail("sreekala@gmail.com");
-            }
-            supplierResponse.setPhoneNumber("93587210537");
-
-            list.add(supplierResponse);
-        }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -378,7 +352,7 @@ public class SupplierActivity extends AppCompatActivity implements View.OnClickL
                     // get the content of selected customers and then email
                     if(checkedPositionArrayList.get(i)){
                         // To do server response of customer data contains email id
-                        emailArray = new String[]{list.get(i).getEmail()};
+                        emailArray = new String[]{supplierResponse.getItems()[i].getEmail()};
                     }
                 }
 

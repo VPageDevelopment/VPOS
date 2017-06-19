@@ -17,7 +17,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.SupplierResponseTest;
 import com.vpage.vpos.pojos.supplier.SupplierResponse;
 import com.vpage.vpos.pojos.supplier.Suppliers;
 import com.vpage.vpos.tools.VPOSPreferences;

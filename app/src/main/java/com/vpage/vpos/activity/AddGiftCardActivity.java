@@ -2,6 +2,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
@@ -31,6 +33,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @Fullscreen
 @EActivity(R.layout.activity_addgiftcard)
@@ -59,6 +64,9 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     boolean isNetworkAvailable = false;
 
     String giftCardNoInput="", valueInput ="",customerInput="";
@@ -72,12 +80,14 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
     GiftCard giftCard;
 
     @AfterViews
-
     public void init() {
 
         activity = AddGiftCardActivity.this;
 
         setActionBarSupport();
+
+        ButterKnife.inject(this);
+
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
 
@@ -98,8 +108,6 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
             giftCard = VPOSRestTools.getInstance().getGiftCardData(giftCardResponseString);
             setInputs();
         }
-
-
     }
 
     private void setActionBarSupport() {
@@ -109,6 +117,16 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(pageName);
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
 
@@ -149,7 +167,9 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
             if (!giftCardNoInput.isEmpty()&& !valueInput.isEmpty()) {
 
                 textError.setVisibility(View.GONE);
-                playGifView.setVisibility(View.VISIBLE);
+                //playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                submitButton.setVisibility(View.GONE);
 
                 if(pageName.equals("Update Gift Card")){
                     callGiftCardUpdateResponse(giftCard.getGift_card_id());
@@ -269,7 +289,9 @@ public class AddGiftCardActivity extends AppCompatActivity implements View.OnCli
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
     }
 
     @UiThread

@@ -42,7 +42,6 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ItemFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ItemListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
-import com.vpage.vpos.pojos.ItemResponseTest;
 import com.vpage.vpos.pojos.item.ItemResponse;
 import com.vpage.vpos.pojos.item.UpdateItemResponse;
 import com.vpage.vpos.tools.PlayGifView;
@@ -113,7 +112,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     private Handler mUiHandler = new Handler();
 
-    List<ItemResponseTest> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -227,38 +225,6 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addRecyclerView(){
-
-        list = new ArrayList<>();
-
-
-        // TODO replaced by server data after service call Response
-        for(int i=0 ;i < 5;i++){
-            ItemResponseTest itemResponse = new ItemResponseTest();
-            itemResponse.setId(String.valueOf(i));
-            if((i/2) == 0){
-                itemResponse.setBarcode("JHJKK4656");
-                itemResponse.setItemName("Soap");
-                itemResponse.setCategory("Cosmetic");
-                itemResponse.setCompanyName("Vpage");
-                itemResponse.setCostPrice("30");
-                itemResponse.setRetailPrice("25");
-                itemResponse.setQuantity("10");
-                itemResponse.setTaxPercent("5");
-                itemResponse.setAvatarUrl("");
-            }else {
-                itemResponse.setBarcode("1226VGJHS");
-                itemResponse.setItemName("Bag");
-                itemResponse.setCategory("Accessories");
-                itemResponse.setCompanyName("Vpage");
-                itemResponse.setCostPrice("40");
-                itemResponse.setRetailPrice("25");
-                itemResponse.setQuantity("15");
-                itemResponse.setTaxPercent("10");
-                itemResponse.setAvatarUrl("");
-            }
-
-            list.add(itemResponse);
-        }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -932,7 +898,5 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("ItemResponse",gson.toJson(itemResponse));
         startActivity(intent);
     }
-
-
 
 }

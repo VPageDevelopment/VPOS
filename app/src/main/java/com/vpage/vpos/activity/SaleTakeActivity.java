@@ -759,7 +759,7 @@ public class SaleTakeActivity extends AppCompatActivity implements View.OnClickL
         if (LogFlag.bLogOn)Log.d(TAG, "callSaleResponse");
         VPOSRestClient vposRestClient = new VPOSRestClient();
         saleResponse = vposRestClient.getScales();
-        if (saleResponse.getStatus().equals("true") && null != saleResponse) {
+        if (null != saleResponse && saleResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "saleResponse: " + saleResponse.toString());
             hideLoaderGifImage();
             saleResponseFinish();

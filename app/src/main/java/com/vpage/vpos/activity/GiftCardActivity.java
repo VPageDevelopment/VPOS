@@ -34,7 +34,6 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GiftCardFieldSpinnerAdapter;
 import com.vpage.vpos.adapter.GiftCardListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
-import com.vpage.vpos.pojos.GiftCardResponseTest;
 import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
 import com.vpage.vpos.pojos.giftCards.UpdateGiftCardResponse;
 import com.vpage.vpos.tools.PlayGifView;
@@ -100,7 +99,6 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
     private Handler mUiHandler = new Handler();
 
-    List<GiftCardResponseTest> list;
     List<String> spinnerList;
 
     Boolean checkedStatus = false;
@@ -175,27 +173,7 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void addRecyclerView(){
-
-        list = new ArrayList<>();
-
-        // To be replaced by server data after service call Response
-        for(int i=0 ;i < 5;i++){
-            GiftCardResponseTest giftCardResponse = new GiftCardResponseTest();
-            giftCardResponse.setId(String.valueOf(i));
-            if((i/2) == 0){
-                giftCardResponse.setFirstName("Ram");
-                giftCardResponse.setLastName("Kumar");
-                giftCardResponse.setGiftCardNumber(2);
-            }else {
-                giftCardResponse.setFirstName("Sree");
-                giftCardResponse.setLastName("Kala");
-                giftCardResponse.setGiftCardNumber(6);
-            }
-            giftCardResponse.setGiftCardValue(34.00f);
-
-            list.add(giftCardResponse);
-        }
+    private void addRecyclerView(){;
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));

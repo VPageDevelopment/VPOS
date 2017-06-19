@@ -16,7 +16,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.GiftCardResponseTest;
 import com.vpage.vpos.pojos.giftCards.GiftCard;
 import com.vpage.vpos.pojos.giftCards.GiftCardResponse;
 import com.vpage.vpos.tools.VPOSPreferences;

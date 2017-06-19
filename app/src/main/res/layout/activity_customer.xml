@@ -225,17 +225,17 @@
             android:button="@drawable/box"
            />
     </RelativeLayout>
- <!--       <android.support.v7.widget.RecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/customerRecycleView"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/square_gray_corners"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />-->
+            android:layout_marginBottom="10dp" />
 
 
-        <RelativeLayout
+<!--        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#CCC">
@@ -247,7 +247,7 @@
                 android:layout_gravity="center"
                 android:overScrollMode="never" />
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
     </LinearLayout>
     <com.github.clans.fab.FloatingActionMenu

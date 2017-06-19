@@ -2,6 +2,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -41,6 +42,7 @@ import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 @EActivity(R.layout.activity_addcustomer)
@@ -150,6 +152,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
         setActionBarSupport();
 
+        ButterKnife.inject(this);
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
 
@@ -206,6 +209,15 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
         new ActionEditText(this);
         comments.addTextChangedListener(textComments);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
 
@@ -373,8 +385,10 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 }
             }
 
-                playGifView.setVisibility(View.VISIBLE);
+               // playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
+                submitButton.setVisibility(View.GONE);
 
             if(pageName.equals("Update Customer")){
                 callCustomerUpdateResponse(customers.getCustomer_id());
@@ -382,13 +396,14 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
                 callAddCustomerResponse();
             }
         }else {
-
             setErrorMessage("Check Network Connection");
         }
     }
 
     void setErrorMessage(String errorMessage) {
-        playGifView.setVisibility(View.GONE);
+        // playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
@@ -476,7 +491,9 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+       // playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
     }
 
     @UiThread

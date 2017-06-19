@@ -244,7 +244,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void gotoCustomerView(){
-        Intent intent = new Intent(getApplicationContext(), TestActivity_.class);
+        Intent intent = new Intent(getApplicationContext(), CustomerActivity_.class);
         startActivity(intent);
     }
 

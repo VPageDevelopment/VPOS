@@ -2,6 +2,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -44,6 +46,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_addemployee)
 public class AddEmployeeActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener, OnNetworkChangeListener {
@@ -125,6 +130,9 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
     @ViewById(R.id.submitButton)
     Button submitButton;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
@@ -163,6 +171,8 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
         setActionBarSupport();
 
+
+        ButterKnife.inject(this);
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
         lastName.setOnKeyListener(this);
@@ -182,6 +192,16 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(pageName);
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
 
@@ -402,14 +422,15 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
                 return;
             }
 
-                playGifView.setVisibility(View.VISIBLE);
+                //playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                submitButton.setVisibility(View.GONE);
                 textError.setVisibility(View.GONE);
 
                callAddEmployeeResponse();
 
 
         }else {
-
             setErrorMessage("Check Network Connection");
         }
     }
@@ -417,7 +438,9 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
 
     void setErrorMessage(String errorMessage) {
-        playGifView.setVisibility(View.GONE);
+        // playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
@@ -602,7 +625,9 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        // playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
     }
 
     @UiThread

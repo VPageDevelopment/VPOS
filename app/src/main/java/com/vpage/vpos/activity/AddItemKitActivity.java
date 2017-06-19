@@ -2,6 +2,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.vpage.vpos.R;
 import com.vpage.vpos.httputils.VPOSRestClient;
@@ -33,6 +35,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_additemkit)
 public class AddItemKitActivity extends AppCompatActivity implements View.OnClickListener, OnNetworkChangeListener, View.OnKeyListener {
@@ -59,6 +64,9 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
 
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
+
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
 
     String itemKitNameInput = "",itemKitDescInput="",itemKitItemInput="";
 
@@ -92,6 +100,8 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
 
         setActionBarSupport();
 
+        ButterKnife.inject(this);
+
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
         addItem.setOnKeyListener(this);
@@ -109,6 +119,15 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
+    }
 
     private void setView(){
 
@@ -191,7 +210,9 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
                 return;
             }
 
-                playGifView.setVisibility(View.VISIBLE);
+                //playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                submitButton.setVisibility(View.GONE);
                 textError.setVisibility(View.GONE);
 
             if(pageName.equals("Update Item Kit")){
@@ -200,7 +221,6 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
                 callAddItemKitResponse();
             }
 
-
         }else {
             setErrorMessage("Check Network Connection");
         }
@@ -208,7 +228,9 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
 
 
     void setErrorMessage(String errorMessage) {
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
@@ -294,7 +316,9 @@ public class AddItemKitActivity extends AppCompatActivity implements View.OnClic
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+       // playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
     }
 
     @UiThread
