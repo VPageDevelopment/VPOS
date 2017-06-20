@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -47,15 +49,16 @@ import com.vpage.vpos.pojos.customer.CustomersResponse;
 import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.RecyclerTouchListener;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.callBack.CheckedCallBack;
 import com.vpage.vpos.tools.callBack.EditCallBack;
 import com.vpage.vpos.tools.callBack.FilterCallBack;
+import com.vpage.vpos.tools.callBack.RecyclerTouchCallBack;
 import com.vpage.vpos.tools.callBack.SendSmsCallBack;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
@@ -140,6 +143,8 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     SignInRequest signInRequest;
     CustomersResponse customersResponse;
+
+    private int mScrollOffset = 4;
 
     int itemCount=0;
 
@@ -335,11 +340,41 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
     private void addRecyclerView(){
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         listAdapter = new ListAdapter(activity,customersResponse);
         listAdapter.setEditCallBack(this);
         listAdapter.setCheckedCallBack(this);
         listAdapter.setSendSmsCallBack(this);
+        recyclerView.setAdapter(listAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (Math.abs(dy) > mScrollOffset) {
+                    if (dy > 0) {
+                        floatingActionMenu.setVisibility(View.GONE);
+                    } else {
+                        floatingActionMenu.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
 
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchCallBack() {
+            @Override
+            public void onClick(View view, int position) {
+
+                if (LogFlag.bLogOn)Log.d(TAG, "selected onClick: " + position);
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                if (LogFlag.bLogOn)Log.d(TAG, "recyclerView onLongClick: " + position);
+            }
+        }));
     }
 
     private void addFabView(){

@@ -87,16 +87,17 @@ public class SaleListAdapter extends RecyclerView.Adapter<SaleListAdapter.ViewHo
         if (null != jsonObjectData) {
             if (LogFlag.bLogOn) Log.d(TAG,"jsonObjectData: "+jsonObjectData);
             getJSONData(jsonObjectData,holder);
-        }
+        }else {
 
-        holder.IdText.setVisibility(View.VISIBLE);
-        holder.timeText.setVisibility(View.VISIBLE);
-        holder.customerText.setVisibility(View.VISIBLE);
-        holder.amountDueText.setVisibility(View.VISIBLE);
-        holder.amountTenText.setVisibility(View.VISIBLE);
-        holder.changeDueText.setVisibility(View.VISIBLE);
-        holder.typeText.setVisibility(View.VISIBLE);
-        holder.invoiceText.setVisibility(View.VISIBLE);
+            holder.IdText.setVisibility(View.VISIBLE);
+            holder.timeText.setVisibility(View.VISIBLE);
+            holder.customerText.setVisibility(View.VISIBLE);
+            holder.amountDueText.setVisibility(View.VISIBLE);
+            holder.amountTenText.setVisibility(View.VISIBLE);
+            holder.changeDueText.setVisibility(View.VISIBLE);
+            holder.typeText.setVisibility(View.VISIBLE);
+            holder.invoiceText.setVisibility(View.VISIBLE);
+        }
 
 
         holder.IdText.setText("ID: " + saleResponse.getItems()[position].getSales_id());

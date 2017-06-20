@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -32,6 +33,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
@@ -60,6 +62,9 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_item)
 public class ItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, CheckedCallBack, ItemCallBack, AdapterView.OnItemClickListener {
@@ -99,6 +104,9 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     EditText fromDate,toDate;
 
     FloatingActionButton deleteFAB,bulkEditFAB,generateBarcodeFAB;
@@ -134,6 +142,10 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
         setActionBarSupport();
 
+        ButterKnife.inject(this);
+
+        // playGifView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
         callItemResponse();
     }
 
@@ -144,6 +156,15 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Items");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
     void itemCountCheck(){
@@ -846,7 +867,8 @@ public class ItemActivity extends AppCompatActivity implements View.OnClickListe
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+       // playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @UiThread

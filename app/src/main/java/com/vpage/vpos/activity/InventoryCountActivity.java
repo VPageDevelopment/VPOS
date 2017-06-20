@@ -3,6 +3,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,11 +20,15 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.InventoryTrackedListAdapter;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_inventorycount)
 public class InventoryCountActivity extends AppCompatActivity implements View.OnClickListener,OnNetworkChangeListener, AdapterView.OnItemSelectedListener {
@@ -50,6 +56,9 @@ public class InventoryCountActivity extends AppCompatActivity implements View.On
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     @ViewById(R.id.closeButton)
     Button closeButton;
 
@@ -72,6 +81,9 @@ public class InventoryCountActivity extends AppCompatActivity implements View.On
         setActionBarSupport();
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
+
+        ButterKnife.inject(this);
+
         spinnerStock.setOnItemSelectedListener(this);
 
         closeButton.setOnClickListener(this);
@@ -84,6 +96,15 @@ public class InventoryCountActivity extends AppCompatActivity implements View.On
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Inventory Count Details");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
 
@@ -105,13 +126,15 @@ public class InventoryCountActivity extends AppCompatActivity implements View.On
         getInputs();
         if(isNetworkAvailable){
 
-            playGifView.setVisibility(View.VISIBLE);
+            //playGifView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
             // To Do service call
             gotoItemView();
 
         }else {
 
-            playGifView.setVisibility(View.GONE);
+            //playGifView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
             Toast.makeText(getApplicationContext(), "Check Network Connection", Toast.LENGTH_SHORT).show();
         }
     }

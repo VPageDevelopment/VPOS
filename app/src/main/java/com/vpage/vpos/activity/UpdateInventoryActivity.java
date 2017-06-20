@@ -2,6 +2,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.vpage.vpos.R;
@@ -31,6 +33,9 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_updateinventory)
 public class UpdateInventoryActivity extends AppCompatActivity implements View.OnClickListener,OnNetworkChangeListener, AdapterView.OnItemSelectedListener {
@@ -64,6 +69,9 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     @ViewById(R.id.submitButton)
     Button submitButton;
 
@@ -90,6 +98,8 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
         setView();
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
+        ButterKnife.inject(this);
+
         spinnerStock.setOnItemSelectedListener(this);
 
         submitButton.setOnClickListener(this);
@@ -110,6 +120,15 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Update Inventory");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
     private void setView(){
@@ -166,7 +185,8 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
                 return;
             }
 
-            playGifView.setVisibility(View.VISIBLE);
+            //playGifView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
             textError.setVisibility(View.GONE);
 
             callItemUpdateResponse(items.getItem_id());
@@ -178,7 +198,8 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
     }
 
     void setErrorMessage(String errorMessage) {
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
@@ -283,7 +304,8 @@ public class UpdateInventoryActivity extends AppCompatActivity implements View.O
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
 

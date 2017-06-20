@@ -8,7 +8,7 @@ public class SaleResponse {
 
     private String status_code;
 
-    private Sales[] items;
+    private Sales[] sales;
 
     public String getStatus() {
         return status;
@@ -27,11 +27,11 @@ public class SaleResponse {
     }
 
     public Sales[] getItems() {
-        return items;
+        return sales;
     }
 
     public void setItems(Sales[] items) {
-        this.items = items;
+        this.sales = items;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class SaleResponse {
         return "SaleResponse{" +
                 "status='" + status + '\'' +
                 ", status_code='" + status_code + '\'' +
-                ", items=" + Arrays.toString(items) +
+                ", items=" + Arrays.toString(sales) +
                 '}';
     }
 }

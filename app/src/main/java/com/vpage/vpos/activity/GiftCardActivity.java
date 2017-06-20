@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +54,9 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @Fullscreen
 @EActivity(R.layout.activity_giftcard)
@@ -89,6 +94,9 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     FloatingActionButton deleteFAB;
 
     String spinnerFormatData = "";
@@ -117,6 +125,10 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
         setActionBarSupport();
 
+        ButterKnife.inject(this);
+
+       // playGifView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
         callGiftCardResponse();
     }
 
@@ -127,6 +139,15 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Gift Card");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
     void itemCountCheck(){
@@ -478,7 +499,8 @@ public class GiftCardActivity extends AppCompatActivity implements View.OnClickL
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @UiThread

@@ -647,7 +647,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         if (LogFlag.bLogOn)Log.d(TAG, "callEmployeeResponse");
         VPOSRestClient vposRestClient = new VPOSRestClient();
         employeeResponse = vposRestClient.getEmployee();
-        if (employeeResponse.getStatus().equals("true") && null != employeeResponse) {
+        if (null != employeeResponse && employeeResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "employeeResponse: " + employeeResponse.toString());
             hideLoaderGifImage();
             employeeResponseFinish();

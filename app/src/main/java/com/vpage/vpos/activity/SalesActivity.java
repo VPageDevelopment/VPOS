@@ -3,6 +3,7 @@ package com.vpage.vpos.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
@@ -34,6 +36,9 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_sales)
 public class SalesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
@@ -70,6 +75,9 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     AddSaleRequest addSaleRequest;
 
     AutoCompleteTextView autoTextCustomer;
@@ -95,8 +103,13 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         Intent callingIntent=getIntent();
 
         setActionBarSupport();
+        ButterKnife.inject(this);
+
         setView();
 
+
+        // playGifView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
         callAddSaleResponse();
 
     }
@@ -108,6 +121,15 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Sales");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
     private void setView(){
@@ -345,7 +367,8 @@ public class SalesActivity extends AppCompatActivity implements AdapterView.OnIt
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+       // playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @UiThread

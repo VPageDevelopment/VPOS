@@ -67,7 +67,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         for(int i=0 ;i < customerResponse.getCustomers().length;i++){
             customerResponseList.add(this.customerResponse.getCustomers()[i]);
         }
-
+        if (LogFlag.bLogOn) Log.d(TAG,"customerResponse: "+customerResponse.toString());
         responseList = new ArrayList<>();
         responseList.addAll(customerResponseList);
         checkBox_header = (CheckBox) activity.findViewById(R.id.checkBox);
@@ -102,7 +102,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         final String name = customerResponseList.get(position).getFirst_name();
 
         jsonObjectData = VPOSPreferences.get(AppConstant.cFilterPreference);
-        holder.smsButton.setVisibility(View.GONE);
+        holder.smsButton.setVisibility(View.VISIBLE);
 
 
         if (null != jsonObjectData) {

@@ -2,6 +2,7 @@ package com.vpage.vpos.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.vpage.vpos.R;
@@ -32,6 +34,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_editmultipleitem)
 public class EditMultipleItemActivity extends AppCompatActivity implements View.OnClickListener, OnNetworkChangeListener,AdapterView.OnItemSelectedListener {
@@ -89,6 +94,9 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
 
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
+
     String itemNameInput = "", categoryInput = "", costPriceInput = "", retailPriceInput = "", spinnerSupplierData = "",
             reorderLevelInput = "",spinnerAllowAltData = "",spinnerSerialNoData="";
 
@@ -111,6 +119,8 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
         activity = EditMultipleItemActivity.this;
 
         setActionBarSupport();
+
+        ButterKnife.inject(this);
 
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
@@ -138,6 +148,16 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Editing Multiple Items");
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
 
@@ -220,7 +240,8 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
             if (!itemNameInput.isEmpty() && !categoryInput.isEmpty() && !costPriceInput.isEmpty() &&
                     !retailPriceInput.isEmpty() && !reorderLevelInput.isEmpty()) {
 
-                playGifView.setVisibility(View.VISIBLE);
+                //playGifView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
                 textError.setVisibility(View.GONE);
 
                 for(int i =0; i< selectedPosition.length;i++){
@@ -240,7 +261,8 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
 
 
     void setErrorMessage(String errorMessage) {
-        playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
     }
@@ -358,7 +380,8 @@ public class EditMultipleItemActivity extends AppCompatActivity implements View.
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
 
