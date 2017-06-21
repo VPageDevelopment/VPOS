@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <ProgressBar
+            android:id="@+id/google_progress"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/contentLayout">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/noText"
+                    android:text="Field in Red are Required"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/companyName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/home"
+                        android:drawablePadding="10dp"
+                        android:padding="10dp"
+                        android:inputType="text"
+                        android:hint="company Name"
+                        android:textColorHint="@color/Red"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+
+                    android:id="@+id/avatarLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:padding="10dp"
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/common_textSize"
+                        android:textStyle="bold"
+                        android:gravity="left"
+                        android:text="Company Logo" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:id="@+id/companyImageView"
+                        android:scaleType="fitXY"
+                        android:background="@drawable/square_gray_corners">
+
+                    </ImageView>
+
+                </LinearLayout>
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/selectButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:gravity="center|center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    fbutton:buttonColor="@color/common_button_color"
+                    fbutton:shadowColor="@color/LiteGray"
+                    fbutton:shadowEnabled="true"
+                    fbutton:shadowHeight="3dp"
+                    android:text="Select Image"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:textColor="@color/button_text_color"
+                    android:background="@android:color/transparent"
+                    android:textSize="@dimen/common_textSize">
+                </info.hoang8f.widget.FButton>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+
+                    <com.vpage.vpos.tools.ActionEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:maxLines="10"
+                        android:id="@+id/companyAddress"
+                        android:isScrollContainer="true"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:hint="Company Address"
+                        android:inputType="textAutoCorrect|textCapSentences|textMultiLine" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/DarkGray"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/website"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:drawableLeft="@drawable/globe"
+                        android:drawablePadding="10dp"
+                        android:inputType="textEmailAddress"
+                        android:hint="Website"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/DarkGray"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:drawableLeft="@drawable/email"
+                        android:drawablePadding="10dp"
+                        android:inputType="textEmailAddress"
+                        android:hint="email"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/telephone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/telephohe"
+                        android:drawablePadding="10dp"
+                        android:padding="10dp"
+                        android:inputType="phone"
+                        android:hint="Telephone"
+                        android:imeOptions="actionGo"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/DarkGray"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/fax"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/telephohe"
+                        android:drawablePadding="10dp"
+                        android:padding="10dp"
+                        android:inputType="number"
+                        android:hint="Fax"
+                        android:imeOptions="actionGo"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+
+                    <com.vpage.vpos.tools.ActionEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:maxLines="10"
+                        android:id="@+id/returnPolicy"
+                        android:isScrollContainer="true"
+                        android:imeOptions="actionGo"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:hint="Return Policy"
+                        android:inputType="textAutoCorrect|textCapSentences|textMultiLine" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:id="@+id/textError"
+                    android:textColor="@color/Red"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"/>
+
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/submitButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:gravity="center|center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    fbutton:buttonColor="@color/common_button_color"
+                    fbutton:shadowColor="@color/LiteGray"
+                    fbutton:shadowEnabled="true"
+                    fbutton:shadowHeight="3dp"
+                    android:text="Submit"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:textColor="@color/button_text_color"
+                    android:background="@android:color/transparent"
+                    android:textSize="@dimen/common_textSize">
+                </info.hoang8f.widget.FButton>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </FrameLayout>
+
+</FrameLayout>
