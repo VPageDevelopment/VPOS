@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.GridImageAdapter;
+import com.vpage.vpos.pojos.SignInRequest;
 import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.tools.VPOSPreferences;
 import com.vpage.vpos.tools.VPOSTools;
@@ -48,7 +49,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     GridImageAdapter gridImageAdapter;
     TypedArray typedArrayImage;
 
-    SignInResponse signInResponse;
+    SignInRequest signInRequest;
 
     Activity activity;
 
@@ -63,7 +64,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         String userData = callingIntent.getStringExtra("ActiveUser");
 
-        signInResponse = VPOSTools.getInstance().getActiveUserData(userData);
+        signInRequest = VPOSTools.getInstance().getActiveUserData(userData);
 
         setGridView();
 
@@ -85,7 +86,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         View hView =  navigationView.inflateHeaderView(R.layout.nav_header_home);
         TextView textViewName = (TextView)hView.findViewById(R.id.textViewName);
-        textViewName.setText(signInResponse.getUsername().toString());
+        textViewName.setText(signInRequest.getUsername().toString());
         navigationView.setNavigationItemSelectedListener(this);
     }
 

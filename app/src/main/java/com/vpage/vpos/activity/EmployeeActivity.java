@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -29,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +62,8 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 @EActivity(R.layout.activity_employee)
 public class EmployeeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, FilterCallBack, EditCallBack, CheckedCallBack, View.OnKeyListener,OnNetworkChangeListener, SendSmsCallBack {
@@ -95,6 +99,9 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
 
     @ViewById(R.id.viewGif)
     PlayGifView playGifView;
+
+    @InjectView(R.id.google_progress)
+    ProgressBar mProgressBar;
 
     FloatingActionButton deleteFAB,emailFAB;
 
@@ -138,6 +145,10 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
 
+        ButterKnife.inject(this);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        //playGifView.setVisibility(View.VISIBLE);
         callEmployeeResponse();
 
     }
@@ -149,6 +160,15 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Employees");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /**Dynamically*/
+        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
+        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
+        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
     @Override
@@ -681,14 +701,13 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
             employeeContent.setVisibility(View.VISIBLE);
             floatingActionMenu.setVisibility(View.VISIBLE);
             addEmployeeButton.setOnClickListener(this);
-
-            callEmployeeResponse();
         }
     }
 
     @UiThread
     public void hideLoaderGifImage(){
-        playGifView.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        //playGifView.setVisibility(View.GONE);
     }
 
     @UiThread

@@ -214,11 +214,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnKeyListen
 
         Gson gson = new GsonBuilder().create();
         // Keep the login
-        VPOSPreferences.save("userdata", gson.toJson(VPOSTools.getInstance().getActiveUser(signInResponse)));
+        VPOSPreferences.save("userdata", gson.toJson(VPOSTools.getInstance().getActiveUser(signInRequest)));
         VPOSPreferences.save("isLoggedIn", "true");
 
         Intent intent = new Intent(getApplicationContext(), HomeActivity_.class);
-        intent.putExtra("ActiveUser", gson.toJson(VPOSTools.getInstance().getActiveUser(signInResponse)));
+        intent.putExtra("ActiveUser", gson.toJson(VPOSTools.getInstance().getActiveUser(signInRequest)));
         startActivity(intent);
         finish();
     }

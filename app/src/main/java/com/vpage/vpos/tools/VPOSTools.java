@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vpage.vpos.R;
+import com.vpage.vpos.pojos.SignInRequest;
 import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.tools.utils.LogFlag;
 import org.json.JSONException;
@@ -66,17 +67,18 @@ public class VPOSTools {
         return jsonObject.toString();
     }
 
-    public static SignInResponse getActiveUser(SignInResponse signInResponse) {
-        SignInResponse activeUser = new SignInResponse();
-        activeUser.setUsername(signInResponse.getUsername());
+    public static SignInRequest getActiveUser(SignInRequest signInRequest) {
+        SignInRequest activeUser = new SignInRequest();
+        activeUser.setUsername(signInRequest.getUsername());
+        activeUser.setPassword(signInRequest.getPassword());
 
         return activeUser;
     }
 
-    public SignInResponse getActiveUserData(String jsonString) {
+    public SignInRequest getActiveUserData(String jsonString) {
         //    if (LogFlag.bLogOn) Log.d(TAG, jsonString);
         Gson gson = new GsonBuilder().create();
-        SignInResponse activeUser = gson.fromJson(jsonString, SignInResponse.class);
+        SignInRequest activeUser = gson.fromJson(jsonString, SignInRequest.class);
         return activeUser;
     }
 

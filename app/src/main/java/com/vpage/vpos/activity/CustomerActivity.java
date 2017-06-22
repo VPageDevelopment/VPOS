@@ -42,8 +42,6 @@ import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.FieldSpinnerAdapter;
 import com.vpage.vpos.adapter.ListAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
-import com.vpage.vpos.pojos.SignInRequest;
-import com.vpage.vpos.pojos.SignInResponse;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.pojos.customer.CustomersResponse;
 import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
@@ -141,7 +139,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     Activity activity;
     String pageName ="Customer";
 
-    SignInRequest signInRequest;
     CustomersResponse customersResponse;
 
     private int mScrollOffset = 4;
@@ -159,8 +156,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
 
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
-
-
 
         mProgressBar.setVisibility(View.VISIBLE);
         //playGifView.setVisibility(View.VISIBLE);
@@ -227,29 +222,14 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @Background
     void callCustomerResponse() {
         if (LogFlag.bLogOn)Log.d(TAG, "callCustomerResponse");
-        setSignInRequestRequestData();
-
-        VPOSRestClient vposRestClient = new VPOSRestClient();
-        SignInResponse signInResponse = vposRestClient.getSignInResponse(signInRequest);
-        if(signInResponse != null){
-            if (LogFlag.bLogOn)Log.d(TAG, "signInResponse: " + signInResponse.toString());
-            if(signInResponse.getStatus().equals("ok")){
-                customersResponse = vposRestClient.getCustomer();
-                if (null != customersResponse) {
-                    if (LogFlag.bLogOn)Log.d(TAG, "customersResponse: " + customersResponse.toString());
-                    hideLoaderGifImage();
-                    customersResponseFinish();
-                } else {
-                    hideLoaderGifImage();
-                    showToastErrorMsg("CustomersResponse failed");
-                }
-            }else {
-                hideLoaderGifImage();
-                showToastErrorMsg(signInResponse.getStatus());
-            }
-        }else {
+        customersResponse = new VPOSRestClient().getCustomer();
+        if (null != customersResponse) {
+            if (LogFlag.bLogOn)Log.d(TAG, "customersResponse: " + customersResponse.toString());
             hideLoaderGifImage();
-            showToastErrorMsg("signInResponse is null");
+            customersResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("CustomersResponse failed");
         }
     }
 
@@ -291,14 +271,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         addRecyclerView();
         addItemsOnSpinner();
         addFabView();
-    }
-
-    void  setSignInRequestRequestData(){
-
-        signInRequest = new SignInRequest();
-        signInRequest.setUsername(getResources().getString(R.string.userName));
-        signInRequest.setPassword(getResources().getString(R.string.password));
-
     }
 
     private void addItemsOnSpinner() {
