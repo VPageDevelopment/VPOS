@@ -36,12 +36,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.EmployeeListAdapter;
 import com.vpage.vpos.adapter.FieldSpinnerAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
+import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
 import com.vpage.vpos.tools.RecyclerTouchListener;
@@ -439,8 +442,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     public void onEditSelected(int position) {
         // call back from recycler  adapter for edit employee details
         if (LogFlag.bLogOn)Log.d(TAG, "onEditSelected: " + position);
-        // To Do service response data to pass
-        gotoAddEmployeeView("Update Employee");
+        gotoUpdateEmployeeView("Update Employee",position);
     }
 
     @Override
@@ -529,7 +531,7 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
                 try {
                     for(int i = 0;i <checkedPositionArrayList.size();i++){
                         if(checkedPositionArrayList.get(i)){
-                           // callCustomerDeleteResponse(employeeResponse.getEmployees()[i].getEmployee_id());
+                            callEmployeeDeleteResponse(employeeResponse.getEmployees()[i].getEmployee_id());
                         }
                     }
                 }catch (IndexOutOfBoundsException e){
@@ -677,6 +679,21 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @Background
+    void callEmployeeDeleteResponse(String employeeId) {
+
+        if (LogFlag.bLogOn)Log.d(TAG, "callEmployeeDeleteResponse");
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        UpdateEmployeeResponse updateEmployeeResponse = vposRestClient.deleteEmployee(employeeId);
+        if (null != updateEmployeeResponse && updateEmployeeResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateEmployeeResponse: " + updateEmployeeResponse.toString());
+            callEmployeeResponse();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateEmployeeResponse failed");
+        }
+    }
+
     @UiThread
     public void employeeResponseFinish(){
 
@@ -736,6 +753,14 @@ public class EmployeeActivity extends AppCompatActivity implements View.OnClickL
     private void gotoAddEmployeeView(String pageName){
         Intent intent = new Intent(getApplicationContext(), AddEmployeeActivity_.class);
         intent.putExtra("PageName",pageName);
+        startActivity(intent);
+    }
+
+    private void gotoUpdateEmployeeView(String pageName,int employeePosition){
+        Gson gson = new GsonBuilder().create();
+        Intent intent = new Intent(getApplicationContext(), AddEmployeeActivity_.class);
+        intent.putExtra("PageName",pageName);
+        intent.putExtra("employeeData",gson.toJson(employeeResponse.getEmployees()[employeePosition]));
         startActivity(intent);
     }
 

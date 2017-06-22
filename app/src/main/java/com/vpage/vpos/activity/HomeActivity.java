@@ -301,7 +301,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void gotoStoreConfigView(){
-        Intent intent = new Intent(getApplicationContext(), StoreConfigActivity_.class);
+        Intent intent = new Intent(getApplicationContext(), SampleScroll_.class);
         startActivity(intent);
     }
 

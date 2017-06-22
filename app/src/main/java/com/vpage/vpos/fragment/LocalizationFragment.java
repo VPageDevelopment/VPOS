@@ -40,8 +40,6 @@ public class LocalizationFragment extends Fragment implements OnNetworkChangeLis
     @ViewById(R.id.submitButton)
     Button submitButton;
 
-    @InjectView(R.id.google_progress)
-    ProgressBar mProgressBar;
 
 
     boolean isNetworkAvailable = false;
@@ -60,15 +58,6 @@ public class LocalizationFragment extends Fragment implements OnNetworkChangeLis
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        /**Dynamically*/
-        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
-        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(getActivity()));
-        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
     }
 
     @Override

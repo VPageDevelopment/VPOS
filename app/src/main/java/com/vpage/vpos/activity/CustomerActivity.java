@@ -242,7 +242,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
         UpdateCustomersResponse updateCustomersResponse = vposRestClient.deleteCustomer(customerId);
         if (null != updateCustomersResponse && updateCustomersResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "updateCustomersResponse: " + updateCustomersResponse.toString());
-            hideLoaderGifImage();
             callCustomerResponse();
         } else {
             hideLoaderGifImage();

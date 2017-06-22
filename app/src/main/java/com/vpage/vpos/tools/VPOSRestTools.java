@@ -9,6 +9,7 @@ import com.vpage.vpos.pojos.customer.UpdateCustomersResponse;
 import com.vpage.vpos.pojos.customer.addCustomer.AddCustomerResponse;
 import com.vpage.vpos.pojos.employee.EmployeeLoginResponse;
 import com.vpage.vpos.pojos.employee.EmployeeResponse;
+import com.vpage.vpos.pojos.employee.Employees;
 import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
 import com.vpage.vpos.pojos.giftCards.GiftCard;
@@ -105,6 +106,12 @@ public class VPOSRestTools {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(jsonString, UpdateEmployeeResponse.class);
     }
+
+    public Employees getEmployeeData(String jsonString) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(jsonString, Employees.class);
+    }
+
 
     public ItemResponse getItemResponseData(String jsonString) {
         Gson gson = new GsonBuilder().create();

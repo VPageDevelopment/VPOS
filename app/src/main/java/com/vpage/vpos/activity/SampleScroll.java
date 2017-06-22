@@ -5,19 +5,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
+import android.view.MenuItem;
 import com.vpage.vpos.R;
 import com.vpage.vpos.adapter.ViewPagerAdapter;
 import com.vpage.vpos.fragment.InformationFragment_;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-
-/**
- * Created by admin on 6/20/2017.
- */
-
 
 @EActivity(R.layout.activity_samplescroll)
 public class SampleScroll extends AppCompatActivity {
@@ -67,6 +61,17 @@ public class SampleScroll extends AppCompatActivity {
         adapter.addFrag(new InformationFragment_(), moduleNameArray[4]);
         adapter.addFrag(new InformationFragment_(), moduleNameArray[5]);
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

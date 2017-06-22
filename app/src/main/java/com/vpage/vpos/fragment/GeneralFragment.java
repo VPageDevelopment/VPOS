@@ -37,9 +37,6 @@ public class GeneralFragment extends Fragment implements OnNetworkChangeListener
     @ViewById(R.id.submitButton)
     Button submitButton;
 
-    @InjectView(R.id.google_progress)
-    ProgressBar mProgressBar;
-
 
     boolean isNetworkAvailable = false;
 
@@ -59,14 +56,6 @@ public class GeneralFragment extends Fragment implements OnNetworkChangeListener
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        /**Dynamically*/
-        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
-        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(getActivity()));
-        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
-    }
 
     @Override
     public void onChange(String status) {

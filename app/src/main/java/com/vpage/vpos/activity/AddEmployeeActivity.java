@@ -1,6 +1,7 @@
 package com.vpage.vpos.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.support.design.widget.TabLayout;
@@ -14,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -27,11 +29,14 @@ import com.vpage.vpos.adapter.EmpCheckBoxExpandableListAdapter;
 import com.vpage.vpos.adapter.ExpListViewAdapter;
 import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.pojos.employee.Employees;
+import com.vpage.vpos.pojos.employee.UpdateEmployeeResponse;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeRequest;
 import com.vpage.vpos.pojos.employee.addEmployee.AddEmployeeResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.PlayGifView;
+import com.vpage.vpos.tools.VPOSRestTools;
 import com.vpage.vpos.tools.VTools;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
@@ -158,6 +163,8 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
     List<String> listDataHeader;
     Map<String, List<String>> listDataChild;
 
+
+    Employees employees;
     AddEmployeeRequest addEmployeeRequest;
 
     @AfterViews
@@ -181,6 +188,14 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         radioButtonFemale.setOnClickListener(this);
         submitButton.setOnClickListener(this);
 
+        if(pageName.equals("Update Employee")){
+
+            String employeeResponseString = callingIntent.getStringExtra("employeeData");
+
+            employees = VPOSRestTools.getInstance().getEmployeeData(employeeResponseString);
+            setInputs();
+        }
+
         setView();
         setExpandableListViewData();
     }
@@ -202,8 +217,50 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
         mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(activity));
         mProgressBar.getIndeterminateDrawable().setBounds(bounds);
+
+        firstName.requestFocus();
+
+        firstName.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                InputMethodManager keyboard = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.hideSoftInputFromWindow(firstName.getWindowToken(), 0);
+            }
+        },200);
     }
 
+    void setInputs(){
+
+        firstName.setText(employees.getFirst_name());
+        lastName.setText(employees.getLast_name());
+        phoneNumber.setText(employees.getPhone_number());
+
+        email.setText(employees.getEmail());
+        addressLine1.setText(employees.getAddress_one());
+        addressLine2.setText(employees.getAddress_two());
+        city.setText(employees.getCity());
+        state.setText(employees.getState());
+        zip.setText(employees.getZip());
+        country.setText(employees.getCountry());
+        comments.setText(employees.getComments());
+        String genderSelectedData = employees.getGender();
+        if(genderSelectedData.equals("M")){
+            genderSelected = "Male";
+            radioButtonMale.setChecked(true);
+            radioButtonFemale.setChecked(false);
+        }else {
+
+            genderSelected = "Female";
+            radioButtonMale.setChecked(false);
+            radioButtonFemale.setChecked(true);
+        }
+
+        userName.setText(employees.getUsername());
+        password.setText(employees.getPassword());
+        confPassword.setText(employees.getPassword());
+
+    }
 
     private void setView(){
         tabLayout.addTab(tabLayout.newTab().setText("Information"));
@@ -359,6 +416,10 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         countryInput = country.getText().toString();
         commentsInput = comments.getText().toString();
 
+        userNameInput = userName.getText().toString();
+        passwordWordInput = password.getText().toString();
+        confPasswordWordInput = confPassword.getText().toString();
+
     }
 
     void validateInput(){
@@ -427,7 +488,11 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
                 submitButton.setVisibility(View.GONE);
                 textError.setVisibility(View.GONE);
 
-               callAddEmployeeResponse();
+            if(pageName.equals("Update Employee")){
+                callEmployeeUpdateResponse(employees.getEmployee_id());
+            }else {
+                callAddEmployeeResponse();
+            }
 
 
         }else {
@@ -621,6 +686,24 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
     public void addEmployeeResponseFinish(){
         gotoEmployeeView();
 
+    }
+
+    @Background
+    void callEmployeeUpdateResponse(String employeeId) {
+        if (LogFlag.bLogOn)Log.d(TAG, "callEmployeeUpdateResponse");
+        setAddEmployeeRequestData();
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        vposRestClient.setAddEmployeeParams(addEmployeeRequest);
+        UpdateEmployeeResponse updateEmployeeResponse = vposRestClient.updateEmployee(employeeId);
+        if (null != updateEmployeeResponse && updateEmployeeResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "updateEmployeeResponse: " + updateEmployeeResponse.toString());
+            hideLoaderGifImage();
+            addEmployeeResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("updateEmployeeResponse failed");
+        }
     }
 
     @UiThread

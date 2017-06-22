@@ -137,7 +137,7 @@
                 android:value=".activity.HomeActivity_" />
         </activity>
         <activity
-            android:name=".activity.StoreConfigActivity_"
+            android:name=".activity.SampleScroll_"
             android:screenOrientation="portrait"
             />
 

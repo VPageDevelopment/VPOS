@@ -1,8 +1,8 @@
 package com.vpage.vpos.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -12,12 +12,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
 import com.vpage.vpos.R;
 import com.vpage.vpos.pojos.ValidationStatus;
@@ -28,17 +27,13 @@ import com.vpage.vpos.tools.utils.AppConstant;
 import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-
 import java.io.IOException;
-
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 @EFragment(R.layout.fragment_information)
 public class InformationFragment extends Fragment implements OnNetworkChangeListener, View.OnClickListener, View.OnKeyListener {
@@ -78,8 +73,6 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
     @ViewById(R.id.submitButton)
     Button submitButton;
 
-    @InjectView(R.id.google_progress)
-    ProgressBar mProgressBar;
 
     String companyNameInput = "", companyAddressInput = "",returnPolicyInput="",phoneNumberInput="",imagePath = "";
 
@@ -97,7 +90,7 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
     public void onInitView() {
 
 
-        ButterKnife.inject(getActivity());
+        ButterKnife.inject(this.getActivity());
         checkInternetStatus();
         NetworkUtil.setOnNetworkChangeListener(this);
 
@@ -105,18 +98,25 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
         selectButton.setOnClickListener(this);
         submitButton.setOnClickListener(this);
 
-        mProgressBar.setVisibility(View.VISIBLE);
+       // mProgressBar.setVisibility(View.VISIBLE);
         setView();
 
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-        /**Dynamically*/
-        Rect bounds = mProgressBar.getIndeterminateDrawable().getBounds();
-        mProgressBar.setIndeterminateDrawable(VTools.getProgressDrawable(getActivity()));
-        mProgressBar.getIndeterminateDrawable().setBounds(bounds);
+        companyName.requestFocus();
+
+        companyName.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                InputMethodManager keyboard = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.hideSoftInputFromWindow(companyName.getWindowToken(), 0);
+            }
+        },200);
     }
 
     @Override
@@ -186,7 +186,7 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
 
 
     void validateInput(){
-        mProgressBar.setVisibility(View.VISIBLE);
+        //mProgressBar.setVisibility(View.VISIBLE);
         if(isNetworkAvailable){
 
             companyNameInput = companyName.getText().toString();
@@ -214,7 +214,7 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
                 setErrorMessage("Fill all Required Input");
             }
 
-            mProgressBar.setVisibility(View.VISIBLE);
+           // mProgressBar.setVisibility(View.VISIBLE);
             textError.setVisibility(View.GONE);
             submitButton.setVisibility(View.GONE);
 
@@ -224,7 +224,7 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
     }
 
     void setErrorMessage(String errorMessage) {
-        mProgressBar.setVisibility(View.GONE);
+        //mProgressBar.setVisibility(View.GONE);
         submitButton.setVisibility(View.VISIBLE);
         textError.setVisibility(View.VISIBLE);
         textError.setText(errorMessage);
