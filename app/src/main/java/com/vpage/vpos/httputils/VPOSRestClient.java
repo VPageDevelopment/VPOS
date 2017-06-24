@@ -937,7 +937,7 @@ public class VPOSRestClient {
     }
 
 
-    public StoreConfigResponse getStoreConfig() {
+    public StoreConfigResponse getStoreConfigInfo() {
 
         String storeConfigUrl = VPOSApplication.getContext().getResources().getString(R.string.store_config);
 

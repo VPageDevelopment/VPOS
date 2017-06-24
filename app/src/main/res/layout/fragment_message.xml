@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp">
+
+        <ProgressBar
+            android:id="@+id/google_progress"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/contentLayout">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/noText"
+                    android:text="Field in Red are Required"
+                    android:textColor="@color/Black"
+                    android:gravity="center|center_horizontal"
+                    android:textSize="@dimen/common_textSize"
+                    />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/userName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/home"
+                        android:drawablePadding="10dp"
+                        android:padding="10dp"
+                        android:inputType="text"
+                        android:hint="SMS API User Name"
+                        android:textColorHint="@color/Red"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/home"
+                        android:drawablePadding="10dp"
+                        android:padding="10dp"
+                        android:inputType="text"
+                        android:hint="SMS API Password"
+                        android:textColorHint="@color/Red"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/Red"
+                    android:layout_marginTop="10dp">
+                    <EditText
+                        android:id="@+id/senderId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/home"
+                        android:drawablePadding="10dp"
+                        android:padding="10dp"
+                        android:inputType="text"
+                        android:hint="SMS API SenderId"
+                        android:textColorHint="@color/Red"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:singleLine="true"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/DarkGray"
+                    android:layout_marginTop="10dp">
+
+                    <com.vpage.vpos.tools.ActionEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:maxLines="10"
+                        android:id="@+id/message"
+                        android:isScrollContainer="true"
+                        android:imeOptions="actionGo"
+                        android:textColor="@color/Black"
+                        android:gravity="left|center_vertical"
+                        android:textSize="@dimen/common_textSize"
+                        android:hint="Save Text Message"
+                        android:inputType="textAutoCorrect|textCapSentences|textMultiLine" />
+                </android.support.design.widget.TextInputLayout>
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:id="@+id/textError"
+                    android:textColor="@color/Red"
+                    android:gravity="left|center_vertical"
+                    android:textSize="@dimen/common_textSize"/>
+
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/submitButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:gravity="center|center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    fbutton:buttonColor="@color/common_button_color"
+                    fbutton:shadowColor="@color/LiteGray"
+                    fbutton:shadowEnabled="true"
+                    fbutton:shadowHeight="3dp"
+                    android:text="Submit"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:textColor="@color/button_text_color"
+                    android:background="@android:color/transparent"
+                    android:textSize="@dimen/common_textSize">
+                </info.hoang8f.widget.FButton>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </FrameLayout>
+
+</FrameLayout>

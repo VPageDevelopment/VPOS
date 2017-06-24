@@ -16,10 +16,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.vpage.vpos.R;
+import com.vpage.vpos.httputils.VPOSRestClient;
 import com.vpage.vpos.pojos.ValidationStatus;
+import com.vpage.vpos.pojos.storeConfig.StoreConfigResponse;
 import com.vpage.vpos.tools.ActionEditText;
 import com.vpage.vpos.tools.OnNetworkChangeListener;
 import com.vpage.vpos.tools.VTools;
@@ -28,6 +31,7 @@ import com.vpage.vpos.tools.utils.LogFlag;
 import com.vpage.vpos.tools.utils.NetworkUtil;
 import com.vpage.vpos.tools.utils.ValidationUtils;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.UiThread;
@@ -73,6 +77,8 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
     @ViewById(R.id.submitButton)
     Button submitButton;
 
+    @ViewById(R.id.contentLayout)
+    LinearLayout linearLayout;
 
     String companyNameInput = "", companyAddressInput = "",returnPolicyInput="",phoneNumberInput="",imagePath = "";
 
@@ -81,6 +87,8 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
     boolean isNetworkAvailable = false;
 
     TextWatcher textComments;
+
+    StoreConfigResponse storeConfigResponse;
 
     public InformationFragment() {
         // Required empty public constructor
@@ -99,7 +107,9 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
         submitButton.setOnClickListener(this);
 
        // mProgressBar.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.GONE);
         setView();
+        callStoreConfigResponse();
 
     }
 
@@ -184,6 +194,18 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
         fax.getText().toString();
     }
 
+
+    void setInputs(){
+
+        email.setText(storeConfigResponse.getStoreConfigInformation()[0].getEmail());
+        website.setText(storeConfigResponse.getStoreConfigInformation()[0].getWebsite());
+        fax.setText(storeConfigResponse.getStoreConfigInformation()[0].getFax());
+        companyName.setText(storeConfigResponse.getStoreConfigInformation()[0].getCompany_name());
+        companyAddress.setText(storeConfigResponse.getStoreConfigInformation()[0].getCompany_address());
+        returnPolicy.setText(storeConfigResponse.getStoreConfigInformation()[0].getReturn_policy());
+        telephone.setText(storeConfigResponse.getStoreConfigInformation()[0].getCompany_phonenumber());
+
+    }
 
     void validateInput(){
         //mProgressBar.setVisibility(View.VISIBLE);
@@ -301,5 +323,39 @@ public class InformationFragment extends Fragment implements OnNetworkChangeList
 
             }
         }
+    }
+
+    @Background
+    void callStoreConfigResponse() {
+        if (LogFlag.bLogOn)Log.d(TAG, "callStoreConfigResponse");
+
+        VPOSRestClient vposRestClient = new VPOSRestClient();
+        storeConfigResponse = vposRestClient.getStoreConfigInfo();
+        if (null != storeConfigResponse && storeConfigResponse.getStatus().equals("true")) {
+            if (LogFlag.bLogOn)Log.d(TAG, "storeConfigResponse: " + storeConfigResponse.toString());
+            hideLoaderGifImage();
+            storeConfigResponseFinish();
+        } else {
+            hideLoaderGifImage();
+            showToastErrorMsg("addCustomerResponse failed");
+        }
+    }
+
+    @UiThread
+    public void storeConfigResponseFinish(){
+       setInputs();
+    }
+
+
+    @UiThread
+    public void hideLoaderGifImage(){
+        // playGifView.setVisibility(View.GONE);
+        submitButton.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.VISIBLE);
+    }
+
+    @UiThread
+    public void showToastErrorMsg(String error) {
+        VTools.showToast(error);
     }
 }

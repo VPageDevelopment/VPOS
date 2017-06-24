@@ -451,7 +451,7 @@ public class AddCustomerActivity extends AppCompatActivity implements View.OnCli
         VPOSRestClient vposRestClient = new VPOSRestClient();
         vposRestClient.setAddCustomerParams(addCustomerRequest);
         AddCustomerResponse addCustomerResponse = vposRestClient.addCustomer();
-        if (null != addCustomerResponse) {
+        if (null != addCustomerResponse&& addCustomerResponse.getStatus().equals("true")) {
             if (LogFlag.bLogOn)Log.d(TAG, "addCustomerResponse: " + addCustomerResponse.toString());
             hideLoaderGifImage();
             addCustomerResponseFinish();

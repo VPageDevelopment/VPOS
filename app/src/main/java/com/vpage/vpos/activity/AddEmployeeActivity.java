@@ -194,10 +194,24 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
 
             employees = VPOSRestTools.getInstance().getEmployeeData(employeeResponseString);
             setInputs();
+        }else {
+
+
+            List<String> permissionParentList = new ArrayList<>();
+            List<String> permissionChildList = new ArrayList<>();
+
+            for(int i=1;i<=13;i++){
+                permissionParentList.add("N");
+            }
+
+            for(int i=1;i<=11;i++){
+                permissionChildList.add("N");
+            }
+
+            setExpandableListViewData(permissionParentList,permissionChildList);
         }
 
         setView();
-        setExpandableListViewData();
     }
 
     private void setActionBarSupport() {
@@ -259,6 +273,39 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         userName.setText(employees.getUsername());
         password.setText(employees.getPassword());
         confPassword.setText(employees.getPassword());
+
+        List<String> permissionParentList = new ArrayList<>();
+
+        permissionParentList.add(employees.getEp_customer());
+        permissionParentList.add(employees.getEp_items());
+        permissionParentList.add(employees.getEp_items_store());
+        permissionParentList.add(employees.getEp_supplier());
+        permissionParentList.add(employees.getEp_reports());
+        permissionParentList.add(employees.getEp_recivings());
+        permissionParentList.add(employees.getEp_reciving_store());
+        permissionParentList.add(employees.getEp_sales());
+        permissionParentList.add(employees.getEp_sales_store());
+        permissionParentList.add(employees.getEp_employee());
+        permissionParentList.add(employees.getEp_gift_cards());
+        permissionParentList.add(employees.getEp_message());
+        permissionParentList.add(employees.getEp_store_config());
+
+
+        List<String> permissionChildList = new ArrayList<>();
+
+        permissionChildList.add(employees.getEp_reports_categories());
+        permissionChildList.add(employees.getEp_reports_customer());
+        permissionChildList.add(employees.getEp_reports_discount());
+        permissionChildList.add(employees.getEp_reports_employee());
+        permissionChildList.add(employees.getEp_reports_inventory());
+        permissionChildList.add(employees.getEp_reports_items());
+        permissionChildList.add(employees.getEp_reports_payments());
+        permissionChildList.add(employees.getEp_reports_reciving());
+        permissionChildList.add(employees.getEp_reports_sale());
+        permissionChildList.add(employees.getEp_reports_supplier());
+        permissionChildList.add(employees.getEp_reports_taxes());
+
+        setExpandableListViewData(permissionParentList,permissionChildList);
 
     }
 
@@ -521,7 +568,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    void setExpandableListViewData(){
+    void setExpandableListViewData(List<String> permissionParentList,List<String> permissionChildList){
 
 
         expListView.setDividerHeight(2);
@@ -537,7 +584,7 @@ public class AddEmployeeActivity extends AppCompatActivity implements View.OnCli
         // setting list adapter
         expListView.setAdapter(listAdapter);*/
 
-        EmpCheckBoxExpandableListAdapter mAdapter = new EmpCheckBoxExpandableListAdapter(activity);
+        EmpCheckBoxExpandableListAdapter mAdapter = new EmpCheckBoxExpandableListAdapter(activity,permissionParentList,permissionChildList);
         expListView.setAdapter(mAdapter);
         expListView.setOnChildClickListener(mAdapter);
         expListView.setOnGroupClickListener(mAdapter);

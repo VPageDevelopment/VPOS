@@ -100,7 +100,6 @@
 
 
     <!-- store config -->
-
     <string-array name="storeConfigModuleName">
         <item>Information</item>
         <item>General</item>
@@ -112,6 +111,38 @@
         <item>Email</item>
         <item>Message</item>
         <item>Licence</item>
+    </string-array>
+
+    <string-array name="employeePermissionParentName">
+        <item>Customers</item>
+        <item>Items</item>
+        <item>Items Store</item>
+        <item>suppliers</item>
+        <item>Report</item>
+        <item>Receiving</item>
+        <item>Receiving Stores</item>
+        <item>Sales</item>
+        <item>Sales Stores</item>
+        <item>Employee</item>
+        <item>Gift Card</item>
+        <item>Message</item>
+        <item>Store Config</item>
+    </string-array>
+
+    <string-array name="employeePermissionChildName">
+
+        <item>Report Categories</item>
+        <item>Report Customer</item>
+        <item>Report Discount</item>
+        <item>Report Employee</item>
+        <item>Report Inventory</item>
+        <item>Report Items</item>
+        <item>Report Payments</item>
+        <item>Report Receiving</item>
+        <item>Report Sales</item>
+        <item>Report Suppliers</item>
+        <item>Report Taxes</item>
+
     </string-array>
 
     <string name="groupPos">GroupPos</string>

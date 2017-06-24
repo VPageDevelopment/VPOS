@@ -13,8 +13,9 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.vpage.vpos.R;
-import com.vpage.vpos.pojos.employee.EmployeeData;
-
+import com.vpage.vpos.pojos.employee.EmployeePermissionData;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmpCheckBoxExpandableListAdapter extends BaseExpandableListAdapter implements ExpandableListView.OnGroupClickListener,ExpandableListView.OnChildClickListener {
 
@@ -23,17 +24,62 @@ public class EmpCheckBoxExpandableListAdapter extends BaseExpandableListAdapter 
 
     Activity activity;
 
-    // Sample data set.  children[i] contains the children (String[]) for groups[i].
-    private EmployeeData[] groups = { new EmployeeData("People Names",false), new EmployeeData("Dog Names",false), new EmployeeData("Cat Names",false), new EmployeeData("Fish Names",false) };
-    private EmployeeData[][] children = {
-            { new EmployeeData("Arnold",false), new EmployeeData("Barry",false), new EmployeeData("Chuck",false), new EmployeeData("David",false) },
-            { new EmployeeData("Ace",false), new EmployeeData("Bandit",false), new EmployeeData("Cha-Cha",false), new EmployeeData("Deuce",false) },
-            { new EmployeeData("Fluffy",false), new EmployeeData("Snuggles",false) },
-            { new EmployeeData("Goldy",false), new EmployeeData("Bubbles",false) }
-    };
+    List<String> permissionParentList = new ArrayList<>();
+    List<String> permissionChildList = new ArrayList<>();
 
-    public EmpCheckBoxExpandableListAdapter(Activity activity) {
+    // Sample data set.  children[i] contains the children (String[]) for groups[i].
+  /*  private EmployeePermissionData[] groups = { new EmployeePermissionData("key",false), new EmployeePermissionData("Dog Names",false), new EmployeePermissionData("Cat Names",false), new EmployeePermissionData("Fish Names",false) };
+    private EmployeePermissionData[][] children = {
+            { new EmployeePermissionData("Arnold",false), new EmployeePermissionData("Barry",false), new EmployeePermissionData("Chuck",false), new EmployeePermissionData("David",false) },
+            { new EmployeePermissionData("Ace",false), new EmployeePermissionData("Bandit",false), new EmployeePermissionData("Cha-Cha",false), new EmployeePermissionData("Deuce",false) },
+            { new EmployeePermissionData("Fluffy",false), new EmployeePermissionData("Snuggles",false) },
+            { new EmployeePermissionData("Goldy",false), new EmployeePermissionData("Bubbles",false) }
+    };*/
+
+    private EmployeePermissionData[] groups;
+
+    private EmployeePermissionData[][] children;
+
+    String[] employeePermissionParentName,employeePermissionChildName;
+
+    public EmpCheckBoxExpandableListAdapter(Activity activity, List<String> permissionParentList,List<String> permissionChildList) {
         this.activity = activity;
+        this.permissionParentList = permissionParentList;
+        this.permissionChildList = permissionChildList;
+        try {
+
+            employeePermissionParentName = activity.getResources().getStringArray(R.array.employeePermissionParentName);
+            groups = new EmployeePermissionData[permissionParentList.size()];
+            employeePermissionChildName = activity.getResources().getStringArray(R.array.employeePermissionChildName);
+            children = new EmployeePermissionData[permissionParentList.size()][permissionChildList.size()];
+
+            for(int i=0;i<permissionParentList.size();i++){
+
+                if(permissionParentList.get(i).equals("Y")){
+                    groups[i] = new EmployeePermissionData(employeePermissionParentName[i],true);
+                }else {
+                    groups[i] = new EmployeePermissionData(employeePermissionParentName[i],false);
+                }
+                if(i == 4){
+
+                    for(int j=0;j<permissionChildList.size();j++) {
+
+                        if (permissionChildList.get(j).equals("Y")) {
+                            children[i][j] = new EmployeePermissionData(employeePermissionChildName[j], true);
+                        } else {
+                            children[i][j] = new EmployeePermissionData(employeePermissionChildName[j], false);
+                        }
+                    }
+
+                }
+            }
+
+        }catch (ArrayIndexOutOfBoundsException e){
+
+            Log.e(TAG,e.getMessage());
+        }
+
+
     }
 
     public Object getChild(int groupPosition, int childPosition) {
@@ -58,47 +104,52 @@ public class EmpCheckBoxExpandableListAdapter extends BaseExpandableListAdapter 
 
         final CheckBox lCheckBox = (CheckBox) mParentLayout.findViewById(R.id.checkBox);
 
-        lCheckBox.setTag(R.string.groupPos,groupPosition);
-        lCheckBox.setTag(R.string.childPos,childPosition);
+        if(groupPosition == 5){
 
-        EmployeeData lGroupData = groups[groupPosition];
-        lCheckBox.setChecked(lGroupData.isChecked);
+            lCheckBox.setTag(R.string.groupPos,groupPosition);
+            lCheckBox.setTag(R.string.childPos,childPosition);
+
+            EmployeePermissionData lGroupData = groups[groupPosition];
+            lCheckBox.setChecked(lGroupData.isChecked);
 
 
-        lCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            lCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.e(TAG,"onCheckedChanged isChecked : "+isChecked);
-                int aGroupPos = (Integer) buttonView.getTag(R.string.groupPos);
-                int aChildPos = (Integer) buttonView.getTag(R.string.childPos);
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.e(TAG,"onCheckedChanged isChecked : "+isChecked);
+                    int aGroupPos = (Integer) buttonView.getTag(R.string.groupPos);
+                    int aChildPos = (Integer) buttonView.getTag(R.string.childPos);
 
-                EmployeeData lChildData = children[aGroupPos][aChildPos];
-                lChildData.isChecked = isChecked;
+                    EmployeePermissionData lChildData = children[aGroupPos][aChildPos];
+                    lChildData.isChecked = isChecked;
 
-                EmployeeData lChildrens[] = children[aGroupPos];
-                int lCheckedCount = 0;
-                int lUncheckedCount = 0;
+                    EmployeePermissionData lChildrens[] = children[aGroupPos];
+                    int lCheckedCount = 0;
+                    int lUncheckedCount = 0;
 
-                for(EmployeeData data :lChildrens){
-                    if(data.isChecked){
-                        lCheckedCount++;
-                    }else{
-                        lUncheckedCount++;
+                    for(EmployeePermissionData data :lChildrens){
+                        if(data.isChecked){
+                            lCheckedCount++;
+                        }else{
+                            lUncheckedCount++;
+                        }
+                    }
+                    EmployeePermissionData lGroup = groups[aGroupPos];
+                    if(lCheckedCount == lChildrens.length){
+                        lGroup.isChecked = true;
+                    }
+                    if(lUncheckedCount == lChildrens.length){
+                        lGroup.isChecked = false;
                     }
                 }
-                EmployeeData lGroup = groups[aGroupPos];
-                if(lCheckedCount == lChildrens.length){
-                    lGroup.isChecked = true;
-                }
-                if(lUncheckedCount == lChildrens.length){
-                    lGroup.isChecked = false;
-                }
-            }
-        });
+            });
 
 
-        textView.setText(getChild(groupPosition, childPosition).toString());
+            textView.setText(children[groupPosition][childPosition].toString());
+        }
+
+
         return mParentLayout;
     }
 
@@ -122,12 +173,12 @@ public class EmpCheckBoxExpandableListAdapter extends BaseExpandableListAdapter 
         LayoutInflater mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout mParentLayout = (LinearLayout) mInflater.inflate(R.layout.group_parent, null);
         TextView textView = (TextView)mParentLayout.findViewById(R.id.view);
-        textView.setText(getGroup(groupPosition).toString());
+        textView.setText(groups[groupPosition].toString());
 
         final CheckBox lCheckBox = (CheckBox) mParentLayout.findViewById(R.id.checkBox);
         lCheckBox.setTag(groupPosition);
 
-        EmployeeData lGroupData = groups[groupPosition];
+        EmployeePermissionData lGroupData = groups[groupPosition];
         lCheckBox.setChecked(lGroupData.isChecked);
 
 
@@ -137,12 +188,16 @@ public class EmpCheckBoxExpandableListAdapter extends BaseExpandableListAdapter 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.e(TAG,"onCheckedChanged isChecked : "+isChecked);
                 int aPos = (Integer) buttonView.getTag();
-                EmployeeData lGroup = groups[aPos];
+                EmployeePermissionData lGroup = groups[aPos];
                 lGroup.isChecked = isChecked;
-                EmployeeData[] lChildData = children[aPos];
-                for(EmployeeData lData : lChildData){
-                    lData.isChecked = isChecked;
+                if(null !=children[aPos]){
+
+                    EmployeePermissionData[] lChildData = children[aPos];
+                    for(EmployeePermissionData lData : lChildData){
+                        lData.isChecked = isChecked;
+                    }
                 }
+
             }
         });
         return mParentLayout;

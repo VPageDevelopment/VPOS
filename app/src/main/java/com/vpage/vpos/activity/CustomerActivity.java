@@ -198,7 +198,6 @@ public class CustomerActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
 
-
         switch (v.getId()) {
 
             case R.id.addNewCustomerButton:
